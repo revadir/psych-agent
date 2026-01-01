@@ -13,7 +13,7 @@ function App() {
       <ToastProvider>
         <AuthProvider>
           <ChatProvider>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gradient-to-br from-stone-900 via-amber-900/20 to-stone-800">
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={

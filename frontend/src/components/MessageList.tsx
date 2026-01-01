@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 interface Message {
   id: number
@@ -17,18 +18,33 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Use setTimeout to ensure DOM is updated before scrolling
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
   }
 
   useEffect(() => {
     scrollToBottom()
   }, [messages, loading])
 
+  // Additional effect to scroll during streaming
+  useEffect(() => {
+    const hasStreamingMessage = messages.some(msg => msg.streaming)
+    if (hasStreamingMessage) {
+      scrollToBottom()
+    }
+  }, [messages])
+
   return (
     <div 
       ref={containerRef}
       className="flex-1 overflow-y-auto p-4 space-y-4"
-      style={{ maxHeight: 'calc(100vh - 200px)' }}
+      style={{ 
+        maxHeight: 'calc(100vh - 180px)',
+        paddingTop: '1rem',
+        paddingBottom: '1rem'
+      }}
     >
       {messages.map(message => (
         <MessageBubble key={message.id} message={message} />
@@ -111,8 +127,14 @@ function MessageBubble({ message }: MessageBubbleProps) {
         {/* Regular message content */}
         {!message.thinking && (
           <>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {message.content}
+            <div className="text-sm leading-relaxed font-['Exo_2']">
+              {isUser ? (
+                <div className="whitespace-pre-wrap">{message.content}</div>
+              ) : (
+                <div className="prose prose-sm max-w-none prose-invert prose-headings:text-amber-300 prose-strong:text-amber-200">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
+              )}
               {message.streaming && (
                 <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1"></span>
               )}
