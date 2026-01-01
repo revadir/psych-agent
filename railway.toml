@@ -1,0 +1,13 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "python scripts/init_db.py && python scripts/init_admin.py && python -m backend.app.main"
+
+[[mounts]]
+source = "/opt/railway/data"
+destination = "/app/data"
+
+[[mounts]]
+source = "/opt/railway/vector_db"
+destination = "/app/vector_db"

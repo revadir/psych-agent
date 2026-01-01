@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=sqlite:///./data/app.db
+      - VECTOR_DB_PATH=./vector_db
+      - LLM_MODEL=deepseek-r1
+      - ADMIN_EMAIL=admin@example.com
+    volumes:
+      - ./data:/app/data
+      - ./vector_db:/app/vector_db
+    restart: unless-stopped
