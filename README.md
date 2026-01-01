@@ -1,118 +1,242 @@
-# Psychiatric Clinical Decision Support System
+# Psych Agent - Psychiatric Clinical Decision Support System
 
-A production-grade cloud-based psychiatric clinical decision support system that provides a modern web interface for Subject Matter Experts (SMEs) to interact with a DSM-5-TR knowledge base through an AI-powered chatbot.
+A production-grade web application that provides psychiatric clinical decision support using DSM-5-TR diagnostic criteria through an AI-powered interface.
 
-## Overview
-
-This application transforms the console-based psych_agent into a full-stack web application with:
-- **Frontend**: React SPA with modern UI/UX for chat interactions
-- **Backend**: FastAPI server exposing RESTful endpoints for agent operations
-- **Data Layer**: ChromaDB vector database with DSM-5-TR embeddings
-
-## Project Structure
-
-```
-psych-agent/
-├── frontend/                    # React application (to be initialized)
-├── backend/                     # FastAPI application
-│   ├── app/
-│   │   ├── api/                # API routes
-│   │   ├── core/               # Core configuration
-│   │   ├── models/             # Data models
-│   │   ├── services/           # Business logic
-│   │   └── db/                 # Database utilities
-│   └── requirements.txt
-├── data/                        # Data files (DSM-5-TR PDF)
-├── vector_db/                   # ChromaDB persistence
-├── scripts/                     # Utility scripts
-│   └── ingest.py               # Vector DB ingestion
-├── .env.example                # Environment template
-└── README.md
-```
-
-## Setup
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.11+
-- Node.js 18+ (for frontend)
-- Ollama with deepseek-r1 model (or alternative LLM provider)
+Make sure you have these installed on your machine:
 
-### Backend Setup
+- **Python 3.11+** - [Download here](https://www.python.org/downloads/)
+- **Node.js 18+** - [Download here](https://nodejs.org/)
+- **Ollama** - [Download here](https://ollama.ai/) (for local AI model)
 
-1. Create a virtual environment:
+### 1. Clone and Setup
+
 ```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/psych-agent.git
+cd psych-agent
+
+# Create Python virtual environment
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
 
-2. Install dependencies:
-```bash
+# Activate virtual environment
+# On macOS/Linux:
+source .venv/bin/activate
+# On Windows:
+# .venv\Scripts\activate
+
+# Install Python dependencies
 pip install -r backend/requirements.txt
+
+# Install Node.js dependencies
+cd frontend
+npm install
+cd ..
 ```
 
-3. Configure environment variables:
+### 2. Setup Ollama AI Model
+
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+# Install and start Ollama (if not already running)
+ollama serve
+
+# In a new terminal, pull the required model
+ollama pull llama3.2:1b
 ```
 
-4. Build the vector database (if not already done):
+### 3. Initialize Database
+
 ```bash
-python scripts/ingest.py
+# From the project root directory
+cd backend
+python -c "
+from app.db.session import engine
+from app.models.database import Base
+Base.metadata.create_all(bind=engine)
+print('Database initialized!')
+"
+
+# Create admin user
+python -c "
+from app.db.session import SessionLocal
+from app.services.auth_service import AuthService
+db = SessionLocal()
+try:
+    AuthService.add_user_to_allowlist(db, 'admin@example.com', is_admin=True)
+    print('Admin user created: admin@example.com / admin123')
+finally:
+    db.close()
+"
 ```
 
-### Frontend Setup
+### 4. Run the Application
 
-Frontend will be initialized in a later task using Vite and React.
+**Terminal 1 - Start Backend:**
+```bash
+cd backend
+LLM_MODEL=llama3.2:1b python -m app.main
+```
 
-## Development
+**Terminal 2 - Start Frontend:**
+```bash
+cd frontend
+npm run dev
+```
 
-### Running the Backend
+### 5. Access the Application
+
+1. Open your browser to: **http://localhost:5173**
+2. Login with: **admin@example.com** / **admin123**
+3. Start asking clinical questions!
+
+## 🏗️ Architecture
+
+```
+psych-agent/
+├── backend/                 # FastAPI Python backend
+│   ├── app/
+│   │   ├── api/            # REST API endpoints
+│   │   ├── core/           # Configuration & auth
+│   │   ├── models/         # Database models
+│   │   ├── services/       # Business logic
+│   │   └── main.py         # Application entry point
+│   └── requirements.txt
+├── frontend/               # React TypeScript frontend
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── contexts/       # React contexts
+│   │   └── services/       # API client
+│   └── package.json
+├── data/                   # DSM-5-TR PDF and documents
+├── vector_db/             # ChromaDB vector database
+└── scripts/               # Utility scripts
+```
+
+## 🎯 Features
+
+- **DSM-5-TR Integration**: Complete diagnostic criteria database
+- **AI-Powered Responses**: Uses local Ollama models for privacy
+- **Real-time Chat**: Streaming responses with citations
+- **Clinical Accuracy**: Structured diagnostic criteria with ICD codes
+- **Modern UI**: Walnut sci-fi theme with responsive design
+- **Secure**: JWT authentication with user management
+- **Expandable Citations**: Full DSM-5-TR references with metadata
+
+## 🛠️ Development
+
+### Backend Development
 
 ```bash
 cd backend
-uvicorn app.main:app --reload
+
+# Run with auto-reload
+LLM_MODEL=llama3.2:1b uvicorn app.main:app --reload --port 8001
+
+# Run tests
+python -m pytest
+
+# Add new dependencies
+pip install package_name
+pip freeze > requirements.txt
 ```
 
-### Running the Original Console Agent
+### Frontend Development
 
-The original console-based agent code has been preserved and refactored into services:
-- Original: `agent.py` → Now: `backend/app/services/agent_service.py`
-- Original: `ingest.py` → Now: `scripts/ingest.py`
+```bash
+cd frontend
 
-## Configuration
+# Start development server
+npm run dev
 
-All configuration is managed through environment variables. See `.env.example` for available options.
+# Build for production
+npm run build
 
-Key configuration areas:
-- **Application**: Environment, secret keys, CORS origins
-- **Database**: SQLite and vector DB paths
-- **LLM**: Provider, model, API keys
-- **Authentication**: JWT settings
-- **Server**: Host, port, logging
+# Add new dependencies
+npm install package_name
+```
 
-## Architecture
+### Environment Variables
 
-The system uses a three-tier architecture:
-1. **Frontend**: React SPA with modern UI/UX
-2. **Backend**: FastAPI server with RESTful API
-3. **Data Layer**: ChromaDB vector database + SQLite for sessions/users
+Create a `.env` file in the backend directory:
 
-For detailed architecture and design decisions, see `.kiro/specs/cloud-psychiatry-app/design.md`.
+```env
+# Database
+DATABASE_URL=sqlite:///./app.db
+VECTOR_DB_PATH=../vector_db
 
-## Requirements
+# LLM Configuration
+LLM_MODEL=llama3.2:1b
+LLM_TEMPERATURE=0.1
+EMBEDDING_MODEL=all-MiniLM-L6-v2
 
-For detailed requirements, see `.kiro/specs/cloud-psychiatry-app/requirements.md`.
+# Security
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=43200
 
-## Implementation Tasks
+# Server
+HOST=127.0.0.1
+PORT=8001
+ENVIRONMENT=development
+```
 
-For the implementation plan and task list, see `.kiro/specs/cloud-psychiatry-app/tasks.md`.
+## 🔧 Troubleshooting
 
-## License
+### Common Issues
 
-[Add your license here]
+**Backend won't start:**
+- Ensure Python virtual environment is activated
+- Check that Ollama is running: `ollama serve`
+- Verify the model is installed: `ollama list`
 
-## Contributing
+**Frontend connection errors:**
+- Ensure backend is running on port 8001
+- Check browser console for specific errors
+- Try hard refresh (Cmd+Shift+R / Ctrl+Shift+R)
 
-[Add contribution guidelines here]
+**Database errors:**
+- Run the database initialization commands again
+- Check that SQLite file has write permissions
+
+**AI responses not working:**
+- Verify Ollama is running and model is pulled
+- Check backend logs for LLM connection errors
+- Ensure `LLM_MODEL` environment variable is set
+
+### Getting Help
+
+1. Check the backend logs in Terminal 1
+2. Check browser console (F12) for frontend errors
+3. Ensure all prerequisites are properly installed
+4. Verify environment variables are set correctly
+
+## 📝 Usage Examples
+
+**Ask about diagnostic criteria:**
+- "What are the DSM-5-TR diagnostic criteria for Major Depressive Disorder?"
+- "Show me the criteria for Borderline Personality Disorder F60.3"
+- "What are the symptoms of ADHD?"
+
+**Clinical scenarios:**
+- "Patient presents with mood swings and fear of abandonment"
+- "Describe the diagnostic features of Intermittent Explosive Disorder"
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes and test thoroughly
+4. Commit with clear messages: `git commit -m "Add feature description"`
+5. Push to your fork: `git push origin feature-name`
+6. Create a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## ⚠️ Disclaimer
+
+This is a clinical decision support tool and not a replacement for professional psychiatric evaluation. Always consult with qualified mental health professionals for diagnosis and treatment decisions.
