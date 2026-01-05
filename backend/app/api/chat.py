@@ -141,7 +141,7 @@ This is a clinical decision support tool and not a replacement for professional 
                 await asyncio.sleep(0.1)  # Faster streaming
             
             # Save complete assistant message
-            assistant_message = ChatService.add_message(db, session_id, "assistant", response_text)
+            assistant_message = ChatService.add_message(db, session_id, "assistant", response_text, agent_response.get('citations', []))
             
             # Send completion
             yield f"data: {json.dumps({'type': 'response_complete', 'data': {'id': assistant_message.id, 'full_response': response_text, 'citations': agent_response.get('citations', [])}})}\n\n"
@@ -248,7 +248,7 @@ For **Major Depressive Disorder**, the key criteria include:
     print(f"🔵 REGULAR API: Adding assistant message...")
     # Add assistant message
     assistant_message = ChatService.add_message(
-        db, session_id, "assistant", agent_response["response"]
+        db, session_id, "assistant", agent_response["response"], agent_response.get("citations", [])
     )
     
     print(f"🔵 REGULAR API: Returning response...")

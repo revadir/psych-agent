@@ -4,7 +4,7 @@ Pydantic models for API requests and responses.
 
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 
 
 class LoginRequest(BaseModel):
@@ -45,6 +45,7 @@ class MessageResponse(BaseModel):
     id: int
     role: str
     content: str
+    citations: Optional[List[Any]] = None
     created_at: datetime
 
     class Config:

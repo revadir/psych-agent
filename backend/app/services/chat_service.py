@@ -55,12 +55,13 @@ class ChatService:
         return True
 
     @staticmethod
-    def add_message(db: Session, session_id: int, role: str, content: str) -> Message:
+    def add_message(db: Session, session_id: int, role: str, content: str, citations: list = None) -> Message:
         """Add a message to a session."""
         message = Message(
             session_id=session_id,
             role=role,
-            content=content
+            content=content,
+            citations=citations
         )
         db.add(message)
         

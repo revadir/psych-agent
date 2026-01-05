@@ -2,7 +2,7 @@
 SQLAlchemy models for the psychiatric clinical decision support system.
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -52,6 +52,7 @@ class Message(Base):
     session_id = Column(Integer, ForeignKey("chat_sessions.id"), nullable=False)
     role = Column(String(50), nullable=False)  # 'user' or 'assistant'
     content = Column(Text, nullable=False)
+    citations = Column(JSON, nullable=True)  # Store citations as JSON
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
