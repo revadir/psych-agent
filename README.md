@@ -72,7 +72,43 @@ finally:
 "
 ```
 
-### 4. Run the Application
+### 4. Setup Vector Database
+
+The application requires a vector database with DSM-5-TR content. You'll need to obtain and process the DSM-5-TR document:
+
+#### Obtain DSM-5-TR
+1. **Purchase/Access DSM-5-TR**: You need a legitimate copy of the DSM-5-TR PDF
+   - Available from [American Psychiatric Association](https://www.psychiatry.org/psychiatrists/practice/dsm)
+   - Many universities and medical institutions provide access
+   - Check your local medical library
+
+2. **Place the PDF**: Save the DSM-5-TR PDF as `DSM-5-TR.pdf` in the `data/` directory:
+   ```bash
+   # Create data directory if it doesn't exist
+   mkdir -p data
+   # Place your DSM-5-TR PDF here
+   cp /path/to/your/DSM-5-TR.pdf data/DSM-5-TR.pdf
+   ```
+
+#### Create Vector Database
+```bash
+# From the project root directory
+cd backend
+python ../scripts/ingest_hierarchical.py
+```
+
+#### Create Vector Database
+```bash
+# From the project root directory
+cd backend
+python ../scripts/ingest_hierarchical.py
+```
+
+This will create the `vector_db_hierarchical/` directory with processed embeddings.
+
+**Note:** The vector database creation may take several minutes depending on your system.
+
+### 5. Run the Application
 
 **Terminal 1 - Start Backend:**
 ```bash
@@ -86,7 +122,7 @@ cd frontend
 npm run dev
 ```
 
-### 5. Access the Application
+### 6. Access the Application
 
 1. Open your browser to: **http://localhost:5173**
 2. Login with: **admin@example.com** / **admin123**
@@ -163,9 +199,9 @@ npm install package_name
 Create a `.env` file in the backend directory:
 
 ```env
-# Database
-DATABASE_URL=sqlite:///./app.db
-VECTOR_DB_PATH=../vector_db
+# Environment
+DATABASE_URL=sqlite:///./data/app.db
+VECTOR_DB_PATH=../vector_db_hierarchical
 
 # LLM Configuration
 LLM_MODEL=llama3.2:1b
@@ -205,6 +241,11 @@ ENVIRONMENT=development
 - Verify Ollama is running and model is pulled
 - Check backend logs for LLM connection errors
 - Ensure `LLM_MODEL` environment variable is set
+
+**Vector database errors:**
+- Ensure DSM-5-TR.pdf is in the `data/` directory
+- Run the ingestion script: `python scripts/ingest_hierarchical.py`
+- Check that `vector_db_hierarchical/` directory was created
 
 ### Getting Help
 
