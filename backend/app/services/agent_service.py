@@ -63,23 +63,25 @@ class AgentService:
         # Re-enable LLM
         self.llm = OllamaLLM(model=self.model_name, temperature=self.temperature)
         
-        # Define clinical prompt template with strict filtering
-        self.template = """You are a DSM-5-TR Clinical Reference Assistant. 
+        # Define clinical prompt template with natural conversation flow
+        self.template = """You are a DSM-5-TR Clinical Reference Assistant providing psychiatric consultation.
 
-CRITICAL INSTRUCTIONS:
-1. Always start your response with a friendly greeting and acknowledgment of the query
-2. ONLY provide information about the SPECIFIC disorder mentioned in the query
-3. Use ONLY the context provided below
-4. If asked about a specific disorder, IGNORE any information about other disorders in the context
-5. Provide COMPLETE diagnostic criteria exactly as written
-6. Format response as: Friendly greeting, then **[ICD Code] [Disorder Name]** followed by **Diagnostic Criteria** and numbered list
+INSTRUCTIONS:
+- Respond naturally and professionally, varying your language based on context
+- For new topics: Start directly with the clinical information requested
+- For follow-up questions: Reference previous discussion naturally ("Regarding the PTSD we discussed...", "For that same condition...", etc.)
+- For treatment questions: Focus on the disorder from recent conversation context
+- Provide accurate DSM-5-TR information with diagnostic codes when relevant
+- Be concise but thorough
 
-CONTEXT FROM DSM-5-TR:
+{conversation_context}
+
+DSM-5-TR CONTEXT:
 {context}
 
-QUERY: {question}
+CLINICIAN QUERY: {question}
 
-RESPONSE (start with friendly greeting, then only about the requested disorder):"""
+RESPONSE:"""
 
         self.prompt = ChatPromptTemplate.from_template(self.template)
         
@@ -91,23 +93,77 @@ RESPONSE (start with friendly greeting, then only about the requested disorder):
         """Format retrieved documents for the prompt."""
         return "\n\n".join(doc.page_content for doc in docs)
     
-    def _filter_relevant_docs(self, docs, query: str):
+    def _build_conversation_context(self, query: str, conversation_history: list) -> str:
+        """Build conversation context that helps generate natural, varied responses."""
+        if not conversation_history or len(conversation_history) < 2:
+            return "CONTEXT: This is a new conversation topic."
+        
+        # Build context with focus on topic continuity
+        context_lines = []
+        
+        # Get last few exchanges for context
+        recent_messages = conversation_history[-4:] if len(conversation_history) > 4 else conversation_history
+        
+        # Identify the main disorder being discussed
+        all_content = " ".join([msg['content'].lower() for msg in recent_messages])
+        main_disorder = None
+        
+        if "ptsd" in all_content or "posttraumatic stress" in all_content:
+            main_disorder = "PTSD"
+        elif "borderline personality" in all_content or "f60.3" in all_content:
+            main_disorder = "Borderline Personality Disorder"
+        elif "major depressive" in all_content or "depression" in all_content:
+            main_disorder = "Major Depressive Disorder"
+        
+        if main_disorder:
+            context_lines.append(f"CONTEXT: Ongoing discussion about {main_disorder}.")
+            
+            # Check if this is a follow-up question
+            follow_up_indicators = ["treatment", "therapy", "medication", "prognosis", "how", "what about", "also", "additionally"]
+            if any(indicator in query.lower() for indicator in follow_up_indicators):
+                context_lines.append(f"This appears to be a follow-up question about {main_disorder}.")
+        else:
+            context_lines.append("CONTEXT: This appears to be a new topic.")
+        
+        # Add recent exchange for reference
+        if len(recent_messages) >= 2:
+            last_user = next((msg['content'] for msg in reversed(recent_messages) if msg['role'] == 'user'), "")
+            if last_user and last_user != query:
+                context_lines.append(f"Previous question: {last_user[:100]}...")
+        
+        return "\n".join(context_lines) + "\n"
+
+    def _filter_relevant_docs(self, docs, query: str, conversation_history: list = None):
         """Filter documents to only include those relevant to the specific disorder queried."""
         query_lower = query.lower()
-        logger.info(f"🟡 FILTER: Query: {query_lower}")
         
-        # Extract disorder name from query - make this more flexible
+        # Check conversation history for context about what disorder we're discussing
         target_disorder = None
-        if "borderline personality disorder" in query_lower or "f60.3" in query_lower:
+        
+        # First check if there's context from conversation
+        if conversation_history:
+            recent_content = " ".join([msg['content'].lower() for msg in conversation_history[-3:]])
+            if "ptsd" in recent_content or "posttraumatic stress" in recent_content:
+                target_disorder = "ptsd"
+            elif "borderline personality" in recent_content or "f60.3" in recent_content:
+                target_disorder = "borderline"
+            elif "major depressive" in recent_content or "depression" in recent_content:
+                target_disorder = "major depressive"
+            elif "intermittent explosive" in recent_content or "f63.81" in recent_content:
+                target_disorder = "intermittent explosive"
+        
+        # Then check current query
+        if "ptsd" in query_lower or "posttraumatic stress" in query_lower:
+            target_disorder = "ptsd"
+        elif "borderline personality disorder" in query_lower or "f60.3" in query_lower:
             target_disorder = "borderline"
-        elif "intermittent explosive disorder" in query_lower or "f63.81" in query_lower:
-            target_disorder = "intermittent explosive"
-        elif "explosive disorder" in query_lower:
-            target_disorder = "explosive"
-        elif "major depressive disorder" in query_lower:
+        elif "major depressive disorder" in query_lower or "depression" in query_lower:
             target_disorder = "major depressive"
-        elif "adhd" in query_lower or "attention deficit" in query_lower:
-            target_disorder = "attention"
+        elif "intermittent explosive" in query_lower or "f63.81" in query_lower:
+            target_disorder = "intermittent explosive"
+        elif "treatment" in query_lower or "therapy" in query_lower or "medication" in query_lower:
+            # For treatment questions, keep the same disorder from context
+            pass
         
         logger.info(f"🟡 FILTER: Target disorder: {target_disorder}")
         
@@ -115,36 +171,36 @@ RESPONSE (start with friendly greeting, then only about the requested disorder):
             logger.info(f"🟡 FILTER: No specific disorder detected, returning top 3 docs")
             return docs[:3]
         
-        # Log what documents we have
-        for i, doc in enumerate(docs[:5]):
-            logger.info(f"🟡 FILTER: Doc {i+1}: {doc.page_content[:100]}...")
-        
-        # Very lenient filtering - just look for the target disorder
+        # Filter documents
         filtered_docs = []
         for doc in docs:
             doc_content_lower = doc.page_content.lower()
             if target_disorder in doc_content_lower:
                 filtered_docs.append(doc)
-                logger.info(f"🟡 FILTER: MATCHED doc with '{target_disorder}': {doc.page_content[:100]}...")
         
         logger.info(f"🟡 FILTER: Filtered from {len(docs)} to {len(filtered_docs)} documents")
         return filtered_docs[:5] if filtered_docs else docs[:3]
 
-    def process_query(self, query: str) -> Dict[str, Any]:
+    def process_query(self, query: str, conversation_history: list = None) -> Dict[str, Any]:
         """
         Process a patient query and return structured response.
+        
+        Args:
+            query: The current user query
+            conversation_history: List of previous messages [{'role': 'user/assistant', 'content': '...'}]
         """
         try:
             logger.info(f"🟡 AGENT: Starting query processing: {query[:100]}...")
+            
+            # Build intelligent context from conversation history
+            context_prefix = self._build_conversation_context(query, conversation_history)
             
             # Check if this is a BPD F60.3 query - use direct approach
             if "borderline personality disorder" in query.lower() or "f60.3" in query.lower():
                 logger.info("🟡 AGENT: Detected BPD query, using direct criteria")
                 
-                # Return the exact DSM-5-TR criteria
-                response = """Hello! I'd be happy to help you with information about Borderline Personality Disorder. Here are the complete diagnostic criteria from the DSM-5-TR:
-
-**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**
+                # Return the exact DSM-5-TR criteria with natural language
+                response = """**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**
 
 A pervasive pattern of instability of interpersonal relationships, self-image, and affects, and marked impulsivity, beginning by early adulthood and present in a variety of contexts, as indicated by five (or more) of the following:
 
@@ -201,7 +257,7 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
             logger.info(f"🟡 AGENT: Retrieved {len(docs)} documents")
             
             # Filter documents to relevant disorder
-            filtered_docs = self._filter_relevant_docs(docs, query)
+            filtered_docs = self._filter_relevant_docs(docs, query, conversation_history)
             logger.info(f"🟡 AGENT: Filtered to {len(filtered_docs)} relevant documents")
             
             if not filtered_docs:
@@ -226,6 +282,7 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
             chain = (
                 {
                     "context": lambda _: self._format_docs(filtered_docs),
+                    "conversation_context": lambda _: context_prefix,
                     "question": RunnablePassthrough(),
                 }
                 | self.prompt

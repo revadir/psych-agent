@@ -96,12 +96,21 @@ async def send_message_stream(
             yield f"data: {json.dumps({'type': 'thinking', 'data': {'status': 'Querying vector database for relevant DSM-5-TR sections...'}})}\n\n"
             await asyncio.sleep(0.5)
             
-            # Get agent response
+            # Get conversation history for context
+            messages = ChatService.get_session_messages(db, session_id)
+            conversation_history = []
+            for msg in messages[-6:]:  # Last 6 messages for context
+                conversation_history.append({
+                    'role': msg.role,
+                    'content': msg.content
+                })
+            
+            # Get agent response with conversation history
             yield f"data: {json.dumps({'type': 'thinking', 'data': {'status': 'Generating clinical analysis...'}})}\n\n"
             
             try:
                 agent = get_simple_agent_service()
-                agent_response = agent.process_query(request.content)
+                agent_response = agent.process_query(request.content, conversation_history)
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
                 # Quick fallback response for testing
@@ -188,16 +197,25 @@ async def send_message(
     # Add user message
     user_message = ChatService.add_message(db, session_id, "user", request.content)
     
+    # Get conversation history for context
+    messages = ChatService.get_session_messages(db, session_id)
+    conversation_history = []
+    for msg in messages[-6:]:  # Last 6 messages for context
+        conversation_history.append({
+            'role': msg.role,
+            'content': msg.content
+        })
+    
     # Get agent response
-    print(f"🔵 REGULAR API: Starting agent processing...")
+    print(f"🔵 REGULAR API: Starting agent processing with {len(conversation_history)} context messages...")
     try:
         print(f"🔵 REGULAR API: Using simple agent service...")
         agent = get_simple_agent_service()
         print(f"🔵 REGULAR API: Agent type: {type(agent)}")
         
         # Call agent directly without timeout complexity
-        print(f"🔵 REGULAR API: Calling agent.process_query...")
-        agent_response = agent.process_query(request.content)
+        print(f"🔵 REGULAR API: Calling agent.process_query with conversation history...")
+        agent_response = agent.process_query(request.content, conversation_history)
         print(f"🔵 REGULAR API: Agent returned response of length {len(str(agent_response))}")
         
     except asyncio.TimeoutError:
