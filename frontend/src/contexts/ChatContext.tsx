@@ -119,7 +119,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       const thinkingMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: 'Retrieving DSM-5-TR criteria and analyzing...',
+        content: 'Retrieving psychiatry resources (e.g., DSM5-TR) and analyzing...',
         created_at: new Date().toISOString(),
         thinking: true
       }

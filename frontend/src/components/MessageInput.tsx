@@ -25,35 +25,39 @@ export default function MessageInput({ onSendMessage, loading, disabled }: Messa
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t walnut-card border-amber-600/30">
-      <div className="flex space-x-2">
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Describe the patient's symptoms or ask a clinical question..."
-          className="flex-1 px-3 py-2 bg-white text-black border border-amber-600/30 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none font-['Exo_2']"
-          rows={2}
-          disabled={loading || disabled}
-        />
-        <button
-          type="submit"
-          disabled={loading || disabled || !message.trim()}
-          className="sci-fi-button px-6 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {loading ? (
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-              <span>Send</span>
-            </div>
-          ) : (
-            'Send'
-          )}
-        </button>
+    <div className="bg-white border-t border-gray-200">
+      <div className="max-w-4xl mx-auto">
+        <form onSubmit={handleSubmit} className="p-4">
+          <div className="flex space-x-3">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Describe the patient's symptoms or ask a clinical question..."
+              className="flex-1 px-4 py-3 bg-gray-50 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-colors"
+              rows={2}
+              disabled={loading || disabled}
+            />
+            <button
+              type="submit"
+              disabled={loading || disabled || !message.trim()}
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            >
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                  <span>Send</span>
+                </div>
+              ) : (
+                'Send'
+              )}
+            </button>
+          </div>
+          <div className="mt-2 text-xs text-gray-500">
+            Press Enter to send, Shift+Enter for new line
+          </div>
+        </form>
       </div>
-      <div className="mt-2 text-xs text-amber-400 font-['Exo_2']">
-        Press Enter to send, Shift+Enter for new line
-      </div>
-    </form>
+    </div>
   )
 }

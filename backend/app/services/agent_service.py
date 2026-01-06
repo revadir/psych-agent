@@ -67,18 +67,19 @@ class AgentService:
         self.template = """You are a DSM-5-TR Clinical Reference Assistant. 
 
 CRITICAL INSTRUCTIONS:
-1. ONLY provide information about the SPECIFIC disorder mentioned in the query
-2. Use ONLY the context provided below
-3. If asked about a specific disorder, IGNORE any information about other disorders in the context
-4. Provide COMPLETE diagnostic criteria exactly as written
-5. Format response as: **[ICD Code] [Disorder Name]** followed by **Diagnostic Criteria** and numbered list
+1. Always start your response with a friendly greeting and acknowledgment of the query
+2. ONLY provide information about the SPECIFIC disorder mentioned in the query
+3. Use ONLY the context provided below
+4. If asked about a specific disorder, IGNORE any information about other disorders in the context
+5. Provide COMPLETE diagnostic criteria exactly as written
+6. Format response as: Friendly greeting, then **[ICD Code] [Disorder Name]** followed by **Diagnostic Criteria** and numbered list
 
 CONTEXT FROM DSM-5-TR:
 {context}
 
 QUERY: {question}
 
-RESPONSE (only about the requested disorder):"""
+RESPONSE (start with friendly greeting, then only about the requested disorder):"""
 
         self.prompt = ChatPromptTemplate.from_template(self.template)
         
@@ -141,7 +142,9 @@ RESPONSE (only about the requested disorder):"""
                 logger.info("🟡 AGENT: Detected BPD query, using direct criteria")
                 
                 # Return the exact DSM-5-TR criteria
-                response = """**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**
+                response = """Hello! I'd be happy to help you with information about Borderline Personality Disorder. Here are the complete diagnostic criteria from the DSM-5-TR:
+
+**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**
 
 A pervasive pattern of instability of interpersonal relationships, self-image, and affects, and marked impulsivity, beginning by early adulthood and present in a variety of contexts, as indicated by five (or more) of the following:
 

@@ -39,13 +39,12 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   return (
     <div 
       ref={containerRef}
-      className="flex-1 overflow-y-auto p-4 space-y-4"
+      className="flex-1 overflow-y-auto bg-gray-50"
       style={{ 
         maxHeight: 'calc(100vh - 180px)',
-        paddingTop: '1rem',
-        paddingBottom: '1rem'
       }}
     >
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
       {messages.map(message => (
         <MessageBubble key={message.id} message={message} />
       ))}
@@ -60,6 +59,7 @@ export default function MessageList({ messages, loading }: MessageListProps) {
         </div>
       )}
       <div ref={messagesEndRef} />
+      </div>
     </div>
   )
 }
@@ -127,11 +127,11 @@ function MessageBubble({ message }: MessageBubbleProps) {
         {/* Regular message content */}
         {!message.thinking && (
           <>
-            <div className="text-sm leading-relaxed font-['Exo_2']">
+            <div className="text-base leading-relaxed">
               {isUser ? (
                 <div className="whitespace-pre-wrap">{message.content}</div>
               ) : (
-                <div className="prose prose-sm max-w-none prose-invert prose-headings:text-amber-300 prose-strong:text-amber-200">
+                <div className="prose prose-base max-w-none prose-headings:text-slate-800 prose-strong:text-slate-700">
                   <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
               )}
@@ -165,65 +165,92 @@ function MessageBubble({ message }: MessageBubbleProps) {
                       {/* Citation Header */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <div className="flex items-center mb-2">
-                            <span className="text-xs font-bold text-blue-800 bg-blue-200 px-2 py-1 rounded-full mr-2">
-                              [{citationId}]
-                            </span>
-                            <span className="text-sm font-semibold text-gray-800">
-                              {citation.document || 'DSM-5-TR'}
-                            </span>
+                          <div className="flex items-center mb-3">
+                            <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white text-xs font-bold rounded-full mr-3 shadow-sm">
+                              {citationId}
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
+                              </svg>
+                              <h4 className="text-base font-bold text-gray-900 tracking-tight">
+                                {citation.document || 'DSM-5-TR'}
+                              </h4>
+                            </div>
                           </div>
                           
                           {/* Structured metadata */}
-                          <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
+                          <div className="flex flex-wrap gap-2 mb-2">
                             {citation.chapter && (
-                              <div><span className="font-medium">Chapter:</span> {citation.chapter}</div>
+                              <div className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full border border-purple-200">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {citation.chapter}
+                              </div>
                             )}
                             {citation.section && (
-                              <div><span className="font-medium">Section:</span> {citation.section}</div>
+                              <div className="inline-flex items-center px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-full border border-emerald-200">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd"/>
+                                </svg>
+                                {citation.section}
+                              </div>
                             )}
                             {citation.icd_code && (
-                              <div><span className="font-medium">ICD-10:</span> {citation.icd_code}</div>
+                              <div className="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs font-medium rounded-full border border-amber-200">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd"/>
+                                </svg>
+                                {citation.icd_code}
+                              </div>
                             )}
                             {citation.page && (
-                              <div><span className="font-medium">Page:</span> {citation.page}</div>
+                              <div className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-full border border-slate-200">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
+                                </svg>
+                                Page {citation.page}
+                              </div>
                             )}
                           </div>
                         </div>
                         
-                        {hasMore && (
-                          <button
-                            onClick={() => {
-                              console.log('Toggling citation:', citationId, 'Current expanded:', expandedCitations);
-                              toggleCitation(citationId);
-                            }}
-                            className="text-xs text-blue-700 hover:text-blue-900 font-medium flex items-center bg-white px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors"
-                          >
-                            {isExpanded ? (
-                              <>
-                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                                </svg>
-                                Show Less
-                              </>
-                            ) : (
-                              <>
-                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                                Show More
-                              </>
-                            )}
-                          </button>
-                        )}
+                        <button
+                          onClick={() => {
+                            console.log('Toggling citation:', citationId, 'Current expanded:', expandedCitations);
+                            toggleCitation(citationId);
+                          }}
+                          className="text-xs text-blue-700 hover:text-blue-900 font-medium flex items-center bg-white px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors"
+                        >
+                          {isExpanded ? (
+                            <>
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                              </svg>
+                              Collapse
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
+                              Expand
+                            </>
+                          )}
+                        </button>
                       </div>
                       
-                      {/* Citation Content */}
-                      <div className="bg-white p-3 rounded border border-gray-200">
-                        <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-wrap">
-                          {isExpanded ? fullContent : previewContent}
+                      {/* Citation Content - Only show when expanded */}
+                      {isExpanded && (
+                        <div className="bg-white p-3 rounded border border-gray-200">
+                          <div className="prose prose-xs max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-p:text-gray-800 prose-li:text-gray-800">
+                            <ReactMarkdown>
+                              {(fullContent || previewContent)?.replace(/\n/g, '\n\n')}
+                            </ReactMarkdown>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   );
                 })}
