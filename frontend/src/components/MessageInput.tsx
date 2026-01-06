@@ -45,8 +45,12 @@ export default function MessageInput({ onSendMessage, loading, disabled }: Messa
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                  <span>Send</span>
+                  <div className="flex space-x-1">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  </div>
+                  <span>Sending...</span>
                 </div>
               ) : (
                 'Send'

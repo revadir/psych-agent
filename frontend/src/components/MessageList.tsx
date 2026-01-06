@@ -28,13 +28,28 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     scrollToBottom()
   }, [messages, loading])
 
-  // Additional effect to scroll during streaming
+  // Additional effect to scroll during streaming - more aggressive
   useEffect(() => {
     const hasStreamingMessage = messages.some(msg => msg.streaming)
     if (hasStreamingMessage) {
-      scrollToBottom()
+      // Scroll immediately and repeatedly during streaming
+      const scrollInterval = setInterval(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 500)
+      
+      return () => clearInterval(scrollInterval)
     }
   }, [messages])
+
+  // Scroll when message content changes (for streaming updates)
+  useEffect(() => {
+    const streamingMessage = messages.find(msg => msg.streaming)
+    if (streamingMessage) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+  }, [messages.map(m => m.content).join('')])
 
   return (
     <div 
@@ -48,12 +63,25 @@ export default function MessageList({ messages, loading }: MessageListProps) {
       {messages.map(message => (
         <MessageBubble key={message.id} message={message} />
       ))}
-      {loading && (
+      {(loading || messages.some(msg => msg.thinking)) && (
         <div className="flex justify-start">
-          <div className="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg">
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-              <span>Analyzing...</span>
+          <div className="bg-white border border-gray-200 shadow-sm px-4 py-3 rounded-lg">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full">
+                <svg className="w-4 h-4 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                </div>
+                <span className="text-sm text-gray-600 mt-1">
+                  {messages.find(msg => msg.thinking)?.content || loading ? 'Processing...' : ''}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -116,14 +144,6 @@ function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-white text-gray-900 border border-gray-200 shadow-sm'
         }`}
       >
-        {/* Thinking indicator */}
-        {message.thinking && (
-          <div className="flex items-center space-x-2 text-gray-600">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-            <span className="text-sm italic">{message.content || 'Thinking...'}</span>
-          </div>
-        )}
-        
         {/* Regular message content */}
         {!message.thinking && (
           <>
