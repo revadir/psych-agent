@@ -18,6 +18,10 @@ from app.api.admin import router as admin_router
 print("🟡 DEBUG: Admin router imported...")
 from app.api.chat import router as chat_router
 print("🟡 DEBUG: Chat router imported...")
+from app.api.feedback import router as feedback_router
+print("🟡 DEBUG: Feedback router imported...")
+from app.api.admin import router as admin_router_new
+print("🟡 DEBUG: New admin router imported...")
 
 # Configure logging
 logging.basicConfig(
@@ -45,6 +49,8 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
+app.include_router(feedback_router, prefix="/api")
+app.include_router(admin_router_new, prefix="/api")
 
 # Serve static files (frontend)
 static_dir = os.path.join(os.path.dirname(__file__), "static")

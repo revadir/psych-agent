@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Bool
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -43,6 +44,7 @@ class ChatSession(Base):
     # Relationships
     user = relationship("User", back_populates="chat_sessions")
     messages = relationship("Message", back_populates="session", cascade="all, delete-orphan")
+    feedback = relationship("Feedback", back_populates="session", cascade="all, delete-orphan")
 
 
 class Message(Base):
@@ -57,3 +59,35 @@ class Message(Base):
 
     # Relationships
     session = relationship("ChatSession", back_populates="messages")
+
+
+class Feedback(Base):
+    __tablename__ = "feedback"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, ForeignKey("chat_sessions.id"), nullable=False)
+    message_id = Column(Integer, ForeignKey("messages.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # The original question/query
+    question = Column(Text, nullable=False)
+    
+    # The AI response that was rated
+    response = Column(Text, nullable=False)
+    
+    # Rating: 'up', 'down', or null if only text feedback
+    rating = Column(String(10), nullable=True)
+    
+    # Optional text feedback from user
+    text_feedback = Column(Text, nullable=True)
+    
+    # Metadata for analysis
+    model_used = Column(String(100), nullable=True)
+    response_time_ms = Column(Integer, nullable=True)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    session = relationship("ChatSession", back_populates="feedback")
+    message = relationship("Message")
+    user = relationship("User")

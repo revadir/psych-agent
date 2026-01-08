@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
+// Extend window interface for scroll function
+declare global {
+  interface Window {
+    scrollToBottom?: () => void
+  }
+}
+
 interface Message {
   id: number
   role: string
@@ -16,40 +23,39 @@ interface MessageListProps {
 export default function MessageList({ messages, loading }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const responseStartRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    // Use setTimeout to ensure DOM is updated before scrolling
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
-  }
-
+  // Scroll to response start when response is complete
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, loading])
-
-  // Additional effect to scroll during streaming - more aggressive
-  useEffect(() => {
-    const hasStreamingMessage = messages.some(msg => msg.streaming)
-    if (hasStreamingMessage) {
-      // Scroll immediately and repeatedly during streaming
-      const scrollInterval = setInterval(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 500)
-      
-      return () => clearInterval(scrollInterval)
+    const completedResponse = messages.find(msg => msg.role === 'assistant' && !msg.streaming && !msg.thinking)
+    if (completedResponse && responseStartRef.current) {
+      setTimeout(() => {
+        responseStartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
     }
-  }, [messages])
+  }, [messages.find(msg => msg.role === 'assistant' && !msg.streaming && !msg.thinking)])
 
-  // Scroll when message content changes (for streaming updates)
+  // Scroll to show new messages and progress indicator
   useEffect(() => {
-    const streamingMessage = messages.find(msg => msg.streaming)
-    if (streamingMessage) {
+    const hasThinkingOrStreaming = messages.some(msg => msg.thinking || msg.streaming)
+    if (hasThinkingOrStreaming) {
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     }
-  }, [messages.map(m => m.content).join('')])
+  }, [messages.length, messages.some(msg => msg.thinking || msg.streaming)])
+
+  // Expose scroll to bottom function for external use
+  useEffect(() => {
+    window.scrollToBottom = () => {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+    return () => {
+      delete window.scrollToBottom
+    }
+  }, [])
 
   return (
     <div 
@@ -61,25 +67,25 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     >
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
       {messages.map(message => (
-        <MessageBubble key={message.id} message={message} />
+        <MessageBubble key={message.id} message={message} responseStartRef={responseStartRef} />
       ))}
       {(loading || messages.some(msg => msg.thinking)) && (
         <div className="flex justify-start">
           <div className="bg-white border border-gray-200 shadow-sm px-4 py-3 rounded-lg">
             <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full">
+              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full">
                 <svg className="w-4 h-4 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
                 </svg>
               </div>
               <div className="flex flex-col">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                 </div>
                 <span className="text-sm text-gray-600 mt-1">
-                  {messages.find(msg => msg.thinking)?.content || loading ? 'Processing...' : ''}
+                  {messages.find(msg => msg.thinking)?.content || 'Processing...'}
                 </span>
               </div>
             </div>
@@ -99,13 +105,17 @@ interface MessageBubbleProps {
     citations?: any[]
     error?: boolean
   }
+  responseStartRef: React.RefObject<HTMLDivElement>
 }
 
-function MessageBubble({ message }: MessageBubbleProps) {
+function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set())
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const [textFeedback, setTextFeedback] = useState('')
+  const [submittingFeedback, setSubmittingFeedback] = useState(false)
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content)
@@ -113,52 +123,94 @@ function MessageBubble({ message }: MessageBubbleProps) {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleFeedback = (type: 'up' | 'down') => {
+  const handleFeedback = async (type: 'up' | 'down') => {
     setFeedback(type)
-    // TODO: Send feedback to backend
+    setSubmittingFeedback(true)
+    
+    try {
+      const token = localStorage.getItem('token')
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message_id: message.id,
+          rating: type
+        })
+      })
+    } catch (error) {
+      console.error('Failed to submit feedback:', error)
+    } finally {
+      setSubmittingFeedback(false)
+    }
+  }
+
+  const handleTextFeedback = async () => {
+    if (!textFeedback.trim()) return
+    
+    setSubmittingFeedback(true)
+    try {
+      const token = localStorage.getItem('token')
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message_id: message.id,
+          rating: feedback,
+          text_feedback: textFeedback
+        })
+      })
+      setShowFeedbackForm(false)
+      setTextFeedback('')
+    } catch (error) {
+      console.error('Failed to submit text feedback:', error)
+    } finally {
+      setSubmittingFeedback(false)
+    }
   }
 
   const toggleCitation = (citationId: number) => {
-    console.log('toggleCitation called with ID:', citationId);
-    console.log('Current expandedCitations:', expandedCitations);
     const newExpanded = new Set(expandedCitations)
     if (newExpanded.has(citationId)) {
       newExpanded.delete(citationId)
-      console.log('Collapsing citation', citationId);
     } else {
       newExpanded.add(citationId)
-      console.log('Expanding citation', citationId);
     }
     setExpandedCitations(newExpanded)
-    console.log('New expandedCitations:', newExpanded);
   }
   
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`max-w-xs lg:max-w-2xl px-4 py-2 rounded-lg ${
-          isUser
-            ? 'bg-indigo-600 text-white'
-            : message.error
-            ? 'bg-red-50 text-red-900 border border-red-200'
-            : 'bg-white text-gray-900 border border-gray-200 shadow-sm'
-        }`}
-      >
+      {/* Don't render thinking messages as they're handled by the progress indicator */}
+      {!message.thinking && (
+        <div
+          ref={!isUser && (message.streaming || (!message.streaming && !message.thinking)) ? responseStartRef : undefined}
+          className={`max-w-xs lg:max-w-2xl px-4 py-2 rounded-lg ${
+            isUser
+              ? 'bg-indigo-600 text-white'
+              : message.error
+              ? 'bg-red-50 text-red-900 border border-red-200'
+              : 'bg-white text-gray-900 border border-gray-200 shadow-sm'
+          }`}
+        >
         {/* Regular message content */}
-        {!message.thinking && (
-          <>
-            <div className="text-base leading-relaxed">
-              {isUser ? (
-                <div className="whitespace-pre-wrap">{message.content}</div>
-              ) : (
-                <div className="prose prose-base max-w-none prose-headings:text-slate-800 prose-strong:text-slate-700">
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
-                </div>
-              )}
-              {message.streaming && (
-                <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1"></span>
-              )}
+        <div className="text-base leading-relaxed">
+          {isUser ? (
+            <div className="whitespace-pre-wrap">{message.content}</div>
+          ) : (
+            <div className="prose prose-base max-w-none prose-headings:text-slate-800 prose-strong:text-slate-700">
+              <ReactMarkdown>{message.content}</ReactMarkdown>
             </div>
+          )}
+          {message.streaming && (
+            <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1"></span>
+          )}
+        </div>
             
             {/* Citations */}
             {message.citations && message.citations.length > 0 && (
@@ -170,15 +222,6 @@ function MessageBubble({ message }: MessageBubbleProps) {
                   const fullContent = citation.full_content || citation.content;
                   const previewContent = citation.preview || (citation.content?.length > 150 ? citation.content.substring(0, 150) + '...' : citation.content);
                   const hasMore = fullContent && fullContent.length > 150;
-                  
-                  console.log('Rendering citation:', {
-                    citationId,
-                    isExpanded,
-                    hasMore,
-                    fullContentLength: fullContent?.length,
-                    previewLength: previewContent?.length,
-                    citation
-                  });
                   
                   return (
                     <div key={`citation-${citationId}`} className="mb-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
@@ -226,7 +269,7 @@ function MessageBubble({ message }: MessageBubbleProps) {
                               </div>
                             )}
                             {citation.page && (
-                              <div className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-full border border-slate-200">
+                              <div className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full border border-gray-200">
                                 <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
                                 </svg>
@@ -236,77 +279,78 @@ function MessageBubble({ message }: MessageBubbleProps) {
                           </div>
                         </div>
                         
-                        <button
-                          onClick={() => {
-                            console.log('Toggling citation:', citationId, 'Current expanded:', expandedCitations);
-                            toggleCitation(citationId);
-                          }}
-                          className="text-xs text-blue-700 hover:text-blue-900 font-medium flex items-center bg-white px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors"
-                        >
-                          {isExpanded ? (
-                            <>
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                              </svg>
-                              Collapse
-                            </>
-                          ) : (
-                            <>
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                              Expand
-                            </>
-                          )}
-                        </button>
+                        {hasMore && (
+                          <button
+                            onClick={() => toggleCitation(citationId)}
+                            className="text-xs text-blue-700 hover:text-blue-900 font-medium flex items-center bg-white px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors"
+                          >
+                            {isExpanded ? (
+                              <>
+                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                </svg>
+                                Collapse
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                                Expand
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                       
-                      {/* Citation Content - Only show when expanded */}
-                      {isExpanded && (
-                        <div className="bg-white p-3 rounded border border-gray-200">
-                          <div className="prose prose-xs max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-p:text-gray-800 prose-li:text-gray-800">
-                            <ReactMarkdown>
-                              {(fullContent || previewContent)?.replace(/\n/g, '\n\n')}
-                            </ReactMarkdown>
-                          </div>
+                      {/* Citation Content */}
+                      <div className="bg-white p-3 rounded border border-gray-200">
+                        <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-wrap font-mono">
+                          {isExpanded ? fullContent : previewContent}
                         </div>
-                      )}
+                      </div>
                     </div>
                   );
                 })}
               </div>
             )}
             
-            {/* Disclaimer for assistant messages */}
-            {!isUser && !message.thinking && !message.streaming && (
-              <div className="mt-2 pt-2 border-t border-gray-200">
-                <p className="text-xs text-gray-500 italic">
-                  ⚠️ This is a clinical decision support tool and not a replacement for professional psychiatric evaluation.
-                </p>
-              </div>
-            )}
-
+            {/* Disclaimer for assistant messages - removed from here */}
+            
             {/* Message controls for assistant messages */}
-            {!isUser && !message.thinking && !message.streaming && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                <button
-                  onClick={handleCopy}
-                  className="flex items-center space-x-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  <span>{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
-                
-                <div className="flex items-center space-x-2">
+            {!isUser && !message.streaming && (
+              <div className="flex items-center justify-end mt-2 pt-2 border-t border-gray-100">
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={handleCopy}
+                    className={`p-1 transition-colors rounded relative ${
+                      copied ? 'text-green-600 bg-green-50' : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                    title={copied ? 'Copied!' : 'Copy'}
+                  >
+                    {copied ? (
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                    {copied && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        Response copied!
+                      </div>
+                    )}
+                  </button>
                   <button
                     onClick={() => handleFeedback('up')}
+                    disabled={submittingFeedback}
                     className={`p-1 rounded transition-colors ${
                       feedback === 'up' 
                         ? 'text-green-600 bg-green-50' 
                         : 'text-gray-400 hover:text-green-600'
-                    }`}
+                    } ${submittingFeedback ? 'opacity-50' : ''}`}
                   >
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
@@ -314,26 +358,71 @@ function MessageBubble({ message }: MessageBubbleProps) {
                   </button>
                   <button
                     onClick={() => handleFeedback('down')}
+                    disabled={submittingFeedback}
                     className={`p-1 rounded transition-colors ${
                       feedback === 'down' 
                         ? 'text-red-600 bg-red-50' 
                         : 'text-gray-400 hover:text-red-600'
-                    }`}
+                    } ${submittingFeedback ? 'opacity-50' : ''}`}
                   >
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.106-1.79l-.05-.025A4 4 0 0011.057 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
                     </svg>
                   </button>
+                  <button
+                    onClick={() => setShowFeedbackForm(!showFeedbackForm)}
+                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors rounded"
+                    title="Feedback"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             )}
-          </>
-        )}
-        
-        <div className={`text-xs mt-1 ${isUser ? 'text-indigo-200' : 'text-gray-500'}`}>
-          {new Date(message.created_at).toLocaleTimeString()}
+            
+            {/* Text Feedback Form */}
+            {!isUser && !message.streaming && showFeedbackForm && (
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
+                  Additional feedback (optional):
+                </label>
+                <textarea
+                  value={textFeedback}
+                  onChange={(e) => setTextFeedback(e.target.value)}
+                  placeholder="Help us improve by sharing specific feedback about this response..."
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+                <div className="flex justify-end space-x-2 mt-2">
+                  <button
+                    onClick={() => {
+                      setShowFeedbackForm(false)
+                      setTextFeedback('')
+                    }}
+                    className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleTextFeedback}
+                    disabled={submittingFeedback || !textFeedback.trim()}
+                    className="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {submittingFeedback ? 'Submitting...' : 'Submit'}
+                  </button>
+                </div>
+              </div>
+            )}
+          {/* Timestamp - only show when not streaming */}
+          {!message.streaming && (
+            <div className={`text-xs mt-1 ${isUser ? 'text-indigo-200' : 'text-gray-500'}`}>
+              {new Date(message.created_at).toLocaleTimeString()}
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   )
 }

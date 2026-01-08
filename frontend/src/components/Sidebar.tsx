@@ -70,16 +70,6 @@ export default function Sidebar() {
           </div>
         )}
       </div>
-      
-      <div className="p-4 border-t border-gray-200 text-xs text-gray-500">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-          <p className="font-medium text-yellow-800">Clinical Disclaimer</p>
-          <p className="mt-1 text-yellow-700">
-            This tool provides clinical decision support and is not a replacement 
-            for professional psychiatric evaluation.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
