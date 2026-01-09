@@ -367,7 +367,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                                       </span>
                                     </div>
                                   )}
-                                  {citation.page && citation.page !== 'Unknown' && (
+                                  {citation.page && citation.page !== 'Unknown' && citation.page !== null && (
                                     <div className="inline-flex items-center px-2 py-1 text-xs bg-amber-50 border border-amber-200 rounded">
                                       <svg className="w-3 h-3 text-amber-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>

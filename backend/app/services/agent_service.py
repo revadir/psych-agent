@@ -181,6 +181,54 @@ RESPONSE:"""
         logger.info(f"🟡 FILTER: Filtered from {len(docs)} to {len(filtered_docs)} documents")
         return filtered_docs[:5] if filtered_docs else docs[:3]
 
+    def _create_contextual_preview(self, content: str, disorder_name: str, section_type: str) -> str:
+        """Create a contextual preview that provides better understanding of the citation content."""
+        # Parse structured content to get clean text
+        clean_content = content
+        if content.startswith('DOCUMENT:'):
+            parts = content.split(';')
+            text_part = next((p for p in parts if p.strip().startswith('TEXT:')), None)
+            criteria_part = next((p for p in parts if p.strip().startswith('CRITERIA:')), None)
+            if text_part:
+                clean_content = text_part.replace('TEXT:', '').strip()
+            elif criteria_part:
+                clean_content = criteria_part.replace('CRITERIA:', '').strip()
+        
+        # Find a good starting point for the preview
+        sentences = clean_content.split('. ')
+        
+        # Look for sentences that start with context-providing words
+        good_starts = []
+        for i, sentence in enumerate(sentences):
+            sentence_lower = sentence.lower().strip()
+            # Look for sentences that provide good context
+            if any(starter in sentence_lower for starter in [
+                'diagnostic criteria', 'the essential', 'characterized by', 
+                'symptoms include', 'must be present', 'requires', 
+                'differential diagnosis', 'prevalence', 'development'
+            ]):
+                good_starts.append(i)
+        
+        # Use the first good starting point, or start from beginning
+        start_idx = good_starts[0] if good_starts else 0
+        
+        # Create preview with context
+        preview_sentences = sentences[start_idx:start_idx + 3]  # Take 3 sentences for context
+        preview = '. '.join(preview_sentences)
+        
+        # Add section context if available
+        if section_type and section_type != 'General':
+            preview = f"[{section_type}] {preview}"
+        
+        # Ensure reasonable length (400-500 chars for better context)
+        if len(preview) > 500:
+            preview = preview[:497] + "..."
+        elif len(preview) < 100 and len(clean_content) > len(preview):
+            # If preview is too short, extend it
+            preview = clean_content[:400] + "..." if len(clean_content) > 400 else clean_content
+        
+        return preview
+
     def process_query(self, query: str, conversation_history: list = None) -> Dict[str, Any]:
         """
         Process a patient query and return structured response.
@@ -308,6 +356,7 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
                 section_type = metadata.get('section_type', 'General')
                 chunk_type = metadata.get('chunk_type', 'unknown')
                 hierarchy_path = metadata.get('hierarchy_path', f'DSM-5-TR > {disorder_name}')
+                page_number = metadata.get('page', None)
                 
                 # Parse structured content to extract disorder info
                 if content.startswith('DOCUMENT:'):
@@ -350,11 +399,11 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
                     "section_type": section_type,
                     "chunk_type": chunk_type,
                     "hierarchy_path": hierarchy_path,
-                    "page": metadata.get('page', 'Unknown'),
+                    "page": page_number,
                     "content": f"Diagnostic criteria for {disorder_name}",
                     "full_content": content,
                     "source": "DSM-5-TR",
-                    "preview": preview,
+                    "preview": self._create_contextual_preview(content, disorder_name, section_type),
                     # Add parent-child context
                     "parent_context": hierarchy_path.split(' > ')[:-1] if ' > ' in hierarchy_path else [],
                     "child_context": section_type if chunk_type == 'child' else None
