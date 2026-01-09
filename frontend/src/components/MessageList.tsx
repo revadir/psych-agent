@@ -204,7 +204,68 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
             <div className="whitespace-pre-wrap">{message.content}</div>
           ) : (
             <div className="prose prose-base max-w-none prose-headings:text-slate-800 prose-strong:text-slate-700">
-              <ReactMarkdown>{message.content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  // Custom renderer for inline citations
+                  p: ({ children }) => {
+                    if (typeof children === 'string') {
+                      // Convert ^1, ^2, etc. to superscript citation links
+                      const parts = children.split(/\^(\d+)/g)
+                      return (
+                        <p>
+                          {parts.map((part, index) => {
+                            if (index % 2 === 1) {
+                              // This is a citation number
+                              const citationNum = parseInt(part)
+                              return (
+                                <sup key={index}>
+                                  <button
+                                    onClick={() => toggleCitation(citationNum)}
+                                    className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+                                  >
+                                    [{citationNum}]
+                                  </button>
+                                </sup>
+                              )
+                            }
+                            return part
+                          })}
+                        </p>
+                      )
+                    }
+                    return <p>{children}</p>
+                  },
+                  // Handle other elements that might contain citations
+                  text: ({ children }) => {
+                    if (typeof children === 'string' && children.includes('^')) {
+                      const parts = children.split(/\^(\d+)/g)
+                      return (
+                        <>
+                          {parts.map((part, index) => {
+                            if (index % 2 === 1) {
+                              const citationNum = parseInt(part)
+                              return (
+                                <sup key={index}>
+                                  <button
+                                    onClick={() => toggleCitation(citationNum)}
+                                    className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+                                  >
+                                    [{citationNum}]
+                                  </button>
+                                </sup>
+                              )
+                            }
+                            return part
+                          })}
+                        </>
+                      )
+                    }
+                    return children
+                  }
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
             </div>
           )}
           {message.streaming && (
@@ -214,104 +275,158 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
             
             {/* Citations */}
             {message.citations && message.citations.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <p className="text-xs font-medium text-gray-600 mb-2">DSM-5-TR References:</p>
-                {message.citations.map((citation: any, index: number) => {
-                  const citationId = citation.id || index + 1;
-                  const isExpanded = expandedCitations.has(citationId);
-                  const fullContent = citation.full_content || citation.content;
-                  const previewContent = citation.preview || (citation.content?.length > 150 ? citation.content.substring(0, 150) + '...' : citation.content);
-                  const hasMore = fullContent && fullContent.length > 150;
-                  
-                  return (
-                    <div key={`citation-${citationId}`} className="mb-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                      {/* Citation Header */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center mb-3">
-                            <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white text-xs font-bold rounded-full mr-3 shadow-sm">
-                              {citationId}
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <div className="flex items-center mb-3">
+                  <svg className="w-4 h-4 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-700">Sources</span>
+                </div>
+                <div className="space-y-3">
+                  {message.citations.map((citation: any, index: number) => {
+                    const citationId = citation.id || index + 1;
+                    const isExpanded = expandedCitations.has(citationId);
+                    const fullContent = citation.full_content || citation.content;
+                    const previewContent = citation.preview || (citation.content?.length > 200 ? citation.content.substring(0, 200) + '...' : citation.content);
+                    const hasMore = fullContent && fullContent.length > 200;
+                    
+                    return (
+                      <div key={`citation-${citationId}`} className="border border-gray-200 rounded-lg bg-gray-50">
+                        {/* Citation Header */}
+                        <div className="px-4 py-3 border-b border-gray-200 bg-white rounded-t-lg">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start space-x-3">
+                              <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium text-gray-600 bg-gray-100 rounded-full border border-gray-300">
+                                {citationId}
+                              </span>
+                              <div className="flex-1">
+                                {/* Source Document */}
+                                <div className="flex items-center mb-2">
+                                  <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
+                                  </svg>
+                                  <span className="text-sm font-medium text-gray-900">
+                                    Diagnostic and Statistical Manual (DSM-5-TR)
+                                  </span>
+                                </div>
+                                
+                                {/* Hierarchical path with clear labels */}
+                                {citation.hierarchy_path && (
+                                  <div className="mb-3">
+                                    {citation.hierarchy_path.split(' > ').map((part, index, array) => {
+                                      if (index === 0) return null; // Skip "DSM-5-TR" as it's shown above
+                                      const isLast = index === array.length - 1;
+                                      return (
+                                        <div key={index} className="flex items-center text-xs text-gray-600 mb-1">
+                                          <div className="flex items-center">
+                                            {index === 1 && (
+                                              <>
+                                                <svg className="w-3 h-3 text-green-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd"/>
+                                                </svg>
+                                                <span className="font-medium text-green-700">Mental Health Condition:</span>
+                                              </>
+                                            )}
+                                            {index === 2 && (
+                                              <>
+                                                <svg className="w-3 h-3 text-purple-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                                                </svg>
+                                                <span className="font-medium text-purple-700">Section:</span>
+                                              </>
+                                            )}
+                                            <span className={`ml-1 ${isLast ? 'font-medium text-gray-800' : 'text-gray-600'}`}>
+                                              {part}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                                
+                                {/* Metadata badges with clear labels */}
+                                <div className="flex flex-wrap gap-2">
+                                  {citation.icd_code && (
+                                    <div className="inline-flex items-center px-2 py-1 text-xs bg-blue-50 border border-blue-200 rounded">
+                                      <svg className="w-3 h-3 text-blue-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"/>
+                                      </svg>
+                                      <span className="font-medium text-blue-700">Diagnostic Code (ICD-10-CM):</span>
+                                      <span className="ml-1 text-blue-800">{citation.icd_code}</span>
+                                    </div>
+                                  )}
+                                  {citation.chunk_type && (
+                                    <div className="inline-flex items-center px-2 py-1 text-xs bg-gray-50 border border-gray-200 rounded">
+                                      <svg className="w-3 h-3 text-gray-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                                      </svg>
+                                      <span className="font-medium text-gray-700">Content Type:</span>
+                                      <span className="ml-1 text-gray-800">
+                                        {citation.chunk_type === 'parent' ? 'Complete Entry' : 'Specific Section'}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {citation.page && citation.page !== 'Unknown' && (
+                                    <div className="inline-flex items-center px-2 py-1 text-xs bg-amber-50 border border-amber-200 rounded">
+                                      <svg className="w-3 h-3 text-amber-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
+                                      </svg>
+                                      <span className="font-medium text-amber-700">Page:</span>
+                                      <span className="ml-1 text-amber-800">{citation.page}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
-                              </svg>
-                              <h4 className="text-base font-bold text-gray-900 tracking-tight">
-                                {citation.document || 'DSM-5-TR'}
-                              </h4>
-                            </div>
-                          </div>
-                          
-                          {/* Structured metadata */}
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {citation.chapter && (
-                              <div className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full border border-purple-200">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {citation.chapter}
-                              </div>
-                            )}
-                            {citation.section && (
-                              <div className="inline-flex items-center px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-full border border-emerald-200">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd"/>
-                                </svg>
-                                {citation.section}
-                              </div>
-                            )}
-                            {citation.icd_code && (
-                              <div className="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs font-medium rounded-full border border-amber-200">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd"/>
-                                </svg>
-                                {citation.icd_code}
-                              </div>
-                            )}
-                            {citation.page && (
-                              <div className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full border border-gray-200">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd"/>
-                                </svg>
-                                Page {citation.page}
-                              </div>
+                            
+                            {hasMore && (
+                              <button
+                                onClick={() => toggleCitation(citationId)}
+                                className="text-xs text-gray-500 hover:text-gray-700 font-medium flex items-center px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                              >
+                                {isExpanded ? (
+                                  <>
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                    </svg>
+                                    Collapse
+                                  </>
+                                ) : (
+                                  <>
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                    Expand
+                                  </>
+                                )}
+                              </button>
                             )}
                           </div>
                         </div>
                         
-                        {hasMore && (
-                          <button
-                            onClick={() => toggleCitation(citationId)}
-                            className="text-xs text-blue-700 hover:text-blue-900 font-medium flex items-center bg-white px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors"
-                          >
-                            {isExpanded ? (
-                              <>
-                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                                </svg>
-                                Collapse
-                              </>
-                            ) : (
-                              <>
-                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                                Expand
-                              </>
-                            )}
-                          </button>
-                        )}
-                      </div>
-                      
-                      {/* Citation Content */}
-                      <div className="bg-white p-3 rounded border border-gray-200">
-                        <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-wrap font-mono">
-                          {isExpanded ? fullContent : previewContent}
+                        {/* Citation Content */}
+                        <div className="px-4 py-3">
+                          <div className="text-sm text-gray-700 leading-relaxed">
+                            {(() => {
+                              const content = isExpanded ? fullContent : previewContent;
+                              // Parse structured content if it starts with DOCUMENT:
+                              if (content.startsWith('DOCUMENT:')) {
+                                const parts = content.split(';');
+                                const textPart = parts.find(p => p.trim().startsWith('TEXT:'));
+                                const criteriaPart = parts.find(p => p.trim().startsWith('CRITERIA:'));
+                                const actualContent = textPart ? textPart.replace('TEXT:', '').trim() : 
+                                                    criteriaPart ? criteriaPart.replace('CRITERIA:', '').trim() : content;
+                                return actualContent;
+                              }
+                              return content;
+                            })()}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
             

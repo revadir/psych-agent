@@ -200,7 +200,7 @@ RESPONSE:"""
                 logger.info("🟡 AGENT: Detected BPD query, using direct criteria")
                 
                 # Return the exact DSM-5-TR criteria with natural language
-                response = """**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**
+                response = """**Borderline Personality Disorder (F60.3) - DSM-5-TR Diagnostic Criteria**^1
 
 A pervasive pattern of instability of interpersonal relationships, self-image, and affects, and marked impulsivity, beginning by early adulthood and present in a variety of contexts, as indicated by five (or more) of the following:
 
@@ -220,9 +220,7 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
 
 8. Inappropriate, intense anger or difficulty controlling anger (e.g., frequent displays of temper, constant anger, recurrent physical fights).
 
-9. Transient, stress-related paranoid ideation or severe dissociative symptoms.
-
-**Source:** DSM-5-TR, Page 753"""
+9. Transient, stress-related paranoid ideation or severe dissociative symptoms.^1"""
 
                 citations = [
                     {
@@ -296,39 +294,91 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
             logger.info(f"🟡 AGENT: LLM response generated, length: {len(response)}")
             logger.info(f"🟡 AGENT: Response preview: {response[:200]}...")
             
-            # Format citations from filtered documents with structured metadata
+            # Format citations from filtered documents with hierarchical metadata
             citations = []
             for i, doc in enumerate(filtered_docs, 1):
-                # Extract metadata from document content if available
+                # Extract hierarchical metadata from document
+                metadata = doc.metadata
                 content = doc.page_content
-                preview = content[:150] + "..." if len(content) > 150 else content
+                preview = content[:200] + "..." if len(content) > 200 else content
                 
-                # Try to extract disorder name and ICD code from content
-                disorder_name = "Unknown Disorder"
-                icd_code = ""
+                # Extract disorder info from metadata or content
+                disorder_name = metadata.get('disorder_name', 'Unknown Disorder')
+                icd_code = metadata.get('icd_code', '')
+                section_type = metadata.get('section_type', 'General')
+                chunk_type = metadata.get('chunk_type', 'unknown')
+                hierarchy_path = metadata.get('hierarchy_path', f'DSM-5-TR > {disorder_name}')
                 
-                if "borderline personality disorder" in content.lower():
-                    disorder_name = "Borderline Personality Disorder"
-                    icd_code = "F60.3"
-                elif "intermittent explosive disorder" in content.lower():
-                    disorder_name = "Intermittent Explosive Disorder" 
-                    icd_code = "F63.81"
-                elif "major depressive disorder" in content.lower():
-                    disorder_name = "Major Depressive Disorder"
-                    icd_code = "F32.9"
+                # Parse structured content to extract disorder info
+                if content.startswith('DOCUMENT:'):
+                    parts = content.split(';')
+                    for part in parts:
+                        part = part.strip()
+                        if part.startswith('DISORDER:'):
+                            disorder_name = part.replace('DISORDER:', '').strip()
+                        elif part.startswith('SECTION:'):
+                            section_type = part.replace('SECTION:', '').strip()
                 
+                # Fallback extraction if still missing
+                if disorder_name == 'Unknown Disorder':
+                    if "borderline personality disorder" in content.lower():
+                        disorder_name = "Borderline Personality Disorder"
+                        icd_code = "F60.3"
+                    elif "major depressive disorder" in content.lower():
+                        disorder_name = "Major Depressive Disorder"
+                        icd_code = "F32.9"
+                    elif "intermittent explosive disorder" in content.lower():
+                        disorder_name = "Intermittent Explosive Disorder" 
+                        icd_code = "F63.81"
+                    elif "ptsd" in content.lower() or "posttraumatic stress" in content.lower():
+                        disorder_name = "Posttraumatic Stress Disorder"
+                        icd_code = "F43.10"
+                
+                # Build proper hierarchy path
+                if disorder_name != 'Unknown Disorder':
+                    if section_type and section_type != 'General':
+                        hierarchy_path = f"DSM-5-TR > {disorder_name} > {section_type}"
+                    else:
+                        hierarchy_path = f"DSM-5-TR > {disorder_name}"
+                
+                # Create hierarchical citation structure
                 citations.append({
                     "id": i,
                     "document": "DSM-5-TR",
-                    "chapter": "Diagnostic Criteria",
-                    "section": disorder_name,
+                    "disorder_name": disorder_name,
                     "icd_code": icd_code,
-                    "page": "Unknown",
+                    "section_type": section_type,
+                    "chunk_type": chunk_type,
+                    "hierarchy_path": hierarchy_path,
+                    "page": metadata.get('page', 'Unknown'),
                     "content": f"Diagnostic criteria for {disorder_name}",
                     "full_content": content,
                     "source": "DSM-5-TR",
-                    "preview": preview
+                    "preview": preview,
+                    # Add parent-child context
+                    "parent_context": hierarchy_path.split(' > ')[:-1] if ' > ' in hierarchy_path else [],
+                    "child_context": section_type if chunk_type == 'child' else None
                 })
+            
+            # Add inline citation markers to response (industry standard)
+            if citations:
+                # Add citation markers at the end of key statements
+                response_with_citations = response
+                # Simple approach: add citation markers after periods for key diagnostic information
+                import re
+                sentences = re.split(r'(?<=\.)\s+', response)
+                if len(sentences) > 1:
+                    # Add citation to first major sentence about criteria
+                    for i, sentence in enumerate(sentences):
+                        if any(word in sentence.lower() for word in ['criteria', 'disorder', 'diagnosis', 'symptoms']):
+                            sentences[i] = sentence.rstrip() + f"^{citations[0]['id']}"
+                            break
+                    response_with_citations = ' '.join(sentences)
+                else:
+                    # Single sentence or paragraph - add citation at end
+                    response_with_citations = response.rstrip() + f"^{citations[0]['id']}"
+                
+                response = response_with_citations
             
             logger.info(f"🟡 AGENT: Formatted {len(citations)} citations")
             
