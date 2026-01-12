@@ -4,6 +4,7 @@ Loads configuration from environment variables.
 """
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 from typing import List
 
 
@@ -33,7 +34,7 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.1
     
     # Groq API Key
-    groq_api_key: str = ""
+    groq_api_key: str = Field(default="", env="GROQ_API_KEY")
 
     # Embeddings
     embedding_model: str = "all-MiniLM-L6-v2"
