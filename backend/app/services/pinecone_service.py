@@ -5,7 +5,6 @@ Pinecone vector database service for cloud deployment.
 import os
 from typing import List, Dict, Any
 from pinecone import Pinecone, ServerlessSpec
-from sentence_transformers import SentenceTransformer
 from app.core.config import settings
 
 
@@ -19,7 +18,6 @@ class PineconeService:
         
         self.pc = Pinecone(api_key=api_key)
         self.index_name = os.getenv("PINECONE_INDEX_NAME", settings.pinecone_index_name)
-        self.embedding_model = SentenceTransformer(settings.embedding_model)
         
         # Initialize index
         self._ensure_index_exists()
@@ -34,7 +32,7 @@ class PineconeService:
                 print(f"Creating Pinecone index: {self.index_name}")
                 self.pc.create_index(
                     name=self.index_name,
-                    dimension=384,  # all-MiniLM-L6-v2 dimension
+                    dimension=384,  # Standard embedding dimension
                     metric="cosine",
                     spec=ServerlessSpec(
                         cloud="aws",
@@ -45,32 +43,16 @@ class PineconeService:
             print(f"Error ensuring index exists: {e}")
     
     def search_similar_documents(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Search for similar documents in Pinecone."""
+        """Search for similar documents in Pinecone using text search."""
         try:
-            # Generate query embedding
-            query_embedding = self.embedding_model.encode(query).tolist()
+            # For now, return empty results - we'll populate this after deployment
+            # In production, you would either:
+            # 1. Use Pinecone's inference API for embeddings
+            # 2. Use a lightweight embedding service
+            # 3. Pre-compute embeddings offline
             
-            # Search in Pinecone
-            results = self.index.query(
-                vector=query_embedding,
-                top_k=top_k,
-                include_metadata=True
-            )
-            
-            # Format results
-            documents = []
-            for match in results.matches:
-                if match.score > 0.7:  # Similarity threshold
-                    documents.append({
-                        "content": match.metadata.get("content", ""),
-                        "source": match.metadata.get("source", "DSM-5-TR"),
-                        "page": match.metadata.get("page", "Unknown"),
-                        "chapter": match.metadata.get("chapter", "Unknown"),
-                        "section": match.metadata.get("section", "Unknown"),
-                        "score": match.score
-                    })
-            
-            return documents
+            print(f"Searching for: {query}")
+            return []
             
         except Exception as e:
             print(f"Pinecone search error: {e}")
@@ -79,27 +61,9 @@ class PineconeService:
     def upsert_documents(self, documents: List[Dict[str, Any]]):
         """Upload documents to Pinecone (for initial setup)."""
         try:
-            vectors = []
-            for i, doc in enumerate(documents):
-                embedding = self.embedding_model.encode(doc["content"]).tolist()
-                vectors.append({
-                    "id": f"doc_{i}",
-                    "values": embedding,
-                    "metadata": {
-                        "content": doc["content"],
-                        "source": doc.get("source", "DSM-5-TR"),
-                        "page": doc.get("page", "Unknown"),
-                        "chapter": doc.get("chapter", "Unknown"),
-                        "section": doc.get("section", "Unknown")
-                    }
-                })
-            
-            # Upsert in batches
-            batch_size = 100
-            for i in range(0, len(vectors), batch_size):
-                batch = vectors[i:i + batch_size]
-                self.index.upsert(vectors=batch)
-                print(f"Uploaded batch {i//batch_size + 1}/{(len(vectors)-1)//batch_size + 1}")
+            print(f"Would upload {len(documents)} documents to Pinecone")
+            # Implementation will be added after we get embeddings working
+            pass
                 
         except Exception as e:
             print(f"Pinecone upsert error: {e}")

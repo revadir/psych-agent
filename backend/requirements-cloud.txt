@@ -1,4 +1,4 @@
-# Minimal requirements for cloud deployment
+# Minimal requirements for cloud deployment - ultra lightweight
 # FastAPI and server
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
@@ -17,9 +17,6 @@ pydantic-settings>=2.0.0
 # Cloud AI services (lightweight)
 groq>=0.4.0
 pinecone-client>=3.0.0
-
-# Minimal embeddings (much smaller than full sentence-transformers)
-sentence-transformers>=5.2.0
 
 # Utilities
 python-dotenv>=1.0.0
