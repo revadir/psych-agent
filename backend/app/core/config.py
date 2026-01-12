@@ -17,6 +17,13 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = "sqlite:///./data/app.db"
+    
+    # Production database URL (Railway will set this)
+    @property
+    def production_database_url(self) -> str:
+        import os
+        return os.getenv("DATABASE_URL", self.database_url)
+    
     vector_db_path: str = "./vector_db_hierarchical"
 
     # LLM Configuration
@@ -37,7 +44,7 @@ class Settings(BaseSettings):
     admin_email: str = "admin@example.com"
 
     # Server
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
     port: int = 8001
 
     # Logging

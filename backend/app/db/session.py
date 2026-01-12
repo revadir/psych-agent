@@ -11,6 +11,14 @@ import os
 
 def get_database_url():
     """Get absolute database URL."""
+    import os
+    
+    # Use production database URL if available
+    prod_url = os.getenv("DATABASE_URL")
+    if prod_url:
+        return prod_url
+    
+    # Fallback to local SQLite
     if settings.database_url.startswith("sqlite:///./"):
         # Convert relative path to absolute
         rel_path = settings.database_url.replace("sqlite:///./", "")

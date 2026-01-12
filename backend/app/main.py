@@ -85,5 +85,7 @@ async def health_check():
 if __name__ == "__main__":
     print("🟡 DEBUG: Starting main...")
     import uvicorn
+    import os
     print("🟡 DEBUG: Uvicorn imported, starting server...")
-    uvicorn.run(app, host=settings.host, port=settings.port)
+    port = int(os.getenv("PORT", settings.port))
+    uvicorn.run(app, host=settings.host, port=port)
