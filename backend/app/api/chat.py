@@ -14,6 +14,7 @@ from app.models import User
 from app.services.chat_service import ChatService
 from app.services.hybrid_agent_service import get_hybrid_agent_service
 from app.services.agent_service import get_agent_service as get_simple_agent_service
+from app.services.cloud_agent_service import cloud_agent_service
 from app.models.schemas import (
     ChatSessionResponse, 
     CreateSessionRequest, 
@@ -109,8 +110,7 @@ async def send_message_stream(
             yield f"data: {json.dumps({'type': 'thinking', 'data': {'status': 'Generating clinical analysis...'}})}\n\n"
             
             try:
-                agent = get_simple_agent_service()
-                agent_response = agent.process_query(request.content, conversation_history)
+                agent_response = cloud_agent_service.process_query(request.content)
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
                 # Quick fallback response for testing
@@ -209,13 +209,8 @@ async def send_message(
     # Get agent response
     print(f"🔵 REGULAR API: Starting agent processing with {len(conversation_history)} context messages...")
     try:
-        print(f"🔵 REGULAR API: Using simple agent service...")
-        agent = get_simple_agent_service()
-        print(f"🔵 REGULAR API: Agent type: {type(agent)}")
-        
-        # Call agent directly without timeout complexity
-        print(f"🔵 REGULAR API: Calling agent.process_query with conversation history...")
-        agent_response = agent.process_query(request.content, conversation_history)
+        print(f"🔵 REGULAR API: Using cloud agent service...")
+        agent_response = cloud_agent_service.process_query(request.content)
         print(f"🔵 REGULAR API: Agent returned response of length {len(str(agent_response))}")
         
     except asyncio.TimeoutError:

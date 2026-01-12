@@ -27,13 +27,21 @@ class Settings(BaseSettings):
     vector_db_path: str = "./vector_db_hierarchical"
 
     # LLM Configuration
-    llm_provider: str = "ollama"
+    llm_provider: str = "groq"  # Changed from ollama to groq
     llm_api_key: str = ""
-    llm_model: str = "deepseek-r1"
+    llm_model: str = "llama3-8b-8192"  # Groq model
     llm_temperature: float = 0.1
+    
+    # Groq API Key
+    groq_api_key: str = ""
 
     # Embeddings
     embedding_model: str = "all-MiniLM-L6-v2"
+    
+    # Pinecone Configuration
+    pinecone_api_key: str = ""
+    pinecone_environment: str = "gcp-starter"
+    pinecone_index_name: str = "psych-agent"
 
     # Authentication
     jwt_secret_key: str = "dev-jwt-secret-change-in-production"
