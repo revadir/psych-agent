@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "python scripts/init_db.py && python scripts/init_admin.py && python -m backend.app.main"
+startCommand = "cd backend && python -m app.main"
 
 [[mounts]]
 source = "/opt/railway/data"
