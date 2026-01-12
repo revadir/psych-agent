@@ -19,6 +19,7 @@ groq>=0.4.0
 pinecone-client>=3.0.0
 langchain-huggingface>=0.0.3
 langchain-chroma>=0.1.0
+langchain-community>=0.0.38
 
 # Utilities
 python-dotenv>=1.0.0
