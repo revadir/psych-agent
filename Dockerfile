@@ -12,17 +12,14 @@ RUN apt-get update && apt-get install -y \
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY backend/ ./backend/
-COPY data/ ./data/
-COPY vector_db/ ./vector_db/
-COPY scripts/ ./scripts/
+# Copy only the backend application code
+COPY backend/ .
 
-# Create data directory
-RUN mkdir -p data
+# Create necessary directories
+RUN mkdir -p data vector_db_hierarchical
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8001
 
 # Run the application
-CMD ["python", "-m", "backend.app.main"]
+CMD ["python", "-m", "app.main"]
