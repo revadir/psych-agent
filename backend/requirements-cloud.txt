@@ -17,6 +17,7 @@ pydantic-settings>=2.0.0
 # Cloud AI services (lightweight)
 groq>=0.4.0
 pinecone-client>=3.0.0
+langchain-huggingface>=0.0.3
 
 # Utilities
 python-dotenv>=1.0.0
