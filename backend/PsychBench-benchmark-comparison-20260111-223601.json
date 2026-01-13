@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-01-11T22:36:01.179661",
+  "benchmark_name": "PsychBench Three-Way Comparison",
+  "comparison_analysis": {
+    "Psychiatric Knowledge": {
+      "total_questions": 5,
+      "llama3_stats": {
+        "total": 10,
+        "average_similarity": 0.0,
+        "status_distribution": {
+          "UNKNOWN": 10
+        }
+      },
+      "mistral_stats": {
+        "total": 5,
+        "average_similarity": 0.071,
+        "status_distribution": {
+          "POOR": 5
+        }
+      },
+      "detailed_comparison": [
+        {
+          "question_id": 1,
+          "question": "Core feature of a major depressive episode",
+          "expected_answer": "A major depressive episode is characterized by either depressed mood most of the day, nearly every day, or markedly diminished interest or pleasure in almost all activities. Additional symptoms include significant weight changes, sleep disturbance (insomnia or hypersomnia), psychomotor changes, fatigue or loss of energy, feelings of worthlessness or guilt, diminished concentration ability, and recurrent thoughts of death or suicidal ideation. Symptoms must last at least two weeks and cause clinically significant distress or functional impairment.",
+          "mistral": {
+            "response": "The core features of a Major Depressive Episode, as defined by the Diagnostic and Statistical Manual of Mental Disorders (DSM-5), include:\n\n1. Depressed mood most of the day, nearly every day, as indicated by either subjective report or observation made by others, or markedly diminished interest or pleasure in all, or almost all, activities most of the day, nearly every day.\n\n2. The depressed mood is not a mere reaction to a recent loss (e.g., death of a loved one) as symptoms persist beyond the",
+            "similarity": 0.057,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 2,
+          "question": "Core feature of a manic episode",
+          "expected_answer": "A manic episode involves abnormally and persistently elevated, expansive, or irritable mood lasting at least one week (or any duration if hospitalization is required). Core symptoms include inflated self-esteem or grandiosity, decreased need for sleep, increased talkativeness or pressure of speech, racing thoughts, distractibility, increased goal-directed activity, and excessive involvement in high-risk activities. The mood disturbance must be severe enough to cause marked impairment in functioning or necessitate hospitalization.",
+          "mistral": {
+            "response": "A manic episode is a distinct period of abnormally and persistently elevated, expansive, or irritable mood, associated with markedly excessive energy or activity. The core features of a manic episode, as defined by the Diagnostic and Statistical Manual of Mental Disorders (DSM-5), include:\n\n1. Inflated self-esteem or grandiosity: An unrealistic belief in one's abilities, talents, or powers, often accompanied by a feeling of invincibility or superiority.\n2. Decreased need for sleep: A reduced nee",
+            "similarity": 0.075,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 3,
+          "question": "Core feature of PTSD",
+          "expected_answer": "PTSD develops following exposure to a traumatic event involving actual or threatened death, serious injury, or sexual violence. The disorder comprises four symptom clusters: intrusive symptoms (flashbacks, nightmares, distressing memories), avoidance (avoiding trauma-related thoughts, feelings, or stimuli), negative alterations in cognition and mood (negative beliefs, persistent blame, detachment, anhedonia), and alterations in arousal and reactivity (hypervigilance, exaggerated startle response, recklessness). Symptoms persist for more than one month and cause significant distress or functional impairment.",
+          "mistral": {
+            "response": "Post-Traumatic Stress Disorder (PTSD) is a mental health condition that can develop after a person has experienced or witnessed a traumatic event. The core features of PTSD include the following symptoms, which must last for more than one month and significantly impact a person's daily life:\n\n1. Re-experiencing symptoms: These symptoms involve recurrent, intrusive memories, dreams, or flashbacks about the traumatic event that are intense and distressing.\n\n2. Avoidance symptoms: People with PTSD ",
+            "similarity": 0.018,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 4,
+          "question": "Definition of a delusion",
+          "expected_answer": "A delusion is a fixed false belief that is not amenable to change in light of conflicting evidence. Delusions are not merely opinions, cultural or religious beliefs, or ideas of reference. They persist despite clear contradictory evidence and are held with absolute conviction. Common types include paranoid (persecution), grandiose (special abilities or status), somatic (body-related false beliefs), and nihilistic delusions. Delusions are characteristic of psychotic disorders and cause significant distress or impact behavior.",
+          "mistral": {
+            "response": "A delusion is a strongly-held, fixed belief that is not based on reality or rational thinking. Delusions are common in certain mental health disorders such as schizophrenia and other psychoses. The person experiencing the delusion may continue to believe it despite evidence to the contrary and may become distressed or behave abnormally due to their beliefs. Common examples of delusions include persecutory delusions (believing one is being harassed, conspired against, or followed), grandiose delu",
+            "similarity": 0.088,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 5,
+          "question": "Definition of a hallucination",
+          "expected_answer": "A hallucination is a sensory perception that occurs without any external stimulus. It occurs in any sensory modality: visual (seeing), auditory (hearing), tactile (feeling), olfactory (smelling), or gustatory (tasting). Hallucinations are perceived as real by the individual experiencing them and are not under voluntary control. They differ from illusions (misperceptions of real stimuli) and occur in psychotic disorders, severe mood disorders, substance intoxication or withdrawal, medical conditions, and sleep disorders.",
+          "mistral": {
+            "response": "A hallucination is a perception in the absence of any real external stimulus. It's a sensory experience that has its source within the mind itself, rather than being based on an external reality. Hallucinations can manifest as seeing, hearing, or feeling something that isn't actually present. They are often associated with certain medical conditions, such as mental health disorders like schizophrenia, or as side effects of substance use or withdrawal, brain injuries, or certain medications. It's",
+            "similarity": 0.115,
+            "status": "POOR"
+          }
+        }
+      ]
+    }
+  },
+  "summary_metrics": {
+    "mistral_overall_similarity": 0.0706,
+    "total_sections": 1,
+    "total_questions": 5
+  }
+}

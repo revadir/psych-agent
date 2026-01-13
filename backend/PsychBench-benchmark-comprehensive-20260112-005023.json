@@ -1,0 +1,972 @@
+{
+  "timestamp": "2026-01-12T00:50:23.220548",
+  "benchmark_name": "PsychBench Comprehensive Three-Way Comparison",
+  "description": "Complete benchmark: Question | Ground Truth | Llama 3 Answer | Mistral Answer | Similarity Scores",
+  "sources": {
+    "ground_truth": "PsychBench-benchmark-test.json",
+    "llama3": "PsychBench-benchmark-test-results.json",
+    "mistral": "Real-time Ollama (mistral)"
+  },
+  "sections": [
+    {
+      "section_name": "Psychiatric Knowledge",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.072,
+        "mistral_avg_similarity": 0.056
+      },
+      "questions": [
+        {
+          "question_id": 1,
+          "question": "Core feature of a major depressive episode",
+          "ground_truth_answer": "A major depressive episode is characterized by either depressed mood most of the day, nearly every day, or markedly diminished interest or pleasure in almost all activities. Additional symptoms include significant weight changes, sleep disturbance (insomnia or hypersomnia), psychomotor changes, fatigue or loss of energy, feelings of worthlessness or guilt, diminished concentration ability, and recurrent thoughts of death or suicidal ideation. Symptoms must last at least two weeks and cause clinically significant distress or functional impairment.",
+          "llama3": {
+            "response": "Based on your request for information about Bipolar II Disorder, I'll provide a response directly addressing the clinical information requested.\n\nRegarding the core feature of a major depressive episode in Bipolar II Disorder, it is characterized by five (or more) symptoms that have been present during the same 2-week period and represent a change from previous functioning. These symptoms include:\n\n1. Depressed mood most of the day, nearly every day\n2. Markedly diminished interest or pleasure in",
+            "similarity_to_ground_truth": 0.184,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "A major depressive episode, as defined by the Diagnostic and Statistical Manual of Mental Disorders (DSM-5), is a mental health disorder characterized by a persistent feeling of sadness or a loss of interest or pleasure in activities, accompanied by several other symptoms. These core features include:\n\n1. Depressed mood most of the day, nearly every day, as indicated by either subjective report (e.g., feels sad, empty, hopeless) or observation made by others (e.g., appears tearful). Note: In chi",
+            "similarity_to_ground_truth": 0.111,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 2,
+          "question": "Core feature of a manic episode",
+          "ground_truth_answer": "A manic episode involves abnormally and persistently elevated, expansive, or irritable mood lasting at least one week (or any duration if hospitalization is required). Core symptoms include inflated self-esteem or grandiosity, decreased need for sleep, increased talkativeness or pressure of speech, racing thoughts, distractibility, increased goal-directed activity, and excessive involvement in high-risk activities. The mood disturbance must be severe enough to cause marked impairment in functioning or necessitate hospitalization.",
+          "llama3": {
+            "response": "Based on our previous discussion regarding Major Depressive Disorder, I would like to clarify the diagnostic criteria for Bipolar I Disorder. Regarding the core feature of a manic episode, according to the DSM-5-TR, it is characterized by:\n\n* A distinct period of abnormally and persistently elevated, expansive, or irritable mood and abnormally and persistently increased activity or energy, lasting at least 1 week and present most of the day, nearly every day (or any duration if hospitalized is n",
+            "similarity_to_ground_truth": 0.136,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "A manic episode is a distinct period of abnormally and persistently elevated, expansive or irritable mood, associated with increased energy, activity, and excessive involvement in pleasurable activities that can lead to unpleasant outcomes. The core features of a manic episode, as defined by the Diagnostic and Statistical Manual of Mental Disorders (DSM-5), include:\n\n1. Inflated self-esteem or grandiosity: An exaggerated sense of self-importance, belief in special powers or influence, or holding",
+            "similarity_to_ground_truth": 0.067,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 3,
+          "question": "Core feature of PTSD",
+          "ground_truth_answer": "PTSD develops following exposure to a traumatic event involving actual or threatened death, serious injury, or sexual violence. The disorder comprises four symptom clusters: intrusive symptoms (flashbacks, nightmares, distressing memories), avoidance (avoiding trauma-related thoughts, feelings, or stimuli), negative alterations in cognition and mood (negative beliefs, persistent blame, detachment, anhedonia), and alterations in arousal and reactivity (hypervigilance, exaggerated startle response, recklessness). Symptoms persist for more than one month and cause significant distress or functional impairment.",
+          "llama3": {
+            "response": "Based on our previous discussion about PTSD, I'd like to clarify that the core feature of PTSD is indeed the development of characteristic symptoms following exposure to one or more traumatic events. This can manifest in various ways, such as:\n\n* Recurrent, involuntary, and intrusive recollections of the event (Criterion B1)\n* Intrusive memories that are distressing and not merely ruminative\n* Distressing dreams that replay the event itself or are thematically related to the major threats involv",
+            "similarity_to_ground_truth": 0.027,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "Post-Traumatic Stress Disorder (PTSD) is a mental health disorder that can occur in people who have experienced or witnessed a traumatic event. The core features of PTSD include:\n\n1. Intrusive memories: Recurrent, unwanted distressing memories of the traumatic event. This can manifest as flashbacks, nightmares, or intrusive thoughts about the event.\n\n2. Avoidance: Efforts to avoid reminders or triggers related to the traumatic event. This can include avoiding people, places, conversations, or ac",
+            "similarity_to_ground_truth": 0.018,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 4,
+          "question": "Definition of a delusion",
+          "ground_truth_answer": "A delusion is a fixed false belief that is not amenable to change in light of conflicting evidence. Delusions are not merely opinions, cultural or religious beliefs, or ideas of reference. They persist despite clear contradictory evidence and are held with absolute conviction. Common types include paranoid (persecution), grandiose (special abilities or status), somatic (body-related false beliefs), and nihilistic delusions. Delusions are characteristic of psychotic disorders and cause significant distress or impact behavior.",
+          "llama3": {
+            "response": "Regarding the concept of delusions in the context of psychotic disorders, I'd like to clarify that according to DSM-5-TR, a delusion is defined as \"a firmly held belief based on inadequate grounds not amenable to rational argument or evidence to contrary\" (DSM-5-TR, 301.8). This means that a delusion is a fixed, false belief that persists despite contradictory evidence and is resistant to change.\n\nIn the case of individuals with prolonged grief disorder, delusions related to the deceased person ",
+            "similarity_to_ground_truth": 0.109,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "A delusion is a strongly held belief or notion that is irrational, not grounded in reality, and resistant to reason or evidence to the contrary. Delusions are commonly associated with certain mental health disorders such as schizophrenia, but they can also be found in other conditions like bipolar disorder, depression, and dementia.\n\nDelusional beliefs can vary widely, but some common examples include paranoia (believing that one is being persecuted or spied upon), grandiosity (having an exagger",
+            "similarity_to_ground_truth": 0.034,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 5,
+          "question": "Definition of a hallucination",
+          "ground_truth_answer": "A hallucination is a sensory perception that occurs without any external stimulus. It occurs in any sensory modality: visual (seeing), auditory (hearing), tactile (feeling), olfactory (smelling), or gustatory (tasting). Hallucinations are perceived as real by the individual experiencing them and are not under voluntary control. They differ from illusions (misperceptions of real stimuli) and occur in psychotic disorders, severe mood disorders, substance intoxication or withdrawal, medical conditions, and sleep disorders.",
+          "llama3": {
+            "response": "Based on the DSM-5-TR, a hallucination is defined as \"a sensory experience that occurs in one or more sensory modalities (e.g., visual, auditory, olfactory, gustatory) and is perceived by an individual who is not actually perceiving anything.\" This definition aligns with the diagnostic criteria for Hallucinogen Persisting Perception Disorder (HPPD), which includes symptoms such as geometric hallucinations, false perceptions of movement in the peripheral visual fields, flashes of color, or other ",
+            "similarity_to_ground_truth": 0.032,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "A hallucination is a sensory perception that occurs in the absence of any external stimulus. It's a phenomenon where an individual perceives something that doesn't exist in reality, such as seeing, hearing, or feeling things that aren't actually there. Hallucinations can occur in any of the senses, but auditory (hearing) and visual (seeing) hallucinations are the most common.\n\nHallucinations can be associated with various mental health conditions, neurological disorders, intoxication, withdrawal",
+            "similarity_to_ground_truth": 0.083,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 6,
+          "question": "Hallmark of panic disorder",
+          "ground_truth_answer": "The hallmark of panic disorder is recurrent unexpected panic attacks followed by at least one month of persistent concern about having additional attacks or worry about the implications of the attacks. A panic attack involves a sudden surge of intense fear or discomfort with physical symptoms (palpitations, sweating, trembling, dyspnea, chest pain, nausea, dizziness, derealization/depersonalization, fear of losing control or dying) peaking within minutes. The attacks must cause significant distress or result in behavioral changes (avoidance of situations or activities).",
+          "llama3": {
+            "response": "Based on the provided information about PTSD, I would say that a hallmark of panic disorder is experiencing panic attacks in response to specific situations or objects. This can include situations like being in crowded places (e.g., shopping malls), driving, or even certain types of medical procedures.\n\nRegarding the DSM-5-TR context, for individuals with PTSD, comorbidity with other disorders such as depression, anxiety disorders, and substance use disorders is common. Additionally, the develop",
+            "similarity_to_ground_truth": 0.072,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "Panic Disorder is characterized by recurrent unexpected panic attacks, and persistent worry about having additional panic attacks or the implications of the attacks. The hallmarks of panic disorder include:\n\n1. Recurrent unexpected panic attacks: These are sudden episodes of intense fear or discomfort that peak within minutes. Symptoms often include palpitations, pounding heart, or accelerated heart rate; sweating; trembling or shaking; sensations of shortness of breath or smothering; feeling of",
+            "similarity_to_ground_truth": 0.05,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 7,
+          "question": "Core feature of OCD",
+          "ground_truth_answer": "Obsessive-Compulsive Disorder involves either obsessions (recurrent, intrusive thoughts, urges, or images recognized as unwanted) or compulsions (repetitive behaviors or mental acts performed to prevent anxiety or reduce distress). Common obsessions include fears of contamination, harm, need for symmetry, and taboo thoughts. Common compulsions include washing, checking, ordering, and counting. The obsessions and compulsions are time-consuming (at least 1 hour daily), cause significant distress, and interfere with functioning or relationships despite recognition that they are excessive.",
+          "llama3": {
+            "response": "Regarding the core features of OCD, it's essential to note that individuals with OCD often exhibit a pattern of excessive perfectionism and rigid control in response to intrusive symptoms. This can manifest as repetitive behaviors or mental acts aimed at reducing anxiety or preventing perceived harm.\n\nIn terms of diagnostic criteria, the DSM-5-TR specifies that the primary characteristic of OCD is the presence of one or more of the following:\n\n1. Intrusive symptoms: Recurring, unwanted thoughts,",
+            "similarity_to_ground_truth": 0.03,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "Obessive-Compulsive Disorder (OCD) is characterized by two main components: obsessions and compulsions.\n\n1. **Obsessions**: These are recurrent, unwanted thoughts, images, or urges that cause anxiety. The individual tries to ignore or suppress such thoughts, or they may try to neutralize them with some mental act (mental rituals). Common themes of obsessions include contamination, aggressive thoughts, sexuality, and symmetry/order.\n\n2. **Compulsions**: These are repetitive behaviors or mental ac",
+            "similarity_to_ground_truth": 0.086,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 8,
+          "question": "Core feature of GAD",
+          "ground_truth_answer": "Generalized Anxiety Disorder is characterized by excessive anxiety and worry occurring on more days than not for at least six months about various aspects of daily life. The worry is difficult to control and associated with at least three symptoms: restlessness or feeling on edge, being easily fatigued, difficulty concentrating, irritability, muscle tension, and sleep disturbance. The anxiety and worry cause clinically significant distress or impairment in social, occupational, or other important areas of functioning.",
+          "llama3": {
+            "response": "Based on our previous discussion about PTSD, I'd like to clarify that the core features of Generalized Anxiety Disorder (GAD) include excessive worry about everyday things, feelings of restlessness or feeling on edge, difficulty concentrating, irritability, muscle tension, and sleep disturbances. These symptoms can be present for more than a month and significantly interfere with daily life.\n\nRegarding the DSM-5-TR criteria for GAD, I'd like to note that the diagnostic criteria include:\n\n* A clu",
+            "similarity_to_ground_truth": 0.055,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "The core feature of Google Ads (formerly known as Google AdWords) is its pay-per-click (PPC) advertising model. In this model, advertisers bid on specific keywords and display their ads next to search results related to those keywords. When a user clicks on the ad, the advertiser pays a fee. The goal of using Google Ads is to drive traffic to a website and generate leads or sales. Other core features include:\n\n1. Targeting options: Advertisers can target their ads based on location, language, de",
+            "similarity_to_ground_truth": 0.011,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 9,
+          "question": "Core feature of schizophrenia",
+          "ground_truth_answer": "Schizophrenia involves characteristic psychotic symptoms including two or more from: delusions, hallucinations (especially auditory), disorganized speech, grossly disorganized or catatonic behavior, or negative symptoms (diminished emotional expression, avolition, alogia, anhedonia). The psychotic symptoms must be prominent for at least one month. Additionally, there must be continuous signs of the disturbance for at least six months total, including the active phase plus possible prodromal or residual periods. The disorder causes significant functional or occupational impairment.",
+          "llama3": {
+            "response": "Based on our ongoing discussion about PTSD, I'd like to clarify that catatonia is a symptom commonly associated with schizophrenia spectrum disorder. Catatonia can manifest as grossly disorganized or immobile behavior, which may be accompanied by other symptoms such as hallucinations, delusions, and negative symptoms.\n\nRegarding the severity of catatonia, according to the DSM-5-TR, it is rated on a 5-point scale ranging from 0 (not present) to 4 (present and severe). However, for catatonic behav",
+            "similarity_to_ground_truth": 0.052,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "The core features of Schizophrenia, as defined by the Diagnostic and Statistical Manual of Mental Disorders (DSM-5), include:\n\n1. Delusions: fixed beliefs that are not based on reality or rational thinking. These can be persecutory (belief one is being harmed or spied upon), grandiose (belief of having special powers or importance), or religious delusions, among others.\n\n2. Hallucinations: experiencing sensations (such as seeing, hearing, or feeling something) that have no external basis in real",
+            "similarity_to_ground_truth": 0.069,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 10,
+          "question": "Core feature of hypomania",
+          "ground_truth_answer": "A hypomanic episode involves abnormally and persistently elevated, expansive, or irritable mood lasting at least four consecutive days, observable by others. Symptoms include inflated self-esteem, decreased need for sleep, increased talkativeness, racing thoughts, distractibility, increased goal-directed activity, and excessive involvement in potentially risky activities. Unlike mania, hypomania does not cause marked impairment in functioning, does not require hospitalization, and the behavioral changes are not severe enough to cause obvious dysfunction in work, school, or social relationships.",
+          "llama3": {
+            "response": "Regarding the core features of hypomanic episodes, according to the DSM-5-TR, a hypomanic episode is characterized by:\n\n* A distinct period of abnormally and persistently elevated, expansive, or irritable mood lasting at least four consecutive days\n* At least three of the following symptoms are present:\n\t+ Increased self-esteem or grandiosity\n\t+ Decreased need for sleep\n\t+ Increased talkativeness or pressure to keep talking\n\t+ Flight of ideas or racing thoughts\n\t+ Distractibility or difficulty c",
+            "similarity_to_ground_truth": 0.019,
+            "status": "POOR"
+          },
+          "mistral": {
+            "response": "Hypomania is a mood disorder that's less severe than mania but more intense than normal mood swings. It's typically associated with bipolar disorder, and the core features include:\n\n1. Elevated mood or irritability: People with hypomania often feel \"high,\" euphoric, or more self-confident than usual. This can sometimes be mistaken for being in a good or energetic state, but it's important to note that this overly positive outlook isn't based on reality and can lead to poor decision-making.\n\n2. I",
+            "similarity_to_ground_truth": 0.034,
+            "status": "POOR"
+          }
+        }
+      ]
+    },
+    {
+      "section_name": "Clinical Text Understanding",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.0,
+        "mistral_avg_similarity": 0.022
+      },
+      "questions": [
+        {
+          "question_id": 11,
+          "question": "Symptoms began suddenly yesterday",
+          "ground_truth_answer": "Acute onset refers to symptoms that appear suddenly with rapid development, typically within hours or a day. This distinguishes acute presentations from insidious or gradual-onset conditions. Acute onset is characteristic of panic attacks, acute stress reactions, brief psychotic episodes, and organic medical conditions like stroke or seizures. Acute presentations often require rapid evaluation to rule out medical emergencies and may indicate a sudden precipitant or stressor.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm sorry to hear that you're feeling unwell. I'm unable to diagnose or offer medical advice, but I can suggest some steps for you:\n\n1. If your symptoms are severe or life-threatening, call emergency services immediately in your country (911 in the US, 112 in Europe, etc.).\n\n2. If your symptoms are less urgent but still concerning, contact your healthcare provider or a local urgent care center to describe your symptoms and follow their advice.\n\n3. Monitor your symptoms and rest as much as possib",
+            "similarity_to_ground_truth": 0.016,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 12,
+          "question": "Symptoms have been stable for 4 months",
+          "ground_truth_answer": "A stable course indicates that symptoms have remained relatively unchanged in severity, frequency, and character over an extended period (in this case, four months). Stable courses suggest either: well-controlled chronic conditions with appropriate treatment, conditions that have plateaued at a particular level of severity, or potentially chronic conditions that maintain a steady state. Stability typically indicates that current treatment is effective or that the natural course of the disorder has reached equilibrium.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It's great to hear that your symptoms have remained stable for the past four months. Maintaining a consistent state without significant changes can be a positive sign, especially when dealing with health conditions. However, it's important not to neglect regular follow-ups with your healthcare provider to monitor your progress and make any necessary adjustments to treatment plans if needed.\n\nIf you haven't already, consider discussing with your doctor ways to further manage symptoms or improve o",
+            "similarity_to_ground_truth": 0.039,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 13,
+          "question": "Symptoms worsen every evening",
+          "ground_truth_answer": "Diurnal variation refers to a predictable daily pattern where symptoms fluctuate based on time of day, with particular worsening in the evening. This pattern is commonly seen in mood disorders (depression often worse in morning, anxiety often worse in evening), delirium (sundowning), sleep disorders, and certain medical conditions. Evening worsening may relate to circadian rhythms, accumulated daily stress, fatigue, or changes in neurochemical levels throughout the day.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you might be experiencing symptoms that worsen in the evenings. This could be due to a variety of reasons, such as stress, certain medical conditions, or sleep patterns affecting your symptoms. Here are some general suggestions:\n\n1. Stress Management: Try relaxing activities before bedtime, such as reading, meditation, or deep breathing exercises.\n\n2. Sleep Hygiene: Maintaining good sleep hygiene is important. This includes keeping a consistent sleep schedule, creating a relaxing ",
+            "similarity_to_ground_truth": 0.017,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 14,
+          "question": "Belief that coworkers are plotting against him",
+          "ground_truth_answer": "A persecutory delusion is a fixed false belief that one is being harassed, threatened, plotted against, poisoned, spied on, or conspired against by others. These delusions involve a sense of being targeted or victimized by specific individuals or groups. Persecutory delusions are common in schizophrenia, delusional disorder (persecutory type), paranoid personality disorder, and mood disorders with psychotic features. They significantly impair social and occupational functioning and may lead to defensive or protective behaviors.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you're dealing with feelings of suspicion and mistrust in the workplace. This can be a challenging situation, but here are some steps you might consider to help manage your feelings:\n\n1. Self-reflection: Examine your own actions and behaviors. Are there any miscommunications or misunderstandings that could be leading to this belief? It's important to take responsibility for our own actions and reactions.\n\n2. Open communication: If you feel comfortable doing so, discuss your concer",
+            "similarity_to_ground_truth": 0.024,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 15,
+          "question": "Reports hearing footsteps when alone",
+          "ground_truth_answer": "An auditory hallucination is a false perception of sound occurring without external auditory stimuli. Common forms include hearing voices (most frequent), footsteps, music, or other noises. Auditory hallucinations are the most common type of hallucination in psychotic disorders, especially schizophrenia. They can be perceived as threatening or benign, may command the patient to perform actions, and significantly impact functioning. They differ from tinnitus in that they are perceived as external rather than internal sounds.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Hearing footsteps when alone can be quite unsettling, but there are several explanations for this phenomenon. Here are a few possibilities:\n\n1. Natural causes: It could be an animal or even wind moving through leaves and branches. In some cases, it might be due to the natural expansion and contraction of your house settling over time, which can cause creaking noises.\n\n2. Paranormal activity: While there is no scientific evidence to support the existence of ghosts or other supernatural entities, ",
+            "similarity_to_ground_truth": 0.033,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 16,
+          "question": "Speech is rapid and pressured",
+          "ground_truth_answer": "Pressured speech is rapid, increased rate of speech that is often difficult to interrupt, with increased loudness and rapid delivery of ideas. It reflects the accelerated thinking and heightened psychomotor activity characteristic of elevated mood states. Pressured speech is associated with mania, hypomania, and ADHD. The speech may become difficult to follow as ideas jump rapidly from topic to topic (flight of ideas). Pressured speech reflects the internal experience of racing thoughts and urgency to communicate ideas.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're experiencing a situation where someone is speaking quickly or under pressure. Here are some strategies to help you cope:\n\n1. Active Listening: Try to focus on the speaker, maintain eye contact if possible, and lean slightly towards them. This shows that you're engaged and interested.\n\n2. Asking Questions: If you're unsure about something, don't hesitate to ask questions. This can help clarify any confusion and also shows the speaker that you're paying attention.\n\n3. Summariz",
+            "similarity_to_ground_truth": 0.019,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 17,
+          "question": "Shows minimal emotional expression",
+          "ground_truth_answer": "Blunted affect refers to markedly diminished emotional expression, with restricted range and intensity of emotional responses. The individual's face, voice, and gestures show little emotional reactivity even to emotionally stimulating situations or topics. Blunted affect is a negative symptom characteristic of schizophrenia and can occur in severe depression, autism spectrum disorder, and medication side effects. It represents a restriction of the outward expression of emotion rather than absence of internal emotional experience.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm here to assist you! While I don't have feelings or emotions, I can certainly help you with a variety of tasks and provide information in a friendly and helpful manner. How can I be of service today?",
+            "similarity_to_ground_truth": 0.003,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 18,
+          "question": "Symptoms cause major work impairment",
+          "ground_truth_answer": "Severe symptom severity refers to symptoms causing marked functional impairment across multiple domains including work, school, social relationships, or self-care. Severe impairment means the individual has difficulty performing job responsibilities, maintaining employment, or meeting occupational demands. Assessment of severity considers whether symptoms cause failure to perform essential functions, require work modifications or accommodations, result in job loss or inability to work, or interfere with advancement and productivity. Severity is a key diagnostic criterion in many psychiatric disorders.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm sorry to hear that you are experiencing symptoms causing significant work impairment. It's essential to prioritize your health and well-being, so I encourage you to seek help from a healthcare professional. They can help diagnose the cause of your symptoms, provide appropriate treatment options, and offer guidance on managing your condition while working.\n\nIn the meantime, here are some tips that might help:\n\n1. Communicate with your employer: Inform your supervisor or human resources depart",
+            "similarity_to_ground_truth": 0.031,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 19,
+          "question": "Symptoms fluctuate weekly",
+          "ground_truth_answer": "An episodic course refers to a pattern where symptoms wax and wane with regular or semi-regular cycles of exacerbation and improvement. Weekly fluctuations suggest a pattern with distinct episodes of symptom escalation followed by periods of relative improvement or remission. This is seen in bipolar disorder, cyclothymia, premenstrual dysphoric disorder, and some anxiety disorders. Episodic patterns differ from chronic or progressive courses and may indicate underlying biological rhythms or cyclical disease processes.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're experiencing symptoms that vary from week to week. This could be due to a variety of factors, such as changes in lifestyle, stress levels, or underlying health conditions. However, without more specific information about your symptoms, it's difficult for me to provide accurate advice.\n\nIf your symptoms are related to a known medical condition, I would recommend consulting with your healthcare provider to discuss strategies for managing fluctuations. If you haven't already do",
+            "similarity_to_ground_truth": 0.016,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 20,
+          "question": "Symptoms gradually worsened over 6 months",
+          "ground_truth_answer": "A progressive course indicates steadily worsening symptoms over an extended period without improvement or remission, with increasing severity, functional impact, and potential complications. Progressive deterioration typically suggests: inadequately treated conditions, degenerative processes (neurodegenerative disorders, dementia), unresolved underlying medical conditions, accumulating psychosocial stressors, or natural disease progression without intervention. Progressive courses require urgent clinical reassessment of diagnosis, treatment adequacy, and identification of modifiable factors.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're experiencing a health concern that has been progressing over six months. I'm unable to diagnose or provide medical advice, but it's important to consult with a healthcare professional about your symptoms. Persistent symptoms could indicate a serious condition, and early detection can greatly improve treatment outcomes. If possible, make an appointment with your primary care physician or a specialist to discuss your concerns. In the meantime, try to maintain a healthy lifesty",
+            "similarity_to_ground_truth": 0.024,
+            "status": "POOR"
+          }
+        }
+      ]
+    },
+    {
+      "section_name": "Principal Diagnosis (ICD-10)",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.0,
+        "mistral_avg_similarity": 0.018
+      },
+      "questions": [
+        {
+          "question_id": 21,
+          "question": "3 weeks depressed mood, anhedonia, severe impairment, no psychosis",
+          "ground_truth_answer": "F32.2 - Major Depressive Disorder, Single Episode, Severe without Psychotic Features. This diagnosis applies to a first major depressive episode lasting at least two weeks with depressed mood or anhedonia, significant functional impairment, at least five depressive symptoms (sleep disturbance, appetite changes, fatigue, guilt, concentration problems, psychomotor changes), but without psychotic features (delusions, hallucinations). The severity designation reflects significant reduction in work/social functioning and distress level.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm really sorry that you're feeling this way, but I'm unable to provide the help that you need. It's really important to talk things over with a mental health professional. They have the training and expertise to help you through this difficult time.\n\nIn the meantime, please try to take care of yourself. This might include getting plenty of rest, eating healthy foods, and engaging in activities that you enjoy when you're able to. It can also be helpful to talk to someone you trust about how you",
+            "similarity_to_ground_truth": 0.004,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 22,
+          "question": "1 week elevated mood, decreased need for sleep, hospitalization",
+          "ground_truth_answer": "F31.2 - Bipolar I Disorder, Current Episode Manic, Moderate Severity. This diagnosis requires abnormally elevated, expansive, or irritable mood for at least one week with decreased need for sleep (not sleep loss due to insomnia), goal-directed activity increase, racing thoughts, and distractibility. Hospitalization is often required due to marked functional impairment or risk of harm. The manic symptoms represent a clear departure from baseline functioning and severity is sufficient to cause obvious impairment in occupational or social functioning.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you might be describing a potential manic episode, which is a symptom of Bipolar Disorder. However, please note that I am an AI and not a medical professional. If you or someone else is experiencing symptoms of a mental health disorder, it's crucial to seek help from a qualified healthcare provider immediately.\n\nA period of elevated mood, decreased need for sleep, and hospitalization can be indicative of mania or hypomania, which are distinct phases of Bipolar Disorder. These symp",
+            "similarity_to_ground_truth": 0.014,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 23,
+          "question": "6 months excessive worry, restlessness, muscle tension",
+          "ground_truth_answer": "F41.1 - Generalized Anxiety Disorder. This diagnosis requires persistent excessive anxiety and worry occurring on more days than not for at least six months. Associated symptoms include restlessness, easy fatigability, difficulty concentrating, irritability, muscle tension, and sleep disturbance. The worry extends across multiple life domains (work, family, finances, health) and is difficult to control. The anxiety causes clinically significant distress and functional impairment in social, occupational, or other important areas of life.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you might be experiencing symptoms of an anxiety disorder. These symptoms can persist for a significant period of time if left untreated. I'm not a doctor, but it may be helpful to seek the advice of a mental health professional. They can provide a proper diagnosis and recommend treatments such as cognitive-behavioral therapy (CBT) or medication, depending on your specific needs.\n\nIn addition to seeking professional help, there are some self-care strategies that might help manage ",
+            "similarity_to_ground_truth": 0.03,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 24,
+          "question": "1 month auditory hallucinations, no mood symptoms",
+          "ground_truth_answer": "F20.0 - Schizophrenia, Paranoid Type (or Paranoid Presentation). This diagnosis is based on presence of prominent auditory hallucinations (often voices) and/or paranoid delusions occurring for at least one month during active phase, with prodromal or residual symptoms for at least six months total duration. Paranoid presentation features preoccupation with delusions and hallucinations, relative preservation of cognitive functioning compared to other psychotic presentations, and significant functional impairment despite absence of primary mood disturbance.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm not a doctor, but the symptoms you described might be related to auditory or other types of hallucinations, which can be associated with various mental health conditions or physical issues. It could also be a side effect of certain medications.\n\nIf you've been experiencing these hallucinations for a month without any noticeable mood changes, it is essential that you consult with a healthcare professional to get an accurate diagnosis and treatment options. They can perform necessary tests and",
+            "similarity_to_ground_truth": 0.037,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 25,
+          "question": "2 weeks intrusive trauma memories, avoidance, hyperarousal",
+          "ground_truth_answer": "F43.1 - Post-Traumatic Stress Disorder, Chronic. This diagnosis follows documented exposure to death, threatened death, actual or threatened serious injury, or threatened sexual violence. The four required symptom clusters include: intrusive symptoms (flashbacks, nightmares), active avoidance of trauma reminders, negative mood/cognition changes (negative beliefs, blame, emotional numbing), and arousal alterations (hypervigilance, startle response, irritability). Symptoms persist for more than three months (chronic specification) and cause significant distress or functional impairment in work, social, or personal relationships.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you might be experiencing symptoms of Post-Traumatic Stress Disorder (PTSD). PTSD can occur after a person has experienced or witnessed a traumatic event that involved the threat of death or serious injury. The symptoms you mentioned – intrusive memories, avoidance, and hyperarousal – are common signs of this condition.\n\nIntrusive memories can manifest as nightmares, flashbacks, or distressing thoughts about the trauma. Avoidance might involve avoiding people, places, or situation",
+            "similarity_to_ground_truth": 0.017,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 26,
+          "question": "2 years low mood, low energy, mild symptoms",
+          "ground_truth_answer": "F34.1 - Persistent Depressive Disorder (Dysthymia). This diagnosis requires depressed mood for most of the day, for more days than not, for at least two years (one year for children/adolescents). Symptoms are generally milder than major depression but more chronic, including low energy, low self-esteem, poor concentration, hopelessness, and sleep/appetite disturbance. Notably, the individual has not been free from symptoms for more than two months at a time during this period. Despite mild-to-moderate severity, the chronic nature significantly impacts personal, social, and occupational functioning.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm really sorry that you've been feeling this way, but I'm unable to provide the help that you need. It's really important to talk things over with someone who can, though, such as a mental health professional or a trusted person in your life.\n\nSymptoms like low mood and low energy for extended periods could be indicative of depression or another mental health disorder. It's crucial to seek help if you're experiencing these symptoms persistently. I recommend reaching out to a healthcare provide",
+            "similarity_to_ground_truth": 0.005,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 27,
+          "question": "Recurrent depressive episodes without psychosis",
+          "ground_truth_answer": "F33.1 - Major Depressive Disorder, Recurrent Episode, Moderate Severity. This diagnosis applies to individuals with history of two or more major depressive episodes separated by at least two months of remission. The current episode meets criteria for moderate severity without psychotic features. Recurrent depression typically has earlier onset age, increased duration of episodes, and greater functional impairment compared to single episodes. The pattern of recurrence indicates a chronic course and often requires longer-term maintenance treatment for symptom prevention and relapse prevention.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Recurrent depressive episodes without psychosis, also known as recurrent major depressive disorder (MDD) or recurrent unipolar depression, is a mental health disorder characterized by one or more episodes of major depressive episodes. Unlike Major Depressive Disorder with Psychotic Features, the individual does not experience symptoms such as hallucinations or delusions during these episodes.\n\nSymptoms of major depressive episodes can include:\n\n1. Depressed mood most of the day, nearly every day",
+            "similarity_to_ground_truth": 0.017,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 28,
+          "question": "Sudden onset confusion, fluctuating consciousness",
+          "ground_truth_answer": "F05 - Delirium. This diagnosis requires disturbance of attention (reduced ability to focus/sustain/shift attention) and awareness (reduced orientation to environment) developing over a short period (hours to days), with tendency to fluctuate. Associated symptoms include cognitive disturbance (memory problems, disorientation, language disturbance), sleep-wake cycle disruption, emotional disturbance (fear, anxiety, irritability), and psychomotor changes (hyperactivity, hypoactivity, or mixed). Delirium is typically secondary to another medical condition, substance use, medication effect, or combination thereof, and requires urgent identification and treatment of underlying etiology.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "These symptoms can be concerning and may indicate a neurological or systemic medical condition. It's important to seek immediate medical attention if someone is experiencing sudden confusion or fluctuating consciousness.\n\nCauses could include:\n1. Brain infections (meningitis, encephalitis)\n2. Stroke or transient ischemic attack (TIA or \"mini-stroke\")\n3. Traumatic brain injury\n4. Seizure disorders\n5. Metabolic imbalances such as low blood sugar, electrolyte abnormalities, or thyroid problems\n6. S",
+            "similarity_to_ground_truth": 0.003,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 29,
+          "question": "Persistent social anxiety in social situations",
+          "ground_truth_answer": "F40.1 - Social Anxiety Disorder. This diagnosis requires marked fear or anxiety triggered specifically by social situations where individual is exposed to possible scrutiny by others (performance, eating, speaking, or meeting strangers). The individual fears being embarrassed, negatively evaluated, or judged by others and experiences anxiety that is out of proportion to actual danger posed. Social situations are avoided or endured with intense distress lasting at least six months. The fear and avoidance cause clinically significant impairment in occupational, social, or other important areas of functioning.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm here to help! Social anxiety, also known as social phobia, is a common type of anxiety disorder that can cause intense fear, discomfort, and avoidance behaviors in social situations. If you're experiencing persistent social anxiety, there are several things you can do:\n\n1. Seek professional help: A mental health professional such as a psychologist or psychiatrist can help you understand your symptoms, develop coping strategies, and may recommend medications if necessary.\n\n2. Cognitive-behavi",
+            "similarity_to_ground_truth": 0.013,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 30,
+          "question": "Recurrent panic attacks with persistent worry",
+          "ground_truth_answer": "F41.0 - Panic Disorder. This diagnosis requires recurrent unexpected panic attacks (sudden surge of fear/discomfort with physical symptoms like palpitations, sweating, trembling, shortness of breath, chest pain, nausea, dizziness, fear of losing control or dying) followed by at least one month of persistent concern about additional attacks or worry about implications. The individual may change behavior to avoid situations or activities believed to trigger attacks. Panic attacks typically peak within minutes and cause significant distress or functional impairment despite recognition that fear is disproportionate to actual danger posed.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you are experiencing symptoms of anxiety and panic. I'm here to help you understand your situation better, but please remember that I'm an AI and not a doctor. If you are in immediate distress or danger, call emergency services in your country (such as 911 in the U.S.).\n\nRecurrent panic attacks can be a sign of anxiety disorders like panic disorder or generalized anxiety disorder. Symptoms of panic attacks include sudden episodes of intense fear, heart palpitations, chest pain, sh",
+            "similarity_to_ground_truth": 0.036,
+            "status": "POOR"
+          }
+        }
+      ]
+    },
+    {
+      "section_name": "Differential Diagnosis",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.0,
+        "mistral_avg_similarity": 0.032
+      },
+      "questions": [
+        {
+          "question_id": 31,
+          "question": "Episodic elevated mood and decreased need for sleep",
+          "ground_truth_answer": "Bipolar I or II Disorder - episodic elevated mood for days to weeks with markedly decreased need for sleep but continued high energy is characteristic of manic or hypomanic episodes. Distinguishing features: Cyclothymia - similar pattern but milder amplitude, shorter duration (3+ days), persistent for 2+ years with no periods of normal mood lasting more than 2 months. GAD and hyperthyroidism show anxiety rather than true elevated/expansive mood. Bipolar requires family history screening and assessment of functioning impairment.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you might be experiencing hypomania, which is a mood state characterized by elevated or irritable mood, increased energy, decreased need for sleep, and racing thoughts. Hypomania is less severe than mania but more severe than normal mood swings.\n\nHypomania can occur in individuals with bipolar disorder, a mental health condition that causes extreme shifts in mood, energy, and activity levels. However, it's important to note that not everyone who experiences hypomanic episodes has ",
+            "similarity_to_ground_truth": 0.026,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 32,
+          "question": "Chronic worry and muscle tension",
+          "ground_truth_answer": "Generalized Anxiety Disorder - excessive worry for 6+ months with muscle tension and at least 2 other anxiety symptoms. Hyperthyroidism and other medical conditions (caffeine toxicity, stimulant intoxication) must be ruled out with TSH, free T4, and toxicology screening. Sleep disorders, caffeine use, anxiety disorders, and PTSD can present with similar tension. Key distinction: GAD worry is about future events and persistent; medical causes improve with treatment of underlying condition.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you're dealing with symptoms of anxiety, specifically chronic worry and muscle tension. I'm here to help!\n\nChronic worry is a common symptom of generalized anxiety disorder (GAD). People with GAD tend to worry excessively about everyday situations and events, often expecting the worst even when there is little reason for concern.\n\nMuscle tension can also be a symptom of anxiety, as well as other conditions like fibromyalgia or physical injury. The muscles most commonly affected by",
+            "similarity_to_ground_truth": 0.056,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 33,
+          "question": "Auditory hallucinations without mood symptoms",
+          "ground_truth_answer": "Schizophrenia - first-rank auditory hallucinations (hearing voices commenting or conversing) in absence of mood symptoms for 1+ month indicate primary psychotic disorder. Schizoaffective Disorder - similar psychotic symptoms concurrent with major mood episode (depression or mania) lasting weeks or longer. Other differential: Brief Psychotic Disorder (symptoms <1 month), Substance-Induced Psychosis, Medical Psychosis (encephalitis, delirium), and Psychotic Disorder NOS.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Auditory hallucinations, which are perceptions of sounds that do not have an external source, can occur in a variety of circumstances. However, when they happen without accompanying mood symptoms such as depression or anxiety, they may be associated with certain neurological conditions, medications, or substance use. Here are some possible causes:\n\n1. Schizophrenia: While auditory hallucinations are a key symptom of schizophrenia, not all individuals with this condition experience mood symptoms.",
+            "similarity_to_ground_truth": 0.035,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 34,
+          "question": "Acute confusion and visual hallucinations",
+          "ground_truth_answer": "Delirium - acute onset (hours to days), fluctuating consciousness, confusion, visual hallucinations, due to medical condition, medication, infection, hypoxia, metabolic disturbance, or withdrawal. Substance Intoxication or Withdrawal - acute confusion with visual hallucinations from alcohol, stimulants, hallucinogens, or benzodiazepine withdrawal. Brief Psychotic Disorder vs. Schizophrenia: typically lack the acute medical symptoms and fluctuation. Requires urgent medical evaluation, labs, imaging to identify life-threatening cause.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm not a doctor, but the symptoms you mentioned - acute confusion and visual hallucinations - can be indicative of several medical or psychological conditions. It is important to seek professional help as soon as possible. Here are some potential causes:\n\n1. Substance abuse (drugs, alcohol)\n2. Mental health disorders such as schizophrenia or bipolar disorder\n3. Brain injuries or neurological disorders like epilepsy or migraines\n4. Infections of the central nervous system, like meningitis or enc",
+            "similarity_to_ground_truth": 0.033,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 35,
+          "question": "Social withdrawal and flat affect",
+          "ground_truth_answer": "Schizophrenia - negative symptoms (social withdrawal, anhedonia, blunted/flat affect, alogia, avolition) as primary features over time. Severe Major Depressive Episode - depressed mood, withdrawal, flat affect due to depression; psychomotor retardation and anhedonia present; negative symptoms improve as mood improves. Autism Spectrum Disorder - lifelong pattern of social difficulty, not acute onset. Medication side effects (antipsychotics) can cause flat affect. Distinguishing: schizophrenia shows positive symptoms initially; depression shows depressed mood as primary complaint.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Social withdrawal and flat affect are common symptoms that can be associated with various mental health conditions, such as major depressive disorder, schizophrenia, autism spectrum disorders, and bipolar disorder.\n\n1. Social Withdrawal: This refers to a significant decrease in social interaction, spending less time with friends or family, avoiding social situations, or losing interest in social activities. In some cases, it can also involve self-isolation, which is the act of purposefully separ",
+            "similarity_to_ground_truth": 0.034,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 36,
+          "question": "Intrusive thoughts and repetitive checking",
+          "ground_truth_answer": "Obsessive-Compulsive Disorder - intrusive obsessive thoughts (contamination fears, harm fears) with compulsive checking behaviors to reduce anxiety; time-consuming (1+ hour daily), significantly distressing. Generalized Anxiety Disorder - excessive worry with safety behaviors, but not true obsessions/compulsions; worry is about realistic concerns rather than irrational obsessions. Body Dysmorphic Disorder - repetitive checking of appearance. OCD distinguished by ego-dystonic (unwanted) obsessions and ritualistic compulsions, whereas GAD worries are more ego-syntonic.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Intrusive thoughts and repetitive checking are common symptoms that can be associated with anxiety disorders such as Obsessive-Compulsive Disorder (OCD) and other anxiety conditions.\n\n1. Intrusive Thoughts: These are unwanted, unpleasant thoughts, images or urges that repeatedly pop into your mind, causing feelings of distress, fear, or anxiety. They can be about a wide range of topics such as violence, harm, sexuality, religion, or contamination, among others.\n\n2. Repetitive Checking: This is a",
+            "similarity_to_ground_truth": 0.041,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 37,
+          "question": "Sudden fear with palpitations",
+          "ground_truth_answer": "Panic Disorder - sudden surge of intense fear with physical symptoms (palpitations, chest pain, dyspnea, dizziness) peaking within minutes, recurrent attacks with persistent worry. Hyperthyroidism - anxiety, palpitations, tremor, tachycardia, heat intolerance; thyroid function tests (TSH, free T4) differentiate. Cardiac arrhythmia or cardiac disease - chest pain and palpitations; requires EKG. Acute Stress Disorder or Phobias - fear response to specific trigger. Distinguishing: Panic attacks lack clear trigger; medical causes have consistent vital sign abnormalities.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you may be experiencing symptoms of anxiety or panic. These feelings can often arise due to stress, worry, or intense emotions. Here are some suggestions that might help:\n\n1. Deep Breathing: Focus on deep, slow breaths to help calm your body and mind. Inhale deeply through your nose for a count of four, hold for a count of seven, then exhale slowly through your mouth for a count of eight. Repeat several times.\n\n2. Progressive Muscle Relaxation: Tense and then release each muscle g",
+            "similarity_to_ground_truth": 0.031,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 38,
+          "question": "Persistent low mood for 2 years",
+          "ground_truth_answer": "Persistent Depressive Disorder (Dysthymia) - 2+ years of depressed mood on more days than not with chronic low-grade depressive symptoms (2+ of: fatigue, concentration difficulty, appetite change, sleep change, low self-esteem, hopelessness). Recurrent Major Depressive Disorder - multiple episodes of major depression separated by periods of normal mood, total duration 2+ years due to recurrence. Chronic Medical Illness - medical conditions (hypothyroidism, autoimmune disease, chronic pain) can cause chronic low mood; medical workup essential.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm really sorry that you're feeling this way, but I'm unable to provide the help that you need. It's really important to talk things over with someone who can, though, such as a mental health professional or a trusted person in your life.\n\nIf you're struggling with feelings of sadness, hopelessness, or low mood for an extended period, it might be a good idea to seek help from a healthcare provider. They can provide you with guidance and support, and work with you to find the best treatment opti",
+            "similarity_to_ground_truth": 0.02,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 39,
+          "question": "Elevated mood lasting 3 days",
+          "ground_truth_answer": "Hypomania (Bipolar II Disorder) - abnormally elevated mood for 3-4 days (meets 4-day minimum for hypomanic episode) with goal-directed activity and decreased need for sleep; no marked functional impairment or hospitalization. Cyclothymia - persistent pattern of mild mood elevation (3+ days) alternating with mild depression lasting 2+ years; multiple episodes of hypomanic-like and depressive-like symptoms. Brief elevated mood <3 days not meeting diagnostic criteria. Distinguishing: Hypomania indicates Bipolar II; Cyclothymia milder and more chronic.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you're describing a period of heightened or elevated emotions that lasted for about three days. This could be due to various reasons such as excitement, happiness, or even stress. However, if this is an unusual and significant change in your mood, it might be worth discussing with a healthcare professional to rule out any underlying physical or mental health conditions.\n\nIf you're experiencing persistent mood changes, it's important to seek help from a medical or mental health pro",
+            "similarity_to_ground_truth": 0.027,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 40,
+          "question": "Memory impairment and disorientation",
+          "ground_truth_answer": "Dementia - progressive cognitive decline including memory loss, disorientation, apraxia, agnosia over months to years with clear sensorium. Delirium - acute confusion, disorientation, memory impairment, fluctuating consciousness with inattention due to medical condition, medication, or metabolic disturbance; reversible if underlying cause treated. Severe depression - pseudodementia with concentration difficulty and memory problems from cognitive impairment rather than neurodegeneration. Distinguishing: Dementia gradual onset and progressive; delirium acute and fluctuating; mood disorder shows depressed mood and improves with antidepressants.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm not a doctor, but I can try to help you understand these symptoms better. Memory impairment refers to the loss of memory abilities that is greater than what is typically seen as a normal part of aging. This can manifest in forgetting recent events or important information, having trouble learning new things, and struggling with attention or concentration.\n\nDisorientation, on the other hand, means losing one's bearings about one's surroundings, time, or situation. A person may feel confused a",
+            "similarity_to_ground_truth": 0.014,
+            "status": "POOR"
+          }
+        }
+      ]
+    },
+    {
+      "section_name": "Medication Knowledge",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.0,
+        "mistral_avg_similarity": 0.071
+      },
+      "questions": [
+        {
+          "question_id": 41,
+          "question": "Sertraline belongs to which class",
+          "ground_truth_answer": "Selective Serotonin Reuptake Inhibitor (SSRI). Sertraline is a first-line antidepressant used for major depression, anxiety disorders, OCD, and PTSD. It selectively inhibits serotonin reuptake, increasing synaptic serotonin. Common side effects include sexual dysfunction, GI disturbance, and activation. Typical starting dose is 50-100mg daily with therapeutic effects observed in 2-4 weeks.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Sertraline belongs to the class of pharmaceuticals known as Selective Serotonin Reuptake Inhibitors (SSRIs). These are a group of antidepressants that work by increasing the levels of serotonin, a neurotransmitter in your brain that helps maintain mental balance.",
+            "similarity_to_ground_truth": 0.214,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 42,
+          "question": "Lithium belongs to which class",
+          "ground_truth_answer": "Mood Stabilizer/Antimania agent. Lithium is a first-line treatment for bipolar disorder, particularly effective for acute mania and maintenance treatment. It has narrow therapeutic window (0.6-1.2 mEq/L), requiring regular serum level monitoring. Side effects include tremor, polyuria, polydipsia, and weight gain. Lithium has neuroprotective properties and reduces suicide risk in bipolar disorder and depression.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Lithium is an alkali metal and belongs to Group 1 (Ia) of the periodic table. It is classified as a simple metal because it exhibits only one electron in its outermost energy level, which is easily lost to form a unipositive ion, Li+.",
+            "similarity_to_ground_truth": 0.043,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 43,
+          "question": "Risperidone belongs to which class",
+          "ground_truth_answer": "Atypical (Second-Generation) Antipsychotic. Risperidone is used for schizophrenia, bipolar mania, and behavioral disturbances. It blocks dopamine D2 receptors and serotonin 5-HT2A receptors. Common side effects include extrapyramidal symptoms (though less than typical antipsychotics), hyperprolactinemia, weight gain, and metabolic effects. Available as oral tablet or long-acting injection for improved compliance.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Risperidone belongs to the class of antipsychotic medications known as atypical antipsychotics. Specifically, it is a dopamine D2 and serotonin 5-HT2 receptor antagonist. It is primarily used to treat symptoms of schizophrenia and related psychoses, but it also has uses in the treatment of irritability associated with autism and bipolar disorder.",
+            "similarity_to_ground_truth": 0.118,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 44,
+          "question": "Haloperidol belongs to which class",
+          "ground_truth_answer": "Typical (First-Generation) Antipsychotic. Haloperidol is a high-potency typical antipsychotic used for acute psychosis and agitation, particularly in emergency settings due to rapid onset. It primarily blocks dopamine D2 receptors. Major side effects include extrapyramidal symptoms (akathisia, dystonia, Parkinsonism), tardive dyskinesia (long-term), neuroleptic malignant syndrome, and QT prolongation. Less commonly used now due to atypical antipsychotic availability.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Haloperidol belongs to the class of antipsychotics known as typical or first-generation antipsychotics. It is a dopamine receptor antagonist, specifically blocking D2 and D1 receptors in the brain. This property is responsible for its use in treating schizophrenia, behavior disorders, hiccups, and certain tics.",
+            "similarity_to_ground_truth": 0.069,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 45,
+          "question": "Clozapine carries risk of what serious side effect",
+          "ground_truth_answer": "Agranulocytosis - a potentially life-threatening decrease in white blood cells with risk of severe infection. Clozapine requires mandatory baseline and regular (weekly initially, then monthly) absolute neutrophil count (ANC) monitoring. Risk is highest in first 3 months of treatment. Other serious side effects include myocarditis, seizures, orthostatic hypotension, and metabolic syndrome. Despite risks, clozapine is most effective antipsychotic for treatment-resistant schizophrenia.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Clozapine, an antipsychotic medication used primarily for treating schizophrenia and some other severe mental disorders, does carry a risk of several significant side effects. One of the most serious is agranulocytosis, a condition where there is a low level of white blood cells (neutrophils) that can lead to increased susceptibility to infections.\n\nOther serious side effects include myocarditis (inflammation of the heart muscle), seizures, and neuroleptic malignant syndrome (a rare but potentia",
+            "similarity_to_ground_truth": 0.043,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 46,
+          "question": "Olanzapine is associated with what risk",
+          "ground_truth_answer": "Metabolic Syndrome - including weight gain, hyperglycemia/diabetes risk, dyslipidemia, and hypertension. Olanzapine has among the highest metabolic side effect risks of atypical antipsychotics. Patients require baseline and ongoing monitoring of weight, fasting glucose, lipid panel, and blood pressure. Despite metabolic risks, olanzapine is highly effective for schizophrenia and bipolar disorder. Lifestyle modifications and possible additional medications may be needed to mitigate metabolic effects.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Olanzapine, an atypical antipsychotic medication, is associated with several potential risks and side effects. Here are some of the most common ones:\n\n1. Weight Gain: Olanzapine can cause significant weight gain, which might increase the risk of obesity, diabetes, high cholesterol levels, and heart disease.\n\n2. Metabolic Disorders: The drug can lead to elevated blood sugar levels, increased cholesterol and triglyceride levels, and in rare cases, development or exacerbation of diabetes mellitus.\n",
+            "similarity_to_ground_truth": 0.03,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 47,
+          "question": "Fluoxetine belongs to which class",
+          "ground_truth_answer": "Selective Serotonin Reuptake Inhibitor (SSRI). Fluoxetine is a first-line antidepressant with FDA approval for depression, OCD, panic disorder, bulimia, and PMDD. It has long half-life (4-6 days) allowing weekly dosing for treatment maintenance. Side effects include sexual dysfunction, gastrointestinal effects, activation, and potential serotonin syndrome. Fluoxetine requires 2-4 weeks to show therapeutic benefit, with full effect at 6-8 weeks.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Fluoxetine belongs to the class of drugs known as Selective Serotonin Reuptake Inhibitors (SSRIs). It is commonly used for the treatment of depression, obsessive-compulsive disorder, bulimia nervosa, and panic disorder.",
+            "similarity_to_ground_truth": 0.081,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 48,
+          "question": "Valproate belongs to which class",
+          "ground_truth_answer": "Mood Stabilizer (Anticonvulsant). Valproic acid/divalproex is FDA-approved for acute mania and bipolar maintenance. It is effective in rapid-cycling bipolar disorder and mixed episodes. Mechanism involves increasing GABA and modifying protein kinase C. Side effects include tremor, weight gain, alopecia, hepatotoxicity (rare but serious), and teratogenicity. Requires baseline liver function tests and periodic monitoring. Therapeutic levels are 50-100 mcg/mL.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Valproate belongs to the class of anticonvulsants known as hydantoin derivatives. Specifically, it is a sodium channel blocker and inhibits GABA reuptake, making it effective in the treatment of epilepsy, bipolar disorder, and migraines. However, it's important to note that valproate can have serious side effects, particularly for female patients of childbearing age due to increased risk of birth defects if taken during pregnancy.",
+            "similarity_to_ground_truth": 0.016,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 49,
+          "question": "Lorazepam belongs to which class",
+          "ground_truth_answer": "Benzodiazepine (short-acting anxiolytic). Lorazepam is used for acute anxiety, agitation, insomnia, alcohol withdrawal, and as adjunctive treatment in psychotic disorders. It works by enhancing GABA inhibition in the CNS. Side effects include sedation, dependence/withdrawal risk, cognitive impairment, and tolerance with prolonged use. Lorazepam has intermediate duration with peak effects in 1-3 hours. Should be used short-term due to addiction and dependence potential.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Lorazepam belongs to the class of drugs known as benzodiazepines. These are a group of central nervous system (CNS) depressants that work on the brain and nerves to produce a calming effect. They are typically used to treat anxiety disorders, but can also be used for sleep disorders, seizures, and alcohol withdrawal symptoms.",
+            "similarity_to_ground_truth": 0.033,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 50,
+          "question": "Quetiapine belongs to which class",
+          "ground_truth_answer": "Atypical (Second-Generation) Antipsychotic. Quetiapine is used for schizophrenia, bipolar mania, bipolar depression, and major depression augmentation. It blocks dopamine and serotonin receptors. Side effects include sedation, weight gain, hyperglycemia risk, orthostatic hypotension, and cataracts (rare). Quetiapine has relatively weak D2 receptor binding compared to other antipsychotics. It is increasingly used off-label for insomnia due to sedating properties despite limited evidence.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "Quetiapine is an atypical antipsychotic medication and it primarily belongs to the class of drugs known as D2 receptor antagonists. Specifically, it's a secondary amine antipsychotic. However, it also has antagonist properties for serotonin 5-HT2A receptors and noradrenaline alpha1 receptors. The exact classification can depend on the specific pharmacological aspect under consideration.",
+            "similarity_to_ground_truth": 0.066,
+            "status": "POOR"
+          }
+        }
+      ]
+    },
+    {
+      "section_name": "Long-Term Course Management",
+      "section_metrics": {
+        "total_questions": 10,
+        "llama3_avg_similarity": 0.0,
+        "mistral_avg_similarity": 0.025
+      },
+      "questions": [
+        {
+          "question_id": 51,
+          "question": "Symptoms gradually improve over 3 months",
+          "ground_truth_answer": "Improving/Remitting course - indicates positive response to treatment or natural recovery over 3 months. Gradual improvement suggests steady-state treatment efficacy. In depression, meaningful improvement typically appears by 4-6 weeks; 3-month improvement indicates sustained response. This trajectory suggests favorable prognosis with appropriate ongoing treatment and monitoring. May represent response to antidepressant, psychotherapy, or environmental improvements.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're asking about a health-related situation where symptoms are improving over a period of three months. Improvement in symptoms can be attributed to various factors such as treatment, rest, diet, or the natural course of a disease. However, it's essential to emphasize that while improvement is good news, continued monitoring and regular follow-ups with a healthcare provider are crucial to ensure complete recovery and to address any potential complications.\n\nIf you or someone els",
+            "similarity_to_ground_truth": 0.028,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 52,
+          "question": "Symptoms worsen after medication discontinuation",
+          "ground_truth_answer": "Relapse - recurrence of symptoms following cessation of effective treatment, indicating dependence on medication for symptom control. Relapse rate varies by disorder but is high for schizophrenia (70-80% at 1 year without maintenance), bipolar disorder, and recurrent depression. Demonstrates need for long-term maintenance treatment. Relapse differs from recurrence, which refers to new episodes after full remission.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm not a doctor, but it's important to note that sudden discontinuation of medication can sometimes lead to symptoms worsening due to a process known as \"rebound effect\" or \"discontinuation syndrome.\" This can happen with various types of medications and the specific symptoms depend on the type of drug.\n\nIf you have been taking medication for a medical condition and are experiencing worsening symptoms after discontinuing it, it's crucial to consult with your healthcare provider. They may recomm",
+            "similarity_to_ground_truth": 0.022,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 53,
+          "question": "Symptoms fluctuate weekly",
+          "ground_truth_answer": "Episodic course - pattern of recurring episodes or exacerbations separated by periods of relative stability or remission. Weekly fluctuations suggest cycling pattern, possibly related to circadian/ultradian rhythms, weekly stressors, or underlying biological cycles. Episodic patterns are characteristic of bipolar disorder, cyclothymia, premenstrual dysphoric disorder, and some anxiety disorders. Episodic courses differ from chronic steady-state courses.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you are experiencing symptoms that vary or change on a weekly basis. This could be due to various reasons such as an ongoing health condition, medication side effects, or lifestyle factors. If the fluctuations are causing you concern, it would be best to consult with a healthcare professional. They can help determine the underlying cause and suggest appropriate management strategies.\n\nIn the meantime, try to keep track of your symptoms on a daily basis. This will provide valuable i",
+            "similarity_to_ground_truth": 0.022,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 54,
+          "question": "Symptoms remain unchanged for 6 months",
+          "ground_truth_answer": "Stable/Plateau course - maintenance of consistent symptom severity without significant worsening or improvement over 6-month period. Stability indicates: adequate treatment effect with current regimen, chronic condition that has reached equilibrium, or natural plateau in disease progression. Stable courses may be favorable (well-controlled symptoms) or concerning (residual untreated symptoms). Requires monitoring for future deterioration or opportunities for improvement.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm sorry to hear that you or someone you know has been experiencing symptoms without improvement for six months. It is important to seek the advice of a healthcare professional to ensure appropriate diagnosis and treatment. The length of time symptoms persist can indicate chronicity, which may require more extensive evaluation or specialized care. Please consult with a doctor if you haven't already done so. They will be able to help determine the underlying cause and suggest the most suitable m",
+            "similarity_to_ground_truth": 0.035,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 55,
+          "question": "Symptoms worsen steadily over 1 year",
+          "ground_truth_answer": "Progressive/Deteriorating course - continuous worsening of symptoms over 1-year period with accumulating severity and functional decline. Progressive courses suggest: inadequate or ineffective current treatment, unidentified medical or psychiatric comorbidities, non-adherence to treatment, accumulating psychosocial stressors, or underlying disease progression (as in neurodegenerative disorders). Requires urgent reassessment of diagnosis, treatment adequacy, and investigation of new factors.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It sounds like you're experiencing a health concern that has been progressive over the past year. I'm unable to diagnose or provide medical advice, but I can suggest some general steps you might consider:\n\n1. If you haven't already, it would be important to consult with a healthcare professional about your symptoms. They can evaluate your condition, order necessary tests, and help develop an appropriate treatment plan.\n\n2. Keeping a detailed journal of your symptoms, including any triggers or re",
+            "similarity_to_ground_truth": 0.019,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 56,
+          "question": "Symptoms improve briefly then worsen again",
+          "ground_truth_answer": "Partial remission or intermittent response - initial treatment response with symptom improvement followed by recurrence or relapse. May indicate: inadequate medication dosage, poor medication compliance, recurrent environmental stressors triggering symptom return, or incomplete treatment response. Partial remission differs from full remission (complete symptom resolution). Suggests need for treatment intensification, combination therapy, or psychotherapy augmentation.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It is difficult to determine the exact cause based on the information provided, but it sounds like you might be experiencing a cyclical pattern of improvement and worsening of symptoms. This could be due to various factors such as a chronic illness, mental health condition, or side effects from medication.\n\nIf you are dealing with a physical ailment, it's important to continue following your treatment plan as directed by your healthcare provider. If you suspect the medications you're taking may ",
+            "similarity_to_ground_truth": 0.025,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 57,
+          "question": "Symptoms return after 6 months of remission",
+          "ground_truth_answer": "Recurrence - development of new episode of psychiatric illness after a period of full remission (6+ months symptom-free). Recurrence indicates vulnerability to future episodes and need for maintenance/preventive treatment. Different from relapse (symptom return shortly after treatment discontinuation). Recurrence rate varies: 50% of first depressive episodes recur; bipolar disorder has high recurrence (70% within 5 years). Recurrence necessitates long-term treatment planning.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "I'm not a doctor, but it seems like you may be experiencing a recurrence or a flare-up of some condition that you had been in remission from for 6 months. If this is a health concern, it's important to consult with your healthcare provider as soon as possible. They can help determine the cause and provide appropriate treatment or management strategies. In the meantime, try to maintain a healthy lifestyle, get plenty of rest, eat nutritious foods, and avoid triggers or stressors that might exacer",
+            "similarity_to_ground_truth": 0.014,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 58,
+          "question": "Symptoms improve with stress reduction",
+          "ground_truth_answer": "Stress-responsive course - symptom exacerbation related to psychosocial stressors with improvement during periods of stress reduction or environmental change. Indicates anxiety disorders, adjustment disorders, and stress-related conditions showing clear relationship between stressor exposure and symptom severity. Stress-responsiveness suggests importance of psychotherapy, stress management, environmental modification, and support. May indicate better prognosis with effective coping and life changes.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're discussing a health-related issue where symptoms improve when stress levels decrease. This could be related to various conditions such as migraines, anxiety disorders, or tension headaches, among others. However, it's important to remember that everyone is unique, and the relationship between stress and symptoms can vary greatly from person to person.\n\nIf you or someone else is experiencing symptoms that improve with stress reduction, it would be a good idea to consult with ",
+            "similarity_to_ground_truth": 0.026,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 59,
+          "question": "Symptoms worsen during winter months",
+          "ground_truth_answer": "Seasonal Pattern - predictable worsening of symptoms during specific season (typically fall/winter). Characteristic of Seasonal Affective Disorder (depression with seasonal pattern) and some anxiety disorders. Related to reduced daylight, circadian rhythm disruption, and changes in melatonin/serotonin. Treatment includes light therapy (10,000 lux), vitamin D supplementation, psychotherapy, and antidepressants. Seasonal pattern indicates specific chronicity and informs preventive treatment timing.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems like you're experiencing seasonal changes affecting your symptoms. This could be due to various reasons such as changes in temperature, humidity, or daylight hours. Here are a few tips that might help:\n\n1. Dress warmly: Cold weather can exacerbate certain symptoms. Wearing layers and keeping warm can help manage discomfort.\n\n2. Humidifier: Dry air can worsen respiratory issues. Using a humidifier in your home can help alleviate dryness in the air, making it easier to breathe.\n\n3. Sunlig",
+            "similarity_to_ground_truth": 0.015,
+            "status": "POOR"
+          }
+        },
+        {
+          "question_id": 60,
+          "question": "Symptoms improve rapidly after hospitalization",
+          "ground_truth_answer": "Acute improvement/Hospitalization response - rapid symptom reduction following inpatient admission, suggesting severe symptoms responding to intensive treatment, structured environment, medication optimization, and 24-hour monitoring. Rapid post-hospitalization improvement indicates: adequate response to acute treatment, benefit from environmental structure and reduced stress, or crisis resolution. Requires careful discharge planning, outpatient follow-up, and maintenance treatment to prevent relapse and readmission.",
+          "llama3": {
+            "response": "",
+            "similarity_to_ground_truth": 0,
+            "status": "NOT_FOUND"
+          },
+          "mistral": {
+            "response": "It seems that the individual you're referring to has experienced an improvement in their symptoms following hospitalization. This is good news and suggests that the treatment they received was effective. However, it's important to remember that each case is unique, and ongoing care may still be necessary. If there are any concerns or questions about their recovery process, a healthcare professional should be consulted for advice tailored to the individual's specific situation.",
+            "similarity_to_ground_truth": 0.046,
+            "status": "POOR"
+          }
+        }
+      ]
+    }
+  ]
+}
