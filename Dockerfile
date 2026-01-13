@@ -1,35 +1,34 @@
-# Dockerfile for production deployment - optimized for size
+# Multi-stage build for faster Railway deployment
+FROM python:3.11-slim as builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ && rm -rf /var/lib/apt/lists/*
+
+# Copy and install requirements first (for better caching)
+COPY backend/requirements-cloud.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --user -r /tmp/requirements.txt
+
+# Production stage
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install only essential system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+# Copy installed packages from builder
+COPY --from=builder /root/.local /root/.local
 
-# Copy requirements and install Python dependencies with optimizations
-COPY backend/requirements-cloud.txt ./requirements.txt
-
-# Install dependencies with size optimizations
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip cache purge
-
-# Copy only the backend application code
+# Copy application code
 COPY backend/ .
 
-# Create necessary directories
+# Create directories
 RUN mkdir -p data vector_db_hierarchical
 
-# Remove unnecessary files to reduce image size
-RUN find . -type f -name "*.pyc" -delete \
-    && find . -type d -name "__pycache__" -delete \
-    && rm -rf /root/.cache
+# Clean up
+RUN find . -type f -name "*.pyc" -delete && \
+    find . -type d -name "__pycache__" -delete
 
-# Expose port
+# Make sure scripts are in PATH
+ENV PATH=/root/.local/bin:$PATH
+
 EXPOSE 8001
-
-# Run the application
 CMD ["python", "-m", "app.main"]
