@@ -83,9 +83,21 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    print("🟡 DEBUG: Starting main...")
-    import uvicorn
-    import os
-    print("🟡 DEBUG: Uvicorn imported, starting server...")
-    port = int(os.getenv("PORT", settings.port))
-    uvicorn.run(app, host=settings.host, port=port)
+    try:
+        print("🟡 DEBUG: Starting main...")
+        print(f"🟡 DEBUG: Environment variables:")
+        print(f"  - PORT: {os.getenv('PORT', 'not set')}")
+        print(f"  - HOST: {os.getenv('HOST', 'not set')}")
+        print(f"  - DATABASE_URL: {os.getenv('DATABASE_URL', 'not set')}")
+        print(f"  - GROQ_API_KEY: {'set' if os.getenv('GROQ_API_KEY') else 'not set'}")
+        
+        import uvicorn
+        print("🟡 DEBUG: Uvicorn imported, starting server...")
+        port = int(os.getenv("PORT", settings.port))
+        print(f"🟡 DEBUG: Starting on {settings.host}:{port}")
+        uvicorn.run(app, host=settings.host, port=port)
+    except Exception as e:
+        print(f"🔴 ERROR: Failed to start application: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
