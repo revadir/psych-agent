@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # LLM Configuration
     llm_provider: str = "groq"  # Changed from ollama to groq
     llm_api_key: str = ""
-    llm_model: str = "llama3-8b-8192"  # Groq model
+    llm_model: str = "llama-3.3-70b-versatile"  # Groq model
     llm_temperature: float = 0.1
     
     # Groq API Key
