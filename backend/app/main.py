@@ -87,21 +87,23 @@ async def health_check():
 
 @app.post("/setup-admin")
 async def setup_admin(db: Session = Depends(get_db)):
-    """One-time setup endpoint to create admin user."""
+    """One-time setup endpoint to create admin user and all tables."""
     try:
         from app.models import Allowlist, User
         from app.models.database import Base
         from app.db.session import engine
         
-        # Create all tables
+        # Create all tables (including feedback, chat_sessions, etc.)
+        print("Creating all database tables...")
         Base.metadata.create_all(bind=engine)
+        print("All tables created successfully!")
         
         email = "revadigar@gmail.com"
         
         # Check if already in allowlist
         existing_allowlist = db.query(Allowlist).filter(Allowlist.email == email).first()
         if existing_allowlist:
-            return {"message": "Admin user already in allowlist", "email": email}
+            return {"message": "Admin user already exists, tables verified", "email": email}
         
         # Add to allowlist
         allowlist_entry = Allowlist(email=email, is_admin=True)
@@ -114,7 +116,7 @@ async def setup_admin(db: Session = Depends(get_db)):
         db.commit()
         
         return {
-            "message": "Admin user created successfully",
+            "message": "Admin user created successfully and all tables initialized",
             "email": email,
             "default_password": "admin123",
             "note": "Please change password after first login"
