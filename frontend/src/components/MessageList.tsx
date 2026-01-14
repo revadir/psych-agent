@@ -231,11 +231,11 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                     return <p>{children}</p>
                   },
                   // Handle other elements that might contain citations
-                  text: ({ children }) => {
+                  text: ({ children }: any) => {
                     if (typeof children === 'string' && children.includes('^')) {
                       const parts = children.split(/\^(\d+)/g)
                       return (
-                        <>
+                        <span>
                           {parts.map((part, index) => {
                             if (index % 2 === 1) {
                               const citationNum = parseInt(part)
@@ -250,12 +250,12 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                                 </sup>
                               )
                             }
-                            return part
+                            return <span key={index}>{part}</span>
                           })}
-                        </>
+                        </span>
                       )
                     }
-                    return children
+                    return <span>{children}</span>
                   }
                 }}
               >
