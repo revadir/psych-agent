@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Message } from '../contexts/ChatContext'
 
 // Extend window interface for scroll function
 declare global {
   interface Window {
     scrollToBottom?: () => void
   }
-}
-
-interface Message {
-  id: number
-  role: string
-  content: string
-  created_at: string
 }
 
 interface MessageListProps {
