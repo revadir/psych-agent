@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 import apiClient from '../services/api'
 import { useToast } from './ToastContext'
 
-interface Message {
+export interface Message {
   id: number
   role: string
   content: string
@@ -10,6 +10,7 @@ interface Message {
   streaming?: boolean
   thinking?: boolean
   error?: boolean
+  citations?: any[]
 }
 
 interface Session {
