@@ -80,11 +80,12 @@ async def get_feedback_stats(
         avg_rating = positive_feedback / (positive_feedback + negative_feedback)
     
     # Feedback by day
+    from sqlalchemy import case
     feedback_by_day = db.query(
         func.date(Feedback.created_at).label('date'),
         func.count(Feedback.id).label('count'),
-        func.sum(func.case((Feedback.rating == 'up', 1), else_=0)).label('positive'),
-        func.sum(func.case((Feedback.rating == 'down', 1), else_=0)).label('negative')
+        func.sum(case((Feedback.rating == 'up', 1), else_=0)).label('positive'),
+        func.sum(case((Feedback.rating == 'down', 1), else_=0)).label('negative')
     ).filter(
         Feedback.created_at >= start_date
     ).group_by(
