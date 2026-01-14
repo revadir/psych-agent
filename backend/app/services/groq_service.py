@@ -4,20 +4,24 @@ Groq LLM service for cloud deployment.
 
 import os
 from typing import Dict, Any, List
-from groq import Groq
+from openai import OpenAI
 from app.core.config import settings
 
 
 class GroqService:
-    """Service for interacting with Groq API."""
+    """Service for interacting with Groq API using OpenAI client."""
     
     def __init__(self):
         api_key = os.getenv("GROQ_API_KEY") or settings.groq_api_key
         if not api_key:
             raise ValueError("GROQ_API_KEY environment variable is required")
         
-        self.client = Groq(api_key=api_key)
-        self.model = os.getenv("LLM_MODEL", settings.llm_model)
+        # Use OpenAI client with Groq endpoint
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.groq.com/openai/v1"
+        )
+        self.model = "mixtral-8x7b-32768"
     
     def generate_response(self, messages: List[Dict[str, str]], **kwargs) -> str:
         """Generate response using Groq API."""
