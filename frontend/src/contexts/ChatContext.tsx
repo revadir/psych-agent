@@ -7,6 +7,9 @@ interface Message {
   role: string
   content: string
   created_at: string
+  streaming?: boolean
+  thinking?: boolean
+  error?: boolean
 }
 
 interface Session {
