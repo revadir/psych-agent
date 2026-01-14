@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string): Promise<boolean> => {
     try {
-      const response = await apiClient.post('/auth/login', { email })
+      const response = await apiClient.post('/api/auth/login', { email })
       const { access_token } = response.data
       
       localStorage.setItem('token', access_token)
