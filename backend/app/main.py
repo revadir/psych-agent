@@ -82,6 +82,28 @@ async def health_check():
     return {"status": "healthy", "environment": settings.environment}
 
 
+@app.post("/setup-admin")
+async def setup_admin(db: Session = Depends(get_db)):
+    """One-time setup endpoint to create admin user."""
+    from app.services.auth_service import AuthService
+    
+    email = "revadigar@gmail.com"
+    
+    # Check if already exists
+    existing = AuthService.get_user_by_email(db, email)
+    if existing:
+        return {"message": "Admin user already exists", "email": email}
+    
+    # Create admin user
+    user = AuthService.add_user_to_allowlist(db, email, is_admin=True)
+    return {
+        "message": "Admin user created successfully",
+        "email": email,
+        "default_password": "admin123",
+        "note": "Please change password after first login"
+    }
+
+
 if __name__ == "__main__":
     try:
         print("🟡 DEBUG: Starting main...")
