@@ -93,7 +93,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   const loadSession = async (sessionId: number) => {
     try {
-      const response = await apiClient.get(`/chat/sessions/${sessionId}`)
+      const response = await apiClient.get(`/api/chat/sessions/${sessionId}`)
       const session = response.data
       setCurrentSession(session)
       setMessages(session.messages || [])
@@ -223,7 +223,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         console.log('Streaming failed, falling back to regular API:', streamError)
         
         // Fallback to regular API
-        const response = await apiClient.post(`/chat/sessions/${currentSession.id}/messages`, {
+        const response = await apiClient.post(`/api/chat/sessions/${currentSession.id}/messages`, {
           content
         })
         
@@ -256,7 +256,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   const deleteSession = async (sessionId: number) => {
     try {
-      await apiClient.delete(`/chat/sessions/${sessionId}`)
+      await apiClient.delete(`/api/chat/sessions/${sessionId}`)
       setSessions(prev => prev.filter(s => s.id !== sessionId))
       
       if (currentSession?.id === sessionId) {
