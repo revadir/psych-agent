@@ -33,38 +33,27 @@ class CloudAgentService:
             }
     
     def _process_with_cloud(self, query: str) -> Dict[str, Any]:
-        """Process query using Groq and Pinecone."""
-        # Search for relevant documents
-        pinecone = get_pinecone_service()
-        relevant_docs = pinecone.search_similar_documents(query, top_k=3)
-        
-        # Build context from documents
-        context = ""
+        """Process query using Groq (without Pinecone for now)."""
+        # Skip Pinecone for now - use Groq directly
         citations = []
         
-        for i, doc in enumerate(relevant_docs):
-            context += f"\n\nDocument {i+1}:\n{doc['content']}"
-            citations.append({
-                "id": i + 1,
-                "document": doc["source"],
-                "chapter": doc["chapter"],
-                "section": doc["section"],
-                "page": doc["page"],
-                "content": doc["content"][:200] + "..." if len(doc["content"]) > 200 else doc["content"],
-                "full_content": doc["content"],
-                "source": doc["source"],
-                "preview": doc["content"][:150] + "..." if len(doc["content"]) > 150 else doc["content"]
-            })
-        
-        # Generate response using Groq
+        # Use Groq to generate response
         messages = [
             {
                 "role": "system",
-                "content": """You are a psychiatric clinical decision support assistant. Use the provided DSM-5-TR context to answer questions about diagnostic criteria, symptoms, and clinical features. Always cite your sources and be precise about diagnostic criteria."""
+                "content": """You are a psychiatric clinical decision support assistant with expertise in DSM-5-TR diagnostic criteria. 
+                
+Provide detailed, accurate information about:
+- Diagnostic criteria for psychiatric disorders
+- Symptoms and clinical features
+- Differential diagnosis considerations
+- ICD-10 codes where applicable
+
+Always structure your responses clearly and cite DSM-5-TR when discussing diagnostic criteria."""
             },
             {
                 "role": "user",
-                "content": f"Context from DSM-5-TR:\n{context}\n\nQuestion: {query}\n\nPlease provide a detailed response based on the context above."
+                "content": query
             }
         ]
         
