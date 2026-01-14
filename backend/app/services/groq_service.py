@@ -21,7 +21,7 @@ class GroqService:
             api_key=api_key,
             base_url="https://api.groq.com/openai/v1"
         )
-        self.model = "llama-3.1-70b-versatile"
+        self.model = "llama-3.3-70b-versatile"
     
     def generate_response(self, messages: List[Dict[str, str]], **kwargs) -> str:
         """Generate response using Groq API."""
