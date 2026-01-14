@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     # Application
     environment: str = "development"
     secret_key: str = "dev-secret-key-change-in-production"
-    allowed_origins: str = "http://localhost:3000,http://localhost:5173"
+    allowed_origins: str = Field(
+        default="http://localhost:3000,http://localhost:5173",
+        env="ALLOWED_ORIGINS"
+    )
 
     # Database
     database_url: str = "sqlite:///./data/app.db"
