@@ -56,7 +56,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   const loadSessions = async () => {
     try {
-      const response = await apiClient.get('/chat/sessions')
+      const response = await apiClient.get('/api/chat/sessions')
       setSessions(response.data)
     } catch (error) {
       console.error('Failed to load sessions:', error)
@@ -69,7 +69,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   const createSession = async (title?: string) => {
     try {
-      const response = await apiClient.post('/chat/sessions', { 
+      const response = await apiClient.post('/api/chat/sessions', { 
         title: title || `Chat ${new Date().toLocaleString()}` 
       })
       const newSession = response.data
