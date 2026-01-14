@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await apiClient.get('/auth/me')
+      const response = await apiClient.get('/api/auth/me')
       setUser(response.data)
     } catch (error) {
       console.error('Failed to fetch user:', error)
