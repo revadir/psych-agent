@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 import apiClient from '../services/api'
 import { useToast } from './ToastContext'
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8001'
+
 export interface Message {
   id: number
   role: string
@@ -132,7 +134,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       // Try streaming first
       try {
         const token = localStorage.getItem('token')
-        const response = await fetch(`/api/chat/sessions/${currentSession.id}/messages/stream`, {
+        const response = await fetch(`${API_BASE_URL}/api/chat/sessions/${currentSession.id}/messages/stream`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
