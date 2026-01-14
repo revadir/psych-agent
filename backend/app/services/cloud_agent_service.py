@@ -23,9 +23,12 @@ class CloudAgentService:
             else:
                 return self._process_with_fallback(query)
         except Exception as e:
+            import traceback
             print(f"Agent processing error: {e}")
+            print(traceback.format_exc())
+            # Return error details for debugging
             return {
-                "response": "I apologize, but I'm experiencing technical difficulties. Please try again.",
+                "response": f"I apologize, but I'm experiencing technical difficulties: {str(e)}. Please try again.",
                 "citations": []
             }
     
