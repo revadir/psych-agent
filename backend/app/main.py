@@ -89,6 +89,11 @@ async def setup_admin(db: Session = Depends(get_db)):
     """One-time setup endpoint to create admin user."""
     try:
         from app.models import Allowlist, User
+        from app.models.database import Base
+        from app.db.session import engine
+        
+        # Create all tables
+        Base.metadata.create_all(bind=engine)
         
         email = "revadigar@gmail.com"
         
