@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      const response = await apiClient.get(`/admin/feedback/stats?days=${filter.days}`)
+      const response = await apiClient.get(`/api/admin/feedback/stats?days=${filter.days}`)
       setStats(response.data)
     } catch (error) {
       console.error('Failed to load stats:', error)
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
       if (filter.rating) params.append('rating', filter.rating)
       if (filter.hasText) params.append('has_text', filter.hasText)
       
-      const response = await apiClient.get(`/admin/feedback/details?${params.toString()}`)
+      const response = await apiClient.get(`/api/admin/feedback/details?${params.toString()}`)
       setDetails(response.data)
     } catch (error) {
       console.error('Failed to load details:', error)
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
 
   const exportCSV = async () => {
     try {
-      const response = await apiClient.get(`/admin/feedback/export?days=${filter.days}`, {
+      const response = await apiClient.get(`/api/admin/feedback/export?days=${filter.days}`, {
         responseType: 'blob'
       })
       
