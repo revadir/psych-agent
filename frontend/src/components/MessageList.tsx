@@ -126,7 +126,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
     
     try {
       const token = localStorage.getItem('token')
-      await fetch('${API_BASE_URL}/api/feedback', {
+      await fetch(`${API_BASE_URL}/api/feedback`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -150,7 +150,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
     setSubmittingFeedback(true)
     try {
       const token = localStorage.getItem('token')
-      await fetch('${API_BASE_URL}/api/feedback', {
+      await fetch(`${API_BASE_URL}/api/feedback`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
