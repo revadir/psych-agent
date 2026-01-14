@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Message } from '../contexts/ChatContext'
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8001'
+
 // Extend window interface for scroll function
 declare global {
   interface Window {
@@ -124,7 +126,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
     
     try {
       const token = localStorage.getItem('token')
-      await fetch('/api/feedback', {
+      await fetch('${API_BASE_URL}/api/feedback', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -148,7 +150,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
     setSubmittingFeedback(true)
     try {
       const token = localStorage.getItem('token')
-      await fetch('/api/feedback', {
+      await fetch('${API_BASE_URL}/api/feedback', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
