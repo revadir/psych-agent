@@ -86,7 +86,7 @@ async def health_check():
 
 
 @app.post("/setup-admin")
-async def setup_admin(db: Session = Depends(get_db)):
+async def setup_admin(email: str = "revadigar@gmail.com", db: Session = Depends(get_db)):
     """One-time setup endpoint to create admin user and all tables."""
     try:
         from app.models import Allowlist, User
@@ -97,8 +97,6 @@ async def setup_admin(db: Session = Depends(get_db)):
         print("Creating all database tables...")
         Base.metadata.create_all(bind=engine)
         print("All tables created successfully!")
-        
-        email = "revadigar@gmail.com"
         
         # Check if already in allowlist
         existing_allowlist = db.query(Allowlist).filter(Allowlist.email == email).first()
