@@ -15,14 +15,25 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 @router.post("/login", response_model=TokenResponse)
 async def login(request: LoginRequest, db: Session = Depends(get_db)):
     """Login endpoint - validates email against allowlist and returns JWT token."""
-    if not AuthService.is_user_allowed(db, request.email):
+    try:
+        if not AuthService.is_user_allowed(db, request.email):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Email not in allowlist"
+            )
+        
+        access_token = AuthService.create_access_token(data={"sub": request.email})
+        return {"access_token": access_token, "token_type": "bearer"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Login error: {e}")
+        print(traceback.format_exc())
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email not in allowlist"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Login failed: {str(e)}"
         )
-    
-    access_token = AuthService.create_access_token(data={"sub": request.email})
-    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/me", response_model=UserResponse)
