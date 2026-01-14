@@ -29,7 +29,7 @@ class FeedbackResponse(BaseModel):
     rating: Optional[str]
     text_feedback: Optional[str]
     model_used: Optional[str]
-    created_at: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
