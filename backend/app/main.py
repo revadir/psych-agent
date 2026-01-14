@@ -5,12 +5,14 @@ FastAPI application entry point.
 print("🟡 DEBUG: Starting imports...")
 import logging
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 print("🟡 DEBUG: Basic imports done, importing config...")
 from app.core.config import settings
+from app.db.session import get_db
+from sqlalchemy.orm import Session
 print("🟡 DEBUG: Config imported, importing routers...")
 from app.api.auth import router as auth_router
 print("🟡 DEBUG: Auth router imported...")
