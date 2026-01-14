@@ -88,17 +88,25 @@ async def health_check():
 async def setup_admin(db: Session = Depends(get_db)):
     """One-time setup endpoint to create admin user."""
     try:
-        from app.services.auth_service import AuthService
+        from app.models import Allowlist, User
         
         email = "revadigar@gmail.com"
         
-        # Check if already exists
-        existing = AuthService.get_user_by_email(db, email)
-        if existing:
-            return {"message": "Admin user already exists", "email": email}
+        # Check if already in allowlist
+        existing_allowlist = db.query(Allowlist).filter(Allowlist.email == email).first()
+        if existing_allowlist:
+            return {"message": "Admin user already in allowlist", "email": email}
         
-        # Create admin user
-        user = AuthService.add_user_to_allowlist(db, email, is_admin=True)
+        # Add to allowlist
+        allowlist_entry = Allowlist(email=email, is_admin=True)
+        db.add(allowlist_entry)
+        db.commit()
+        
+        # Create user
+        user = User(email=email, is_admin=True)
+        db.add(user)
+        db.commit()
+        
         return {
             "message": "Admin user created successfully",
             "email": email,
@@ -107,6 +115,7 @@ async def setup_admin(db: Session = Depends(get_db)):
         }
     except Exception as e:
         import traceback
+        db.rollback()
         return {
             "error": str(e),
             "traceback": traceback.format_exc()
