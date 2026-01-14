@@ -34,15 +34,16 @@ class CloudAgentService:
     
     def _process_with_cloud(self, query: str) -> Dict[str, Any]:
         """Process query using Groq (without Pinecone for now)."""
-        # Skip Pinecone for now - use Groq directly
-        citations = []
-        
-        # Use Groq to generate response
-        messages = [
-            {
-                "role": "system",
-                "content": """You are a psychiatric clinical decision support assistant with expertise in DSM-5-TR diagnostic criteria. 
-                
+        try:
+            # Skip Pinecone for now - use Groq directly
+            citations = []
+            
+            # Use Groq to generate response
+            messages = [
+                {
+                    "role": "system",
+                    "content": """You are a psychiatric clinical decision support assistant with expertise in DSM-5-TR diagnostic criteria. 
+                    
 Provide detailed, accurate information about:
 - Diagnostic criteria for psychiatric disorders
 - Symptoms and clinical features
@@ -50,19 +51,24 @@ Provide detailed, accurate information about:
 - ICD-10 codes where applicable
 
 Always structure your responses clearly and cite DSM-5-TR when discussing diagnostic criteria."""
-            },
-            {
-                "role": "user",
-                "content": query
+                },
+                {
+                    "role": "user",
+                    "content": query
+                }
+            ]
+            
+            response = groq_service.generate_response(messages)
+            
+            return {
+                "response": response,
+                "citations": citations
             }
-        ]
-        
-        response = groq_service.generate_response(messages)
-        
-        return {
-            "response": response,
-            "citations": citations
-        }
+        except Exception as e:
+            import traceback
+            print(f"Error in _process_with_cloud: {e}")
+            print(traceback.format_exc())
+            raise
     
     def _process_with_fallback(self, query: str) -> Dict[str, Any]:
         """Fallback processing for common queries."""
