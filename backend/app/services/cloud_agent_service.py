@@ -14,6 +14,7 @@ class CloudAgentService:
     def __init__(self):
         self.use_rag = os.getenv("USE_RAG", "true").lower() == "true"
         self.environment = settings.environment
+        print(f"🔍 CloudAgentService initialized: USE_RAG={os.getenv('USE_RAG')}, use_rag={self.use_rag}")
         
     def process_query(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
         """Process query using appropriate RAG or fallback to LLM-only."""
@@ -145,4 +146,6 @@ A pervasive pattern of instability of interpersonal relationships, self-image, a
 
 
 # Global instance
+print(f"🔍 Creating CloudAgentService instance...")
 cloud_agent_service = CloudAgentService()
+print(f"🔍 CloudAgentService instance created")
