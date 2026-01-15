@@ -36,13 +36,16 @@ class CloudAgentService:
         try:
             # Check if we should use cloud RAG
             use_cloud_rag = os.getenv("USE_CLOUD_RAG", "false").lower() == "true"
+            print(f"🔍 USE_CLOUD_RAG={os.getenv('USE_CLOUD_RAG')}, use_cloud_rag={use_cloud_rag}")
             
             if use_cloud_rag:
                 # Use Pinecone for cloud
+                print("🔍 Using Pinecone cloud RAG service")
                 from app.services.cloud_rag_service import cloud_rag_service
                 return cloud_rag_service.process_query(query, conversation_history)
             else:
                 # Use ChromaDB for local
+                print("🔍 Using ChromaDB local RAG service")
                 from app.services.rag_service import rag_service
                 return rag_service.process_query(query, conversation_history)
                 
