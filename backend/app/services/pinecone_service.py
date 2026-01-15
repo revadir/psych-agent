@@ -47,13 +47,13 @@ class PineconeService:
         try:
             print(f"Searching for: {query}")
             
-            # Use Pinecone's inference API for embeddings (no local model needed)
+            # Use Pinecone's inference API with a model that outputs 384 dimensions
             from pinecone import Pinecone
             pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
             
-            # Embed the query using Pinecone's inference
+            # Use a smaller model that matches our index dimension (384)
             embeddings_response = pc.inference.embed(
-                model="multilingual-e5-large",
+                model="multilingual-e5-small",  # This outputs 384 dimensions
                 inputs=[query],
                 parameters={"input_type": "query"}
             )
