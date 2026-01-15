@@ -34,10 +34,10 @@ class CloudAgentService:
     def _process_with_rag(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
         """Process query using RAG (ChromaDB local, Pinecone cloud)."""
         try:
-            # Check if we're in cloud environment (Railway/Vercel)
-            is_cloud = os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("VERCEL")
+            # Check if we should use cloud RAG
+            use_cloud_rag = os.getenv("USE_CLOUD_RAG", "false").lower() == "true"
             
-            if is_cloud:
+            if use_cloud_rag:
                 # Use Pinecone for cloud
                 from app.services.cloud_rag_service import cloud_rag_service
                 return cloud_rag_service.process_query(query, conversation_history)
