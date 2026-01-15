@@ -110,7 +110,9 @@ async def send_message_stream(
             yield f"data: {json.dumps({'type': 'thinking', 'data': {'status': 'Generating clinical analysis...'}})}\n\n"
             
             try:
+                print(f"🔍 About to call cloud_agent_service.process_query")
                 agent_response = cloud_agent_service.process_query(request.content, conversation_history)
+                print(f"🔍 cloud_agent_service returned: {type(agent_response)}")
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
                 # Quick fallback response for testing
