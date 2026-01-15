@@ -26,7 +26,7 @@ langchain-pinecone>=0.1.0
 
 # Vector DB and Embeddings
 chromadb>=0.4.0
-sentence-transformers>=5.2.0
+sentence-transformers>=5.2.0  # Required for Pinecone embeddings
 pinecone-client>=3.0.0
 groq>=0.4.0
 
