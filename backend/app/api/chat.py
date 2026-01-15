@@ -115,6 +115,8 @@ async def send_message_stream(
                 print(f"🔍 cloud_agent_service returned: {type(agent_response)}")
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
+                import traceback
+                print(f"Full traceback: {traceback.format_exc()}")
                 # Quick fallback response for testing
                 agent_response = {
                     'response': f"""Based on your query: "{request.content}"
