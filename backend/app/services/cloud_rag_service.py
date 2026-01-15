@@ -28,10 +28,18 @@ class CloudRAGService:
         # 4. Generate response
         response = self._generate_response(query, context, conversation_history)
         
-        return {
+        result = {
             "response": response,
             "citations": citations
         }
+        
+        print(f"🔍 CloudRAG returning: response_len={len(response)}, citations_count={len(citations)}")
+        if citations:
+            print(f"🔍 First citation: {citations[0]}")
+        import sys
+        sys.stdout.flush()
+        
+        return result
     
     def _format_citations(self, results: List[Dict]) -> List[Dict[str, Any]]:
         """Format Pinecone results as citations."""
