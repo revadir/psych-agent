@@ -1,72 +1,91 @@
 """
-Cloud-based agent service using Groq and Pinecone.
+Cloud-based agent service using RAG + Groq.
+Automatically selects ChromaDB (local) or Pinecone (cloud).
 """
 
 import os
 from typing import Dict, Any, List
 from app.core.config import settings
-from app.services.groq_service import groq_service
-from app.services.pinecone_service import get_pinecone_service
 
 
 class CloudAgentService:
-    """Agent service using cloud providers (Groq + Pinecone)."""
+    """Agent service that adapts to local or cloud environment."""
     
     def __init__(self):
-        self.use_cloud = os.getenv("USE_CLOUD_SERVICES", "true").lower() == "true"
+        self.use_rag = os.getenv("USE_RAG", "true").lower() == "true"
+        self.environment = settings.environment
         
-    def process_query(self, query: str) -> Dict[str, Any]:
-        """Process query using cloud services."""
+    def process_query(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
+        """Process query using appropriate RAG or fallback to LLM-only."""
         try:
-            if self.use_cloud:
-                return self._process_with_cloud(query)
+            if self.use_rag:
+                return self._process_with_rag(query, conversation_history)
             else:
-                return self._process_with_fallback(query)
+                return self._process_llm_only(query, conversation_history)
         except Exception as e:
             import traceback
             print(f"Agent processing error: {e}")
             print(traceback.format_exc())
-            # Return error details for debugging
             return {
                 "response": f"I apologize, but I'm experiencing technical difficulties: {str(e)}. Please try again.",
                 "citations": []
             }
     
-    def _process_with_cloud(self, query: str) -> Dict[str, Any]:
-        """Process query using Groq (without Pinecone for now)."""
+    def _process_with_rag(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
+        """Process query using RAG (ChromaDB local, Pinecone cloud)."""
         try:
-            # Skip Pinecone for now - use Groq directly
-            citations = []
+            # Check if we're in cloud environment (Railway/Vercel)
+            is_cloud = os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("VERCEL")
             
-            # Use Groq to generate response
+            if is_cloud:
+                # Use Pinecone for cloud
+                from app.services.cloud_rag_service import cloud_rag_service
+                return cloud_rag_service.process_query(query, conversation_history)
+            else:
+                # Use ChromaDB for local
+                from app.services.rag_service import rag_service
+                return rag_service.process_query(query, conversation_history)
+                
+        except Exception as e:
+            print(f"RAG processing failed: {e}, falling back to LLM-only")
+            return self._process_llm_only(query, conversation_history)
+    
+    def _process_llm_only(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
+        """Fallback: Process query using Groq without RAG."""
+        try:
+            from app.services.groq_service import groq_service
+            
             messages = [
                 {
                     "role": "system",
                     "content": """You are a psychiatric clinical decision support assistant with expertise in DSM-5-TR diagnostic criteria. 
-                    
+
 Provide detailed, accurate information about:
 - Diagnostic criteria for psychiatric disorders
 - Symptoms and clinical features
 - Differential diagnosis considerations
 - ICD-10 codes where applicable
 
-Always structure your responses clearly and cite DSM-5-TR when discussing diagnostic criteria."""
-                },
-                {
-                    "role": "user",
-                    "content": query
+Always structure your responses clearly and cite DSM-5-TR when discussing diagnostic criteria.
+Note: You are currently operating without access to the full DSM-5-TR database."""
                 }
             ]
+            
+            if conversation_history:
+                for msg in conversation_history[-4:]:
+                    messages.append({"role": msg["role"], "content": msg["content"]})
+            
+            messages.append({"role": "user", "content": query})
             
             response = groq_service.generate_response(messages)
             
             return {
                 "response": response,
-                "citations": citations
+                "citations": []
             }
         except Exception as e:
             import traceback
-            print(f"Error in _process_with_cloud: {e}")
+            print(f"Error in _process_llm_only: {e}")
             print(traceback.format_exc())
             raise
     

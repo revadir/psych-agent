@@ -29,6 +29,9 @@ class Settings(BaseSettings):
         return os.getenv("DATABASE_URL", self.database_url)
     
     vector_db_path: str = "./vector_db_hierarchical"
+    
+    # RAG Configuration
+    use_rag: bool = True
 
     # LLM Configuration
     llm_provider: str = "groq"  # Changed from ollama to groq

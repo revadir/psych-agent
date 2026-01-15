@@ -110,7 +110,7 @@ async def send_message_stream(
             yield f"data: {json.dumps({'type': 'thinking', 'data': {'status': 'Generating clinical analysis...'}})}\n\n"
             
             try:
-                agent_response = cloud_agent_service.process_query(request.content)
+                agent_response = cloud_agent_service.process_query(request.content, conversation_history)
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
                 # Quick fallback response for testing
@@ -210,7 +210,7 @@ async def send_message(
     print(f"🔵 REGULAR API: Starting agent processing with {len(conversation_history)} context messages...")
     try:
         print(f"🔵 REGULAR API: Using cloud agent service...")
-        agent_response = cloud_agent_service.process_query(request.content)
+        agent_response = cloud_agent_service.process_query(request.content, conversation_history)
         print(f"🔵 REGULAR API: Agent returned response of length {len(str(agent_response))}")
         
     except asyncio.TimeoutError:
