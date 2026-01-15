@@ -25,11 +25,15 @@ class CloudAgentService:
         sys.stdout.flush()  # Force flush
         
         try:
+            print(f"🔍 About to check self.use_rag: {self.use_rag}")
+            sys.stdout.flush()
             if self.use_rag:
                 print(f"🔍 Attempting RAG processing...")
+                sys.stdout.flush()
                 return self._process_with_rag(query, conversation_history)
             else:
                 print(f"🔍 Using LLM-only (USE_RAG=false)")
+                sys.stdout.flush()
                 return self._process_llm_only(query, conversation_history)
         except Exception as e:
             import traceback
