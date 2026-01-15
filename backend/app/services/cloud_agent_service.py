@@ -17,10 +17,16 @@ class CloudAgentService:
         
     def process_query(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
         """Process query using appropriate RAG or fallback to LLM-only."""
+        print(f"🔍 CloudAgentService.process_query called")
+        print(f"🔍 USE_RAG={os.getenv('USE_RAG')}")
+        print(f"🔍 self.use_rag={self.use_rag}")
+        
         try:
             if self.use_rag:
+                print(f"🔍 Attempting RAG processing...")
                 return self._process_with_rag(query, conversation_history)
             else:
+                print(f"🔍 Using LLM-only (USE_RAG=false)")
                 return self._process_llm_only(query, conversation_history)
         except Exception as e:
             import traceback
