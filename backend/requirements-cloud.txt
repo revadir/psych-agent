@@ -25,5 +25,11 @@ langchain-huggingface>=0.0.3
 langchain-chroma>=0.1.0
 langchain-ollama>=0.1.0
 
+# Embeddings (required for Pinecone search)
+sentence-transformers>=2.0.0
+
+# Groq
+groq>=0.4.0
+
 # Utilities
 python-dotenv>=1.0.0
