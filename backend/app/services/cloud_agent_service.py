@@ -59,8 +59,13 @@ class CloudAgentService:
             else:
                 # Use ChromaDB for local
                 print("🔍 Using ChromaDB local RAG service")
-                from app.services.rag_service import rag_service
-                return rag_service.process_query(query, conversation_history)
+                try:
+                    from app.services.rag_service import rag_service
+                    return rag_service.process_query(query, conversation_history)
+                except ImportError as e:
+                    print(f"🔍 ChromaDB not available (cloud environment): {e}")
+                    # Fall back to LLM-only in cloud if ChromaDB packages missing
+                    return self._process_llm_only(query, conversation_history)
                 
         except Exception as e:
             print(f"RAG processing failed: {e}, falling back to LLM-only")
