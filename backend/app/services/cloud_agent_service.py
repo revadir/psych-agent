@@ -21,6 +21,8 @@ class CloudAgentService:
         print(f"🔍 CloudAgentService.process_query called")
         print(f"🔍 USE_RAG={os.getenv('USE_RAG')}")
         print(f"🔍 self.use_rag={self.use_rag}")
+        import sys
+        sys.stdout.flush()  # Force flush
         
         try:
             if self.use_rag:
