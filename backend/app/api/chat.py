@@ -12,8 +12,7 @@ from app.db import get_db
 from app.core.auth import get_current_user
 from app.models import User
 from app.services.chat_service import ChatService
-from app.services.hybrid_agent_service import get_hybrid_agent_service
-from app.services.agent_service import get_agent_service as get_simple_agent_service
+# Only import cloud agent service (works in both local and cloud)
 from app.services.cloud_agent_service import cloud_agent_service
 from app.models.schemas import (
     ChatSessionResponse, 
