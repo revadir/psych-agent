@@ -18,9 +18,16 @@ class CloudRAGService:
         """Process query using Pinecone + Groq."""
         # 1. Search Pinecone
         results = self.pinecone_service.search_similar_documents(query, top_k=5)
+        print(f"🔍 Pinecone returned {len(results)} results")
+        if results:
+            print(f"🔍 First result keys: {list(results[0].keys())}")
+        import sys
+        sys.stdout.flush()
         
         # 2. Format citations
         citations = self._format_citations(results)
+        print(f"🔍 Formatted {len(citations)} citations")
+        sys.stdout.flush()
         
         # 3. Build context
         context = self._build_context(results)
