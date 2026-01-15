@@ -43,19 +43,38 @@ class PineconeService:
             print(f"Error ensuring index exists: {e}")
     
     def search_similar_documents(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Search for similar documents in Pinecone using text search."""
+        """Search for similar documents in Pinecone."""
         try:
-            # For now, return empty results - we'll populate this after deployment
-            # In production, you would either:
-            # 1. Use Pinecone's inference API for embeddings
-            # 2. Use a lightweight embedding service
-            # 3. Pre-compute embeddings offline
-            
             print(f"Searching for: {query}")
-            return []
+            
+            # Generate embedding for the query
+            from langchain_huggingface import HuggingFaceEmbeddings
+            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            query_embedding = embeddings.embed_query(query)
+            
+            # Search Pinecone
+            results = self.index.query(
+                vector=query_embedding,
+                top_k=top_k,
+                include_metadata=True
+            )
+            
+            # Format results
+            documents = []
+            for match in results.get('matches', []):
+                doc = {
+                    'score': match.get('score', 0),
+                    **match.get('metadata', {})
+                }
+                documents.append(doc)
+            
+            print(f"Found {len(documents)} results from Pinecone")
+            return documents
             
         except Exception as e:
             print(f"Pinecone search error: {e}")
+            import traceback
+            print(traceback.format_exc())
             return []
     
     def upsert_documents(self, documents: List[Dict[str, Any]]):
