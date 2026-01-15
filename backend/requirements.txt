@@ -14,24 +14,13 @@ passlib[bcrypt]>=1.7.4
 pydantic[email]>=2.0.0
 pydantic-settings>=2.0.0
 
-# LangChain and AI
-langchain>=1.2.0
-langchain-chroma>=1.1.0
-langchain-community>=0.4.1
-langchain-huggingface>=1.2.0
-langchain-ollama>=1.0.1
-langchain-text-splitters>=0.3.0
+# LangChain and AI (minimal for cloud)
+langchain-core>=0.1.0
 langchain-groq>=0.1.0
-langchain-pinecone>=0.1.0
 
-# Vector DB and Embeddings
-chromadb>=0.4.0
-sentence-transformers>=5.2.0  # Required for Pinecone embeddings
-pinecone-client>=3.0.0
+# Vector DB and Embeddings (cloud only)
+pinecone>=5.0.0
 groq>=0.4.0
-
-# PDF Processing
-pymupdf>=1.26.7
 
 # Utilities
 python-dotenv>=1.0.0

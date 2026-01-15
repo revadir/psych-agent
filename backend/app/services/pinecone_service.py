@@ -43,14 +43,22 @@ class PineconeService:
             print(f"Error ensuring index exists: {e}")
     
     def search_similar_documents(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Search for similar documents in Pinecone."""
+        """Search for similar documents in Pinecone using inference API."""
         try:
             print(f"Searching for: {query}")
             
-            # Generate embedding for the query
-            from langchain_huggingface import HuggingFaceEmbeddings
-            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            query_embedding = embeddings.embed_query(query)
+            # Use Pinecone's inference API for embeddings (no local model needed)
+            from pinecone import Pinecone
+            pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+            
+            # Embed the query using Pinecone's inference
+            embeddings_response = pc.inference.embed(
+                model="multilingual-e5-large",
+                inputs=[query],
+                parameters={"input_type": "query"}
+            )
+            
+            query_embedding = embeddings_response[0].values
             
             # Search Pinecone
             results = self.index.query(
