@@ -60,6 +60,10 @@ class CloudAgentService:
                 
         except Exception as e:
             print(f"RAG processing failed: {e}, falling back to LLM-only")
+            import traceback
+            print(f"RAG error traceback: {traceback.format_exc()}")
+            import sys
+            sys.stdout.flush()
             return self._process_llm_only(query, conversation_history)
     
     def _process_llm_only(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
