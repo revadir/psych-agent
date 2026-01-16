@@ -38,12 +38,25 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
           </h1>
           
           {!isAdminPage && (
-            <button
-              onClick={() => createSession()}
-              className="hidden sm:inline-flex px-3 py-1 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
-            >
-              New Chat
-            </button>
+            <>
+              {/* Desktop new chat button */}
+              <button
+                onClick={() => createSession()}
+                className="hidden sm:inline-flex px-3 py-1 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
+              >
+                New Chat
+              </button>
+              {/* Mobile new chat button */}
+              <button
+                onClick={() => createSession()}
+                className="sm:hidden p-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+                title="New Chat"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </>
           )}
         </div>
         
