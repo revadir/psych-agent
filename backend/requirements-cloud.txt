@@ -18,6 +18,7 @@ pydantic-settings>=2.0.0
 openai>=1.0.0
 pinecone>=5.0.0
 groq>=0.4.0
+requests>=2.31.0  # For ICD-11 API
 
 # Minimal langchain (only what's needed)
 langchain-core>=0.1.0

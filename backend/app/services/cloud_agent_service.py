@@ -45,17 +45,25 @@ class CloudAgentService:
             }
     
     def _process_with_rag(self, query: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
-        """Process query using RAG (ChromaDB local, Pinecone cloud)."""
+        """Process query using RAG (ChromaDB local, Multi-source cloud)."""
         try:
             # Check if we should use cloud RAG
             use_cloud_rag = os.getenv("USE_CLOUD_RAG", "false").lower() == "true"
+            use_multi_source = os.getenv("USE_MULTI_SOURCE", "false").lower() == "true"
             print(f"🔍 USE_CLOUD_RAG={os.getenv('USE_CLOUD_RAG')}, use_cloud_rag={use_cloud_rag}")
+            print(f"🔍 USE_MULTI_SOURCE={os.getenv('USE_MULTI_SOURCE')}, use_multi_source={use_multi_source}")
             
             if use_cloud_rag:
-                # Use Pinecone for cloud
-                print("🔍 Using Pinecone cloud RAG service")
-                from app.services.cloud_rag_service import cloud_rag_service
-                return cloud_rag_service.process_query(query, conversation_history)
+                if use_multi_source:
+                    # Use multi-source RAG (DSM-5-TR + ICD-11 + more)
+                    print("🔍 Using Multi-Source RAG service (DSM-5-TR + ICD-11)")
+                    from app.services.multi_source_rag_service import multi_source_rag_service
+                    return multi_source_rag_service.process_query(query, conversation_history)
+                else:
+                    # Use Pinecone only
+                    print("🔍 Using Pinecone cloud RAG service")
+                    from app.services.cloud_rag_service import cloud_rag_service
+                    return cloud_rag_service.process_query(query, conversation_history)
             else:
                 # Use ChromaDB for local
                 print("🔍 Using ChromaDB local RAG service")
