@@ -35,14 +35,17 @@ class CloudRAGService:
         # 4. Generate response
         response = self._generate_response(query, context, conversation_history)
         
+        # 5. Check if this is a decline message (non-psychiatric question)
+        is_decline = "outside the scope of psychiatric clinical decision support" in response.lower()
+        
         result = {
             "response": response,
-            "citations": citations
+            "citations": [] if is_decline else citations  # No citations for decline messages
         }
         
-        print(f"🔍 CloudRAG returning: response_len={len(response)}, citations_count={len(citations)}")
-        if citations:
-            print(f"🔍 First citation: {citations[0]}")
+        print(f"🔍 CloudRAG returning: response_len={len(response)}, citations_count={len(result['citations'])}")
+        if result['citations']:
+            print(f"🔍 First citation: {result['citations'][0]}")
         import sys
         sys.stdout.flush()
         
@@ -107,12 +110,19 @@ RESPONSE STRUCTURE (use this format for all clinical queries):
 - [Therapy recommendations^citation]
 - [Follow-up considerations^citation]
 
-CRITICAL INSTRUCTIONS:
+CRITICAL ANTI-HALLUCINATION RULES:
+1. ONLY use information from the provided DSM-5-TR sources below
+2. If information is NOT in the sources, say "Information not available in provided sources"
+3. Do NOT make up diagnostic criteria, ICD codes, or treatment recommendations
+4. Do NOT cite sources that don't exist (you'll be told exactly how many sources you have)
+5. If sources are insufficient, acknowledge limitations explicitly
+6. NEVER invent medication names, dosages, or treatment protocols not in sources
+
+OTHER INSTRUCTIONS:
 1. Be CONCISE - avoid repetition, use bullet points
 2. Cite sources using ^1, ^2, ^3 format inline
-3. Base ONLY on provided DSM-5-TR sources
-4. Include ICD codes for all diagnoses
-5. If query is NOT psychiatric (e.g., general medical, non-clinical, weather, news, etc.), respond ONLY with: "This question is outside the scope of psychiatric clinical decision support. I can help with psychiatric diagnoses, treatment planning, and DSM-5-TR criteria. Please ask a question related to mental health or psychiatric care."
+3. Include ICD codes for all diagnoses (only if in sources)
+4. If query is NOT psychiatric (e.g., general medical, non-clinical, weather, news, etc.), respond ONLY with: "This question is outside the scope of psychiatric clinical decision support. I can help with psychiatric diagnoses, treatment planning, and DSM-5-TR criteria. Please ask a question related to mental health or psychiatric care."
 
 NON-PSYCHIATRIC TOPICS TO DECLINE (respond with decline message only):
 - General medical conditions (unless psychiatric comorbidity)
