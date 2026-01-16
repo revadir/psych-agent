@@ -134,6 +134,8 @@ Synthesize these sources into a unified clinical response. Include both DSM-5-TR
         
         # Add ICD-11 citations
         all_citations = dsm_result.get('citations', []).copy()
+        print(f"🔍 Starting with {len(all_citations)} DSM citations")
+        
         for idx, icd_result in enumerate(icd11_results, start=len(all_citations) + 1):
             all_citations.append({
                 'id': idx,
@@ -144,6 +146,11 @@ Synthesize these sources into a unified clinical response. Include both DSM-5-TR
                 'disorder_name': icd_result['title'],
                 'hierarchy_path': 'ICD-11 > Mental, Behavioural or Neurodevelopmental Disorders'
             })
+        
+        print(f"🔍 Total citations after adding ICD-11: {len(all_citations)}")
+        print(f"🔍 Last citation source: {all_citations[-1]['source']}")
+        import sys
+        sys.stdout.flush()
         
         return {
             'response': synthesized_text,
