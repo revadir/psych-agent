@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void
@@ -8,13 +8,26 @@ interface MessageInputProps {
 
 export default function MessageInput({ onSendMessage, loading, disabled }: MessageInputProps) {
   const [message, setMessage] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Scroll input into view when keyboard appears on mobile
+  useEffect(() => {
+    const handleFocus = () => {
+      setTimeout(() => {
+        textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 300) // Delay for keyboard animation
+    }
+
+    const textarea = textareaRef.current
+    textarea?.addEventListener('focus', handleFocus)
+    
+    return () => {
+      textarea?.removeEventListener('focus', handleFocus)
+    }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
-    // Scroll to bottom when user starts typing
-    if (e.target.value && window.scrollToBottom) {
-      window.scrollToBottom()
-    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,6 +51,7 @@ export default function MessageInput({ onSendMessage, loading, disabled }: Messa
         <form onSubmit={handleSubmit} className="p-4">
           <div className="relative">
             <textarea
+              ref={textareaRef}
               value={message}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
