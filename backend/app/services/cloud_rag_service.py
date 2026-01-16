@@ -133,6 +133,9 @@ NON-PSYCHIATRIC TOPICS TO DECLINE:
 
 Clinical Query: {query}
 
+IMPORTANT: You have exactly {len(context.split('[Source'))-1} sources available (numbered 1-{len(context.split('[Source'))-1}). 
+Only cite sources that exist. Do not cite ^{len(context.split('[Source'))} or higher.
+
 Provide a structured response following the format above with inline citations."""
         })
         

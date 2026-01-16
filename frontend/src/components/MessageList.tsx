@@ -114,6 +114,26 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
   const [textFeedback, setTextFeedback] = useState('')
   const [submittingFeedback, setSubmittingFeedback] = useState(false)
 
+  // Helper to create citation button
+  const createCitationButton = (citationNum: number, idx: number) => {
+    const citationExists = message.citations && citationNum <= message.citations.length
+    return (
+      <sup key={`cite-${idx}`}>
+        <button
+          onClick={() => handleCitationClick(citationNum)}
+          disabled={!citationExists}
+          className={citationExists 
+            ? "text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+            : "text-gray-400 font-medium px-1 cursor-not-allowed"
+          }
+          title={citationExists ? "View citation" : "Citation not available"}
+        >
+          [{citationNum}]
+        </button>
+      </sup>
+    )
+  }
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content)
     setCopied(true)
@@ -172,6 +192,11 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
   }
 
   const handleCitationClick = (citationNum: number) => {
+    // Only process if citation exists
+    if (!message.citations || citationNum > message.citations.length) {
+      return
+    }
+    
     // Scroll to citation in THIS message
     const citationElement = document.getElementById(`citation-${message.id}-${citationNum}`)
     if (citationElement) {
