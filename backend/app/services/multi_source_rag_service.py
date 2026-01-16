@@ -20,14 +20,22 @@ class MultiSourceRAGService:
         3. Synthesize with LLM
         """
         
+        print(f"🔍 Multi-Source RAG: Processing query")
+        
         # Step 1: Get DSM-5-TR information
         dsm_result = cloud_rag_service.process_query(query, conversation_history)
+        print(f"🔍 DSM-5-TR returned {len(dsm_result.get('citations', []))} citations")
         
         # Step 2: Cross-reference with ICD-11
+        print(f"🔍 Searching ICD-11 for: {query}")
         icd11_results = icd11_service.search_mental_disorders(query, max_results=3)
+        print(f"🔍 ICD-11 returned {len(icd11_results)} results")
+        if icd11_results:
+            print(f"🔍 First ICD-11 result: {icd11_results[0]}")
         
         # Step 3: Synthesize
         if icd11_results:
+            print(f"🔍 Synthesizing DSM-5-TR + ICD-11")
             synthesized_response = self._synthesize_sources(
                 query, 
                 dsm_result, 
@@ -36,6 +44,7 @@ class MultiSourceRAGService:
             )
             return synthesized_response
         else:
+            print(f"🔍 No ICD-11 results, returning DSM-only")
             # No ICD-11 results, return DSM-only
             return dsm_result
     
