@@ -172,8 +172,8 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
   }
 
   const handleCitationClick = (citationNum: number) => {
-    // Scroll to citation
-    const citationElement = document.getElementById(`citation-${citationNum}`)
+    // Scroll to citation in THIS message
+    const citationElement = document.getElementById(`citation-${message.id}-${citationNum}`)
     if (citationElement) {
       citationElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
       // Expand citation
@@ -337,7 +337,7 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                     return (
                       <div 
                         key={`citation-${citationId}`} 
-                        id={`citation-${citationId}`}
+                        id={`citation-${message.id}-${citationId}`}
                         className="border border-gray-200 rounded-lg bg-gray-50"
                       >
                         {/* Citation Header */}
