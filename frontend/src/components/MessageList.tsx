@@ -171,14 +171,14 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
     }
   }
 
-  const toggleCitation = (citationId: number) => {
-    const newExpanded = new Set(expandedCitations)
-    if (newExpanded.has(citationId)) {
-      newExpanded.delete(citationId)
-    } else {
-      newExpanded.add(citationId)
+  const handleCitationClick = (citationNum: number) => {
+    // Scroll to citation
+    const citationElement = document.getElementById(`citation-${citationNum}`)
+    if (citationElement) {
+      citationElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // Expand citation
+      setExpandedCitations(prev => new Set([...prev, citationNum]))
     }
-    setExpandedCitations(newExpanded)
   }
   
   return (
@@ -204,60 +204,37 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
               <ReactMarkdown
                 components={{
                   // Custom renderer for inline citations
-                  p: ({ children }) => {
-                    if (typeof children === 'string') {
-                      // Convert ^1, ^2, etc. to superscript citation links
-                      const parts = children.split(/\^(\d+)/g)
-                      return (
-                        <p>
-                          {parts.map((part, index) => {
-                            if (index % 2 === 1) {
-                              // This is a citation number
-                              const citationNum = parseInt(part)
-                              return (
-                                <sup key={index}>
-                                  <button
-                                    onClick={() => toggleCitation(citationNum)}
-                                    className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
-                                  >
-                                    [{citationNum}]
-                                  </button>
-                                </sup>
-                              )
-                            }
-                            return part
-                          })}
-                        </p>
-                      )
+                  p: ({ children, node }) => {
+                    // Process text nodes to find citations
+                    const processNode = (child: any): any => {
+                      if (typeof child === 'string') {
+                        const parts = child.split(/(\^\d+)/g)
+                        return parts.map((part, idx) => {
+                          const match = part.match(/^\^(\d+)$/)
+                          if (match) {
+                            const citationNum = parseInt(match[1])
+                            return (
+                              <sup key={`cite-${idx}`}>
+                                <button
+                                  onClick={() => handleCitationClick(citationNum)}
+                                  className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+                                >
+                                  [{citationNum}]
+                                </button>
+                              </sup>
+                            )
+                          }
+                          return part
+                        })
+                      }
+                      return child
                     }
-                    return <p>{children}</p>
-                  },
-                  // Handle other elements that might contain citations
-                  text: ({ children }: any) => {
-                    if (typeof children === 'string' && children.includes('^')) {
-                      const parts = children.split(/\^(\d+)/g)
-                      return (
-                        <span>
-                          {parts.map((part, index) => {
-                            if (index % 2 === 1) {
-                              const citationNum = parseInt(part)
-                              return (
-                                <sup key={index}>
-                                  <button
-                                    onClick={() => toggleCitation(citationNum)}
-                                    className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
-                                  >
-                                    [{citationNum}]
-                                  </button>
-                                </sup>
-                              )
-                            }
-                            return <span key={index}>{part}</span>
-                          })}
-                        </span>
-                      )
-                    }
-                    return <span>{children}</span>
+
+                    const processedChildren = Array.isArray(children)
+                      ? children.map(processNode)
+                      : processNode(children)
+
+                    return <p>{processedChildren}</p>
                   }
                 }}
               >
@@ -288,7 +265,11 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                     const hasMore = fullContent && fullContent.length > 200;
                     
                     return (
-                      <div key={`citation-${citationId}`} className="border border-gray-200 rounded-lg bg-gray-50">
+                      <div 
+                        key={`citation-${citationId}`} 
+                        id={`citation-${citationId}`}
+                        className="border border-gray-200 rounded-lg bg-gray-50"
+                      >
                         {/* Citation Header */}
                         <div className="px-4 py-3 border-b border-gray-200 bg-white rounded-t-lg">
                           <div className="flex items-start justify-between">
