@@ -203,13 +203,49 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
             <div className="prose prose-base max-w-none prose-headings:text-slate-800 prose-strong:text-slate-700">
               <ReactMarkdown
                 components={{
-                  // Custom renderer for inline citations
-                  p: ({ children, node }) => {
-                    // Process text nodes to find citations
-                    const processNode = (child: any): any => {
+                  // Process all text to convert ^N to clickable citations
+                  p: ({ children }) => {
+                    const processChildren = (child: any): any => {
                       if (typeof child === 'string') {
-                        const parts = child.split(/(\^\d+)/g)
-                        return parts.map((part, idx) => {
+                        return child.split(/(\^\d+)/g).map((part, idx) => {
+                          const match = part.match(/^\^(\d+)$/)
+                          if (match) {
+                            const citationNum = parseInt(match[1])
+                            return (
+                              <sup key={`cite-${idx}`}>
+                                <button
+                                  onClick={() => handleCitationClick(citationNum)}
+                                  className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+                                >
+                                  [{citationNum}]
+                                </button>
+                              </sup>
+                            )
+                          }
+                          return part
+                        })
+                      }
+                      if (Array.isArray(child)) {
+                        return child.map(processChildren)
+                      }
+                      if (child?.props?.children) {
+                        return {
+                          ...child,
+                          props: {
+                            ...child.props,
+                            children: processChildren(child.props.children)
+                          }
+                        }
+                      }
+                      return child
+                    }
+
+                    return <p>{processChildren(children)}</p>
+                  },
+                  strong: ({ children }) => {
+                    const processChildren = (child: any): any => {
+                      if (typeof child === 'string') {
+                        return child.split(/(\^\d+)/g).map((part, idx) => {
                           const match = part.match(/^\^(\d+)$/)
                           if (match) {
                             const citationNum = parseInt(match[1])
@@ -230,11 +266,45 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                       return child
                     }
 
-                    const processedChildren = Array.isArray(children)
-                      ? children.map(processNode)
-                      : processNode(children)
+                    return <strong>{processChildren(children)}</strong>
+                  },
+                  li: ({ children }) => {
+                    const processChildren = (child: any): any => {
+                      if (typeof child === 'string') {
+                        return child.split(/(\^\d+)/g).map((part, idx) => {
+                          const match = part.match(/^\^(\d+)$/)
+                          if (match) {
+                            const citationNum = parseInt(match[1])
+                            return (
+                              <sup key={`cite-${idx}`}>
+                                <button
+                                  onClick={() => handleCitationClick(citationNum)}
+                                  className="text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted underline-offset-2 bg-blue-50 hover:bg-blue-100 px-1 rounded transition-colors"
+                                >
+                                  [{citationNum}]
+                                </button>
+                              </sup>
+                            )
+                          }
+                          return part
+                        })
+                      }
+                      if (Array.isArray(child)) {
+                        return child.map(processChildren)
+                      }
+                      if (child?.props?.children) {
+                        return {
+                          ...child,
+                          props: {
+                            ...child.props,
+                            children: processChildren(child.props.children)
+                          }
+                        }
+                      }
+                      return child
+                    }
 
-                    return <p>{processedChildren}</p>
+                    return <li>{processChildren(children)}</li>
                   }
                 }}
               >
