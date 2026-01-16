@@ -20,6 +20,12 @@ class ICD11Service:
         self.access_token = None
         self.token_expiry = 0
         
+        # Check if credentials are available
+        if not self.client_id or not self.client_secret:
+            print(f"⚠️ ICD-11 credentials not found. ICD11_CLIENT_ID={bool(self.client_id)}, ICD11_CLIENT_SECRET={bool(self.client_secret)}")
+        else:
+            print(f"✅ ICD-11 credentials loaded")
+        
     def _get_access_token(self) -> str:
         """Get or refresh OAuth2 access token."""
         if self.access_token and time.time() < self.token_expiry:
@@ -48,7 +54,13 @@ class ICD11Service:
     def search_mental_disorders(self, query: str, max_results: int = 5) -> List[Dict[str, Any]]:
         """Search ICD-11 mental and behavioral disorders."""
         try:
+            if not self.client_id or not self.client_secret:
+                print(f"⚠️ ICD-11 credentials missing, skipping search")
+                return []
+            
+            print(f"🔍 ICD-11: Getting access token...")
             token = self._get_access_token()
+            print(f"🔍 ICD-11: Token obtained, searching...")
             
             # Search in Chapter 06: Mental, behavioural or neurodevelopmental disorders
             response = requests.get(
