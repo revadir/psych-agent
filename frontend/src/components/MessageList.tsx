@@ -360,7 +360,15 @@ function MessageBubble({ message, responseStartRef }: MessageBubbleProps) {
                             
                             {hasMore && (
                               <button
-                                onClick={() => toggleCitation(citationId)}
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedCitations)
+                                  if (newExpanded.has(citationId)) {
+                                    newExpanded.delete(citationId)
+                                  } else {
+                                    newExpanded.add(citationId)
+                                  }
+                                  setExpandedCitations(newExpanded)
+                                }}
                                 className="text-xs text-gray-500 hover:text-gray-700 font-medium flex items-center px-2 py-1 rounded hover:bg-gray-100 transition-colors"
                               >
                                 {isExpanded ? (
