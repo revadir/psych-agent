@@ -22,10 +22,15 @@ def load_chromadb_chunks():
     """Load all chunks from your hierarchical ChromaDB."""
     print("🔄 Loading chunks from ChromaDB...")
     
-    # Initialize embeddings (same model as your local setup)
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # Initialize embeddings - use Pinecone's model for consistency
+    from pinecone import Pinecone
+    pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
     
     # Load your hierarchical vector DB
+    from langchain_chroma import Chroma
+    from langchain_huggingface import HuggingFaceEmbeddings
+    
+    local_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vector_db_path = Path(__file__).parent.parent / "vector_db_hierarchical"
     
     if not vector_db_path.exists():
@@ -33,38 +38,59 @@ def load_chromadb_chunks():
     
     vectorstore = Chroma(
         persist_directory=str(vector_db_path),
-        embedding_function=embeddings
+        embedding_function=local_embeddings
     )
     
-    # Get all documents with their embeddings and metadata
+    # Get all documents
     collection = vectorstore._collection
-    results = collection.get(include=['documents', 'metadatas', 'embeddings'])
+    results = collection.get(include=['documents', 'metadatas'])
     
     documents = []
-    for i, (doc_id, content, metadata, embedding) in enumerate(zip(
-        results['ids'], 
-        results['documents'], 
-        results['metadatas'],
-        results['embeddings']
-    )):
-        documents.append({
-            'id': doc_id,
-            'content': content,
-            'embedding': embedding,
-            'metadata': {
-                'source': metadata.get('source', 'DSM-5-TR'),
-                'page': metadata.get('page'),
-                'disorder_name': metadata.get('disorder_name'),
-                'icd_code': metadata.get('icd_code'),
-                'section_type': metadata.get('section_type'),
-                'hierarchy_path': metadata.get('hierarchy_path'),
-                'chunk_type': metadata.get('chunk_type'),
-                'chapter': metadata.get('chapter'),
-                'section': metadata.get('section')
-            }
-        })
+    print(f"🔄 Re-embedding {len(results['ids'])} chunks with Pinecone model...")
     
-    print(f"✅ Loaded {len(documents)} chunks from ChromaDB")
+    # Batch embed using Pinecone inference (1024 dimensions)
+    batch_size = 96  # Pinecone limit
+    for i in range(0, len(results['documents']), batch_size):
+        batch_docs = results['documents'][i:i + batch_size]
+        batch_ids = results['ids'][i:i + batch_size]
+        batch_metadata = results['metadatas'][i:i + batch_size]
+        
+        # Embed batch
+        embeddings_response = pc.inference.embed(
+            model="multilingual-e5-large",
+            inputs=batch_docs,
+            parameters={"input_type": "passage", "truncate": "END"}
+        )
+        
+        for j, (doc_id, content, metadata, emb_data) in enumerate(zip(
+            batch_ids, batch_docs, batch_metadata, embeddings_response
+        )):
+            documents.append({
+                'id': doc_id,
+                'content': content,
+                'embedding': emb_data.values,  # 1024 dimensions
+                'metadata': {
+                    'source': metadata.get('source', 'DSM-5-TR'),
+                    'page': metadata.get('page'),
+                    'disorder_name': metadata.get('disorder_name'),
+                    'icd_code': metadata.get('icd_code'),
+                    'section_type': metadata.get('section_type'),
+                    'hierarchy_path': metadata.get('hierarchy_path'),
+                    'chunk_type': metadata.get('chunk_type'),
+                    'chapter': metadata.get('chapter'),
+                    'section': metadata.get('section')
+                }
+            })
+        
+        print(f"  Embedded batch {i//batch_size + 1}/{(len(results['documents'])-1)//batch_size + 1}")
+        
+        # Rate limit: wait 60 seconds between batches to avoid hitting token limit
+        import time
+        if i + batch_size < len(results['documents']):
+            print(f"  Waiting 60s to avoid rate limit...")
+            time.sleep(60)
+    
+    print(f"✅ Loaded and re-embedded {len(documents)} chunks")
     return documents
 
 
