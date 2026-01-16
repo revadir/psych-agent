@@ -28,10 +28,22 @@ class MultiSourceRAGService:
         
         # Step 2: Cross-reference with ICD-11
         print(f"🔍 Searching ICD-11 for: {query}")
-        icd11_results = icd11_service.search_mental_disorders(query, max_results=3)
-        print(f"🔍 ICD-11 returned {len(icd11_results)} results")
-        if icd11_results:
-            print(f"🔍 First ICD-11 result: {icd11_results[0]}")
+        import sys
+        sys.stdout.flush()
+        
+        try:
+            icd11_results = icd11_service.search_mental_disorders(query, max_results=3)
+            print(f"🔍 ICD-11 returned {len(icd11_results)} results")
+            sys.stdout.flush()
+            if icd11_results:
+                print(f"🔍 First ICD-11 result: {icd11_results[0]}")
+                sys.stdout.flush()
+        except Exception as e:
+            print(f"❌ ICD-11 search failed: {e}")
+            import traceback
+            print(traceback.format_exc())
+            sys.stdout.flush()
+            icd11_results = []
         
         # Step 3: Synthesize
         if icd11_results:
