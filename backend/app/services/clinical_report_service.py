@@ -1,11 +1,16 @@
 from typing import Dict, Any
-from app.services.cloud_agent_service import CloudAgentService
 import re
 from datetime import datetime
 
 class ClinicalReportService:
     def __init__(self):
-        self.agent_service = CloudAgentService()
+        self.agent_service = None
+        
+    def _get_agent_service(self):
+        if self.agent_service is None:
+            from app.services.cloud_agent_service import CloudAgentService
+            self.agent_service = CloudAgentService()
+        return self.agent_service
         
     async def generate_clinical_report(self, transcript: str, patient_info: Dict[str, Any] = None) -> Dict[str, Any]:
         """Generate a comprehensive clinical report from session transcript"""
@@ -94,7 +99,8 @@ class ClinicalReportService:
     
     def _get_section(self, prompt: str) -> str:
         """Get a specific section from the agent service"""
-        response = self.agent_service.process_query(prompt)
+        agent_service = self._get_agent_service()
+        response = agent_service.process_query(prompt)
         return response.get('response', 'Unable to generate this section')
     
     def _estimate_session_duration(self, transcript: str) -> str:

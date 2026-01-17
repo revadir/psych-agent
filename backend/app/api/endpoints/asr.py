@@ -8,8 +8,12 @@ from app.services.clinical_report_service import ClinicalReportService
 import json
 
 router = APIRouter()
-asr_service = ASRService()
-clinical_report_service = ClinicalReportService()
+
+def get_asr_service():
+    return ASRService()
+
+def get_clinical_report_service():
+    return ClinicalReportService()
 
 class GenerateReportRequest(BaseModel):
     transcript: str
@@ -18,6 +22,7 @@ class GenerateReportRequest(BaseModel):
 @router.post("/transcribe-file")
 async def transcribe_file(file: UploadFile = File(...)):
     """Transcribe an uploaded audio file"""
+    asr_service = get_asr_service()
     try:
         # Check if API key is configured
         if not asr_service.api_key:
@@ -58,6 +63,7 @@ async def transcribe_file(file: UploadFile = File(...)):
 @router.post("/generate-report")
 async def generate_clinical_report(request: GenerateReportRequest):
     """Generate a clinical report from transcript"""
+    clinical_report_service = get_clinical_report_service()
     try:
         if not request.transcript.strip():
             return JSONResponse(
