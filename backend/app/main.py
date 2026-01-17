@@ -5,6 +5,7 @@ FastAPI application entry point.
 print("🟡 DEBUG: Starting imports...")
 import logging
 import os
+from datetime import datetime
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -88,7 +89,19 @@ else:
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "environment": settings.environment}
+    try:
+        # Basic health check without external dependencies
+        return {
+            "status": "healthy", 
+            "environment": getattr(settings, 'environment', 'unknown'),
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 @app.post("/setup-admin")

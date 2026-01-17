@@ -8,12 +8,15 @@ from app.core.config import settings
 
 class ASRService:
     def __init__(self):
-        self.api_key = settings.assemblyai_api_key
+        self.api_key = getattr(settings, 'assemblyai_api_key', None)
         self.base_url = "https://api.assemblyai.com/v2"
         self.ws_url = "wss://api.assemblyai.com/v2/realtime/ws"
         
-        # Debug: Check if API key is loaded
-        print(f"ASR Service initialized with API key: {'***' + self.api_key[-4:] if self.api_key else 'NOT SET'}")
+        # Only log if API key exists
+        if self.api_key:
+            print(f"ASR Service initialized with API key: {'***' + self.api_key[-4:] if len(self.api_key) > 4 else '***'}")
+        else:
+            print("ASR Service initialized without API key (ASR features disabled)")
         
     async def transcribe_file(self, audio_file_path: str) -> Dict[str, Any]:
         """Transcribe an audio file"""
