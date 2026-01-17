@@ -13,13 +13,17 @@ from app.core.auth import get_current_user
 from app.models import User
 from app.services.chat_service import ChatService
 # Only import cloud agent service (works in both local and cloud)
-from app.services.cloud_agent_service import cloud_agent_service
+# from app.services.cloud_agent_service import cloud_agent_service
 from app.models.schemas import (
     ChatSessionResponse, 
     CreateSessionRequest, 
     SendMessageRequest,
     MessageResponse
 )
+
+def get_cloud_agent_service():
+    from app.services.cloud_agent_service import cloud_agent_service
+    return cloud_agent_service
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -110,7 +114,7 @@ async def send_message_stream(
             
             try:
                 print(f"🔍 About to call cloud_agent_service.process_query")
-                agent_response = cloud_agent_service.process_query(request.content, conversation_history)
+                agent_response = get_cloud_agent_service().process_query(request.content, conversation_history)
                 print(f"🔍 cloud_agent_service returned: {type(agent_response)}")
             except Exception as e:
                 print(f"Agent error: {e}")  # Debug log
@@ -213,7 +217,7 @@ async def send_message(
     print(f"🔵 REGULAR API: Starting agent processing with {len(conversation_history)} context messages...")
     try:
         print(f"🔵 REGULAR API: Using cloud agent service...")
-        agent_response = cloud_agent_service.process_query(request.content, conversation_history)
+        agent_response = get_cloud_agent_service().process_query(request.content, conversation_history)
         print(f"🔵 REGULAR API: Agent returned response of length {len(str(agent_response))}")
         
     except asyncio.TimeoutError:
