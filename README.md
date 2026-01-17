@@ -108,7 +108,24 @@ This will create the `vector_db_hierarchical/` directory with processed embeddin
 
 **Note:** The vector database creation may take several minutes depending on your system.
 
-### 5. Run the Application
+### 5. Setup ASR Integration (Optional)
+
+For speech-to-text functionality:
+
+```bash
+# Run the ASR setup script
+python scripts/setup_asr.py
+
+# Or manually add to backend/.env:
+# ASSEMBLYAI_API_KEY=your_api_key_here
+```
+
+**Get AssemblyAI API Key:**
+1. Sign up at [AssemblyAI](https://www.assemblyai.com/)
+2. Get $50 free credits (~3,700 minutes)
+3. Copy API key from dashboard
+
+### 6. Run the Application
 
 **Terminal 1 - Start Backend:**
 ```bash
@@ -160,6 +177,9 @@ psych-agent/
 - **Modern UI**: Walnut sci-fi theme with responsive design
 - **Secure**: JWT authentication with user management
 - **Expandable Citations**: Full DSM-5-TR references with metadata
+- **🎤 ASR Integration**: Real-time speech-to-text with AssemblyAI
+- **📋 Clinical Reports**: AI-generated structured clinical reports
+- **🔊 Audio Recording**: Record sessions or upload audio files
 
 ## 🛠️ Development
 

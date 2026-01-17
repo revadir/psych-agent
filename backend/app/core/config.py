@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     pinecone_api_key: str = ""
     pinecone_environment: str = "gcp-starter"
     pinecone_index_name: str = "psych-agent"
+    
+    # ASR Configuration
+    assemblyai_api_key: str = Field(default="", env="ASSEMBLYAI_API_KEY")
 
     # Authentication
     jwt_secret_key: str = "dev-jwt-secret-change-in-production"

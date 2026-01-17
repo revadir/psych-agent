@@ -24,3 +24,7 @@ groq>=0.4.0
 
 # Utilities
 python-dotenv>=1.0.0
+
+# ASR and WebSocket
+websockets>=12.0
+aiohttp>=3.9.0
