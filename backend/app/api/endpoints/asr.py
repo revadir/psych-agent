@@ -1,9 +1,14 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 import tempfile
 import os
 from app.services.asr_service import ASRService
+from app.services.scribe_session_service import ScribeSessionService
+from app.core.auth import get_current_user
+from app.core.database import get_db
+from app.models import User
 
 router = APIRouter()
 
@@ -14,6 +19,13 @@ class GenerateNoteRequest(BaseModel):
     transcript: str
     patient_name: str
     note_template: str
+
+class CreateScribeSessionRequest(BaseModel):
+    patient_name: str
+    patient_id: str
+    note_template: str
+    duration: str
+    content: dict
 
 @router.post("/transcribe-file")
 async def transcribe_file(file: UploadFile = File(...)):
@@ -111,4 +123,105 @@ async def generate_clinical_note(request: GenerateNoteRequest):
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Note generation failed: {str(e)}"}
+        )
+
+@router.post("/scribe-sessions")
+async def create_scribe_session(
+    request: CreateScribeSessionRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Create a new scribe session in database"""
+    try:
+        session = ScribeSessionService.create_session(
+            db=db,
+            user_id=current_user.id,
+            patient_name=request.patient_name,
+            patient_id=request.patient_id,
+            note_template=request.note_template,
+            duration=request.duration,
+            content=request.content
+        )
+        
+        return JSONResponse(content={
+            "success": True,
+            "session": {
+                "id": session.id,
+                "patient_id": session.patient_id,
+                "patient_name": session.patient_name,
+                "date": session.created_at.isoformat(),
+                "duration": session.duration,
+                "content": {
+                    "chiefComplaint": session.chief_complaint,
+                    "historyOfPresentIllness": session.history_present_illness,
+                    "reviewOfSystems": session.review_systems,
+                    "assessmentAndPlan": session.assessment_plan,
+                    "followUpDisposition": session.followup_disposition
+                }
+            }
+        })
+        
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"Failed to create session: {str(e)}"}
+        )
+
+@router.get("/scribe-sessions")
+async def get_scribe_sessions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all scribe sessions for current user"""
+    try:
+        sessions = ScribeSessionService.get_user_sessions(db, current_user.id)
+        
+        return JSONResponse(content={
+            "success": True,
+            "sessions": [
+                {
+                    "id": session.id,
+                    "patient_id": session.patient_id,
+                    "patient_name": session.patient_name,
+                    "date": session.created_at.isoformat(),
+                    "duration": session.duration,
+                    "content": {
+                        "chiefComplaint": session.chief_complaint,
+                        "historyOfPresentIllness": session.history_present_illness,
+                        "reviewOfSystems": session.review_systems,
+                        "assessmentAndPlan": session.assessment_plan,
+                        "followUpDisposition": session.followup_disposition
+                    }
+                }
+                for session in sessions
+            ]
+        })
+        
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"Failed to get sessions: {str(e)}"}
+        )
+
+@router.delete("/scribe-sessions/{session_id}")
+async def delete_scribe_session(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Delete a scribe session"""
+    try:
+        deleted = ScribeSessionService.delete_session(db, session_id, current_user.id)
+        
+        if deleted:
+            return JSONResponse(content={"success": True})
+        else:
+            raise HTTPException(status_code=404, detail="Session not found")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"Failed to delete session: {str(e)}"}
         )

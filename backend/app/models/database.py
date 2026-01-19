@@ -21,6 +21,7 @@ class User(Base):
 
     # Relationships
     chat_sessions = relationship("ChatSession", back_populates="user", cascade="all, delete-orphan")
+    scribe_sessions = relationship("ScribeSession", back_populates="user", cascade="all, delete-orphan")
 
 
 class Allowlist(Base):

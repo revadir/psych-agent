@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NewNote from './NewNote';
 
 interface ScribeSession {
@@ -23,12 +23,38 @@ const ScribePage: React.FC = () => {
   const [feedback, setFeedback] = useState('');
   const [showNewNote, setShowNewNote] = useState(false);
   const [scribeSessions, setScribeSessions] = useState<ScribeSession[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load sessions from database on component mount
+  useEffect(() => {
+    loadSessions();
+  }, []);
+
+  const loadSessions = async () => {
+    try {
+      const response = await fetch('/api/asr/scribe-sessions', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setScribeSessions(data.sessions);
+      }
+    } catch (error) {
+      console.error('Failed to load sessions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNewNote = () => {
     setShowNewNote(true);
   };
 
-  const handleNoteCreated = (newNote: ScribeSession) => {
+  const handleNoteCreated = async (newNote: ScribeSession) => {
     console.log('ScribePage received new note:', newNote);
     console.log('Patient name in received note:', newNote.patientName);
     console.log('Patient name type:', typeof newNote.patientName);
@@ -40,9 +66,74 @@ const ScribePage: React.FC = () => {
       newNote.patientName = 'Unnamed Patient';
     }
     
-    setScribeSessions([newNote, ...scribeSessions]);
-    setSelectedSession(newNote);
+    // Save to database
+    try {
+      const response = await fetch('/api/asr/scribe-sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          patient_name: newNote.patientName,
+          patient_id: newNote.patientId,
+          note_template: 'psychotherapy', // Default template
+          duration: newNote.duration,
+          content: {
+            chief_complaint: newNote.content.chiefComplaint,
+            history_present_illness: newNote.content.historyOfPresentIllness,
+            review_systems: newNote.content.reviewOfSystems,
+            assessment_plan: newNote.content.assessmentAndPlan,
+            followup_disposition: newNote.content.followUpDisposition
+          }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Reload sessions from database to get the saved version
+        await loadSessions();
+        // Select the newly created session
+        const savedSession = data.session;
+        setSelectedSession(savedSession);
+      }
+    } catch (error) {
+      console.error('Failed to save session:', error);
+      // Fallback to local state if database save fails
+      setScribeSessions([newNote, ...scribeSessions]);
+      setSelectedSession(newNote);
+    }
+    
     setShowNewNote(false);
+  };
+
+  const handleDeleteSession = async (sessionId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent session selection when clicking delete
+    
+    if (!confirm('Are you sure you want to delete this session?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/asr/scribe-sessions/${sessionId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (response.ok) {
+        // Remove from local state
+        setScribeSessions(scribeSessions.filter(s => s.id !== sessionId));
+        // Clear selection if deleted session was selected
+        if (selectedSession?.id === sessionId) {
+          setSelectedSession(null);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to delete session:', error);
+    }
   };
 
   const handleSendSummary = () => {
@@ -97,16 +188,25 @@ const ScribePage: React.FC = () => {
                 <h3 className="text-gray-600 text-sm font-medium mb-3">Recent Sessions</h3>
                 {scribeSessions.length === 0 ? (
                   <div className="text-center text-gray-500 py-8">
-                    <div className="text-4xl mb-2">📝</div>
-                    <p className="text-sm">No sessions yet</p>
-                    <p className="text-xs">Create your first note above</p>
+                    {loading ? (
+                      <div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                        <p className="text-sm">Loading sessions...</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="text-4xl mb-2">📝</div>
+                        <p className="text-sm">No sessions yet</p>
+                        <p className="text-xs">Create your first note above</p>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   scribeSessions.map((session) => (
                     <div
                       key={session.id}
                       onClick={() => setSelectedSession(session)}
-                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                      className={`p-3 rounded-lg cursor-pointer transition-colors relative group ${
                         selectedSession?.id === session.id
                           ? 'bg-blue-100 border border-blue-300'
                           : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
@@ -118,6 +218,15 @@ const ScribePage: React.FC = () => {
                       <div className="text-sm text-gray-600">ID: {session.patientId}</div>
                       <div className="text-sm text-gray-600">{session.date}</div>
                       <div className="text-sm text-gray-600">{session.duration}</div>
+                      
+                      {/* Delete button */}
+                      <button
+                        onClick={(e) => handleDeleteSession(session.id, e)}
+                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-opacity"
+                        title="Delete session"
+                      >
+                        ×
+                      </button>
                     </div>
                   ))
                 )}
