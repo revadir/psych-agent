@@ -224,6 +224,9 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
                   </svg>
                 </button>
                 <span className="font-medium text-gray-700">Start Recording</span>
+                {!patientName.trim() && (
+                  <p className="text-sm text-gray-500 mt-1">Enter patient name to enable recording</p>
+                )}
               </div>
             )}
 
