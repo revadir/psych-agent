@@ -1,5 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
+
 interface NewNoteProps {
   onCancel: () => void;
   onNoteCreated: (note: any) => void;
@@ -86,7 +88,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
       const formData = new FormData();
       formData.append('file', blob, 'recording.webm');
       
-      const transcribeResponse = await fetch('/api/asr/transcribe-file', {
+      const transcribeResponse = await fetch(`${API_BASE_URL}/asr/transcribe-file`, {
         method: 'POST',
         body: formData,
       });
@@ -98,7 +100,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
       }
 
       // Generate clinical note
-      const noteResponse = await fetch('/api/asr/generate-note', {
+      const noteResponse = await fetch(`${API_BASE_URL}/asr/generate-note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
