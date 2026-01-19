@@ -88,7 +88,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
       const formData = new FormData();
       formData.append('file', blob, 'recording.webm');
       
-      const transcribeResponse = await fetch(`${API_BASE_URL}/asr/transcribe-file`, {
+      const transcribeResponse = await fetch(`${API_BASE_URL}/api/asr/transcribe-file`, {
         method: 'POST',
         body: formData,
       });
@@ -100,7 +100,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
       }
 
       // Generate clinical note
-      const noteResponse = await fetch(`${API_BASE_URL}/asr/generate-note`, {
+      const noteResponse = await fetch(`${API_BASE_URL}/api/asr/generate-note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
