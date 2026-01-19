@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import apiClient from '../services/api'
-import Header from './Header'
 
 interface FeedbackStats {
   total_feedback: number
@@ -102,7 +101,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Header onToggleSidebar={() => {}} />
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
