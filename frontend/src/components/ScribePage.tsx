@@ -18,6 +18,7 @@ interface ScribeSession {
 
 const ScribePage: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState<ScribeSession | null>(null);
+  const [actionsCollapsed, setActionsCollapsed] = useState(true);
   const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
   const [noteType, setNoteType] = useState('initial');
   const [feedback, setFeedback] = useState('');
@@ -314,8 +315,29 @@ const ScribePage: React.FC = () => {
         </div>
 
         {/* Right Panel - Actions */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <h3 className="text-gray-900 font-medium mb-4">Actions</h3>
+        <div className={`bg-white border-l border-gray-200 transition-all duration-300 ${
+          actionsCollapsed ? 'w-12' : 'w-80'
+        }`}>
+          <div className="p-3">
+            <button
+              onClick={() => setActionsCollapsed(!actionsCollapsed)}
+              className="w-full flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              title={actionsCollapsed ? 'Expand Actions' : 'Collapse Actions'}
+            >
+              <svg 
+                className={`w-5 h-5 transition-transform duration-300 ${actionsCollapsed ? 'rotate-180' : ''}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          </div>
+          
+          {!actionsCollapsed && (
+            <div className="px-6 pb-6">
+              <h3 className="text-gray-900 font-medium mb-4">Actions</h3>
           
           <div className="space-y-4">
             {/* Note Type Dropdown */}
@@ -361,6 +383,8 @@ const ScribePage: React.FC = () => {
               </div>
             )}
           </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

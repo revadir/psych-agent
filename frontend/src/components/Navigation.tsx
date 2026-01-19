@@ -42,30 +42,30 @@ const Navigation: React.FC<NavigationProps> = ({ user }) => {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
+    <nav className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
         {/* Logo and Navigation */}
-        <div className="flex items-center space-x-8">
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 lg:space-x-8 min-w-0 flex-1">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">PA</span>
             </div>
-            <span className="text-gray-900 font-semibold text-lg">Psych Agent</span>
+            <span className="text-gray-900 font-semibold text-lg hidden sm:block">Psych Agent</span>
           </div>
           
-          <div className="flex space-x-6">
+          <div className="flex space-x-2 lg:space-x-6 overflow-x-auto scrollbar-hide">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => navigate(item.path)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-2 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
                   isActive(item.path)
                     ? 'bg-blue-100 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
-                <span>{item.icon}</span>
-                <span className="font-medium">{item.name}</span>
+                <span className="text-sm lg:text-base">{item.icon}</span>
+                <span className="font-medium text-sm lg:text-base">{item.name}</span>
               </button>
             ))}
           </div>
