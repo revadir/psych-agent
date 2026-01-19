@@ -6,7 +6,50 @@ import ErrorBoundary from './components/ErrorBoundary'
 import Login from './components/Login'
 import Chat from './components/Chat'
 import AdminDashboard from './components/AdminDashboard'
+import HomePage from './components/HomePage'
+import FeaturesPage from './components/FeaturesPage'
+import ScribePage from './components/ScribePage'
+import Navigation from './components/Navigation'
 import ProtectedRoute from './components/ProtectedRoute'
+import { useAuth } from './contexts/AuthContext'
+
+function AppContent() {
+  const { user } = useAuth();
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {user && <Navigation user={user} />}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/features" element={
+          <ProtectedRoute>
+            <FeaturesPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/scribe" element={
+          <ProtectedRoute>
+            <ScribePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/chat" element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -14,21 +57,7 @@ function App() {
       <ToastProvider>
         <AuthProvider>
           <ChatProvider>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/admin" element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <Chat />
-                  </ProtectedRoute>
-                } />
-              </Routes>
-            </div>
+            <AppContent />
           </ChatProvider>
         </AuthProvider>
       </ToastProvider>
