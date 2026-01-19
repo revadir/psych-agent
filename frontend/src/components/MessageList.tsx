@@ -62,9 +62,6 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     <div 
       ref={containerRef}
       className="flex-1 overflow-y-auto bg-gray-50"
-      style={{ 
-        maxHeight: 'calc(100vh - 180px)',
-      }}
     >
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
       {messages.map(message => (
