@@ -2,30 +2,14 @@
 FastAPI application entry point.
 """
 
-print("🟡 DEBUG: Starting imports...")
 import logging
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-print("🟡 DEBUG: Basic imports done, importing config...")
 from app.core.config import settings
-from app.db.session import get_db
-from sqlalchemy.orm import Session
-print("🟡 DEBUG: Config imported, importing routers...")
-from app.api.auth import router as auth_router
-print("🟡 DEBUG: Auth router imported...")
-from app.api.admin import router as admin_router
-print("🟡 DEBUG: Admin router imported...")
-from app.api.chat import router as chat_router
-print("🟡 DEBUG: Chat router imported...")
-from app.api.feedback import router as feedback_router
-print("🟡 DEBUG: Feedback router imported...")
-from app.api.endpoints.asr import router as asr_router
-print("🟡 DEBUG: ASR router imported...")
-from app.api.admin import router as admin_router_new
-print("🟡 DEBUG: New admin router imported...")
 
 # Configure logging
 logging.basicConfig(
@@ -34,14 +18,21 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    include_routers()
+    yield
+    # Shutdown (if needed)
+
 app = FastAPI(
     title="Psychiatric Clinical Decision Support API",
     description="API for psychiatric clinical decision support using DSM-5-TR",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 # Add CORS middleware
-print(f"🟡 DEBUG: CORS allowed_origins: {settings.allowed_origins_list}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins_list,
@@ -50,13 +41,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routers
-app.include_router(auth_router, prefix="/api")
-app.include_router(admin_router, prefix="/api")
-app.include_router(chat_router, prefix="/api")
-app.include_router(feedback_router, prefix="/api")
-app.include_router(asr_router, prefix="/api/asr")
-app.include_router(admin_router_new, prefix="/api")
+# Lazy import routers to speed up startup
+def include_routers():
+    """Import and include routers only when needed"""
+    from app.api.auth import router as auth_router
+    from app.api.admin import router as admin_router
+    from app.api.chat import router as chat_router
+    from app.api.feedback import router as feedback_router
+    from app.api.endpoints.asr import router as asr_router
+    
+    app.include_router(auth_router, prefix="/api")
+    app.include_router(admin_router, prefix="/api")
+    app.include_router(chat_router, prefix="/api")
+    app.include_router(feedback_router, prefix="/api")
+    app.include_router(asr_router, prefix="/api/asr")
 
 # Serve static files (frontend)
 static_dir = os.path.join(os.path.dirname(__file__), "static")
@@ -89,64 +87,51 @@ async def health_check():
 
 
 @app.post("/setup-admin")
-async def setup_admin(email: str = "revadigar@gmail.com", db: Session = Depends(get_db)):
+async def setup_admin(email: str = "revadigar@gmail.com"):
     """One-time setup endpoint to create admin user and all tables."""
     try:
+        from app.db.session import get_db, SessionLocal
         from app.models import Allowlist, User
         from app.models.database import Base
         from app.db.session import engine
         
-        # Create all tables (including feedback, chat_sessions, etc.)
-        print("Creating all database tables...")
-        Base.metadata.create_all(bind=engine)
-        print("All tables created successfully!")
-        
-        # Check if already in allowlist
-        existing_allowlist = db.query(Allowlist).filter(Allowlist.email == email).first()
-        if existing_allowlist:
-            return {"message": "Admin user already exists, tables verified", "email": email}
-        
-        # Add to allowlist
-        allowlist_entry = Allowlist(email=email, is_admin=True)
-        db.add(allowlist_entry)
-        db.commit()
-        
-        # Create user
-        user = User(email=email, is_admin=True)
-        db.add(user)
-        db.commit()
-        
-        return {
-            "message": "Admin user created successfully and all tables initialized",
-            "email": email,
-            "default_password": "admin123",
-            "note": "Please change password after first login"
-        }
+        db = SessionLocal()
+        try:
+            # Create all tables (including feedback, chat_sessions, etc.)
+            Base.metadata.create_all(bind=engine)
+            
+            # Check if already in allowlist
+            existing_allowlist = db.query(Allowlist).filter(Allowlist.email == email).first()
+            if existing_allowlist:
+                return {"message": "Admin user already exists, tables verified", "email": email}
+            
+            # Add to allowlist
+            allowlist_entry = Allowlist(email=email, is_admin=True)
+            db.add(allowlist_entry)
+            db.commit()
+            
+            # Create user
+            user = User(email=email, is_admin=True)
+            db.add(user)
+            db.commit()
+            
+            return {
+                "message": "Admin user created successfully and all tables initialized",
+                "email": email,
+                "default_password": "admin123",
+                "note": "Please change password after first login"
+            }
+        finally:
+            db.close()
     except Exception as e:
-        import traceback
-        db.rollback()
-        return {
-            "error": str(e),
-            "traceback": traceback.format_exc()
-        }
+        return {"error": str(e)}
 
 
 if __name__ == "__main__":
     try:
-        print("🟡 DEBUG: Starting main...")
-        print(f"🟡 DEBUG: Environment variables:")
-        print(f"  - PORT: {os.getenv('PORT', 'not set')}")
-        print(f"  - HOST: {os.getenv('HOST', 'not set')}")
-        print(f"  - DATABASE_URL: {os.getenv('DATABASE_URL', 'not set')}")
-        print(f"  - GROQ_API_KEY: {'set' if os.getenv('GROQ_API_KEY') else 'not set'}")
-        
         import uvicorn
-        print("🟡 DEBUG: Uvicorn imported, starting server...")
         port = int(os.getenv("PORT", settings.port))
-        print(f"🟡 DEBUG: Starting on {settings.host}:{port}")
         uvicorn.run(app, host=settings.host, port=port)
     except Exception as e:
-        print(f"🔴 ERROR: Failed to start application: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.error(f"Failed to start application: {e}")
         raise

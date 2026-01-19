@@ -12,11 +12,6 @@ class ASRService:
         self.base_url = "https://api.assemblyai.com/v2"
         self.ws_url = "wss://api.assemblyai.com/v2/realtime/ws"
         
-        if self.api_key:
-            print(f"ASR Service initialized with API key: {'***' + self.api_key[-4:] if len(self.api_key) > 4 else '***'}")
-        else:
-            print("ASR Service initialized without API key (ASR features disabled)")
-        
     async def transcribe_file(self, audio_file_path: str) -> Dict[str, Any]:
         """Transcribe an audio file"""
         try:
@@ -35,7 +30,6 @@ class ASRService:
                 'speakers': transcript.get('utterances', []) if transcript.get('speaker_labels') else []
             }
         except Exception as e:
-            print(f"ASR Service Error: {str(e)}")
             raise
     
     async def _upload_file(self, file_path: str) -> str:

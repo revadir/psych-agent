@@ -55,9 +55,6 @@ async def transcribe_file(file: UploadFile = File(...)):
             os.unlink(temp_file_path)
             
     except Exception as e:
-        import traceback
-        print(f"Transcription error: {str(e)}")
-        print(f"Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Transcription failed: {str(e)}"}
@@ -67,7 +64,7 @@ async def transcribe_file(file: UploadFile = File(...)):
 async def generate_clinical_note(request: GenerateNoteRequest):
     """Generate a clinical note from transcript"""
     try:
-        # Use AI service to generate actual clinical content
+        # Lazy import to avoid startup delays
         from app.services.cloud_agent_service import CloudAgentService
         agent_service = CloudAgentService()
         
@@ -117,9 +114,6 @@ async def generate_clinical_note(request: GenerateNoteRequest):
         })
         
     except Exception as e:
-        import traceback
-        print(f"Note generation error: {str(e)}")
-        print(f"Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Note generation failed: {str(e)}"}
@@ -133,12 +127,6 @@ async def create_scribe_session(
 ):
     """Create a new scribe session in database"""
     try:
-        print(f"🔍 Creating scribe session for user {current_user.id}")
-        print(f"🔍 Patient name received: '{request.patient_name}'")
-        print(f"🔍 Patient name type: {type(request.patient_name)}")
-        print(f"🔍 Patient name length: {len(request.patient_name) if request.patient_name else 'None'}")
-        print(f"🔍 Full request: {request}")
-        
         session = ScribeSessionService.create_session(
             db=db,
             user_id=current_user.id,
@@ -148,8 +136,6 @@ async def create_scribe_session(
             duration=request.duration,
             content=request.content
         )
-        
-        print(f"🔍 Created session with patient name: '{session.patient_name}'")
         
         return JSONResponse(content={
             "success": True,
@@ -170,9 +156,6 @@ async def create_scribe_session(
         })
         
     except Exception as e:
-        import traceback
-        print(f"🔍 Error creating session: {str(e)}")
-        print(f"🔍 Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Failed to create session: {str(e)}"}
@@ -186,10 +169,6 @@ async def get_scribe_sessions(
     """Get all scribe sessions for current user"""
     try:
         sessions = ScribeSessionService.get_user_sessions(db, current_user.id)
-        
-        print(f"🔍 Loading {len(sessions)} sessions for user {current_user.id}")
-        for session in sessions:
-            print(f"🔍 Session {session.id}: patient_name='{session.patient_name}'")
         
         return JSONResponse(content={
             "success": True,
@@ -213,9 +192,6 @@ async def get_scribe_sessions(
         })
         
     except Exception as e:
-        import traceback
-        print(f"🔍 Error loading sessions: {str(e)}")
-        print(f"🔍 Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Failed to get sessions: {str(e)}"}
