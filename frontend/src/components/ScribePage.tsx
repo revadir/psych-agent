@@ -31,6 +31,15 @@ const ScribePage: React.FC = () => {
   const handleNoteCreated = (newNote: ScribeSession) => {
     console.log('ScribePage received new note:', newNote);
     console.log('Patient name in received note:', newNote.patientName);
+    console.log('Patient name type:', typeof newNote.patientName);
+    console.log('Patient name length:', newNote.patientName?.length);
+    
+    // Ensure patient name is not empty
+    if (!newNote.patientName || newNote.patientName.trim() === '') {
+      console.error('Patient name is empty or undefined!');
+      newNote.patientName = 'Unnamed Patient';
+    }
+    
     setScribeSessions([newNote, ...scribeSessions]);
     setSelectedSession(newNote);
     setShowNewNote(false);
@@ -103,7 +112,9 @@ const ScribePage: React.FC = () => {
                           : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
                       }`}
                     >
-                      <div className="font-medium text-gray-900">{session.patientName}</div>
+                      <div className="font-medium text-gray-900">
+                        {session.patientName || 'Unnamed Patient'}
+                      </div>
                       <div className="text-sm text-gray-600">ID: {session.patientId}</div>
                       <div className="text-sm text-gray-600">{session.date}</div>
                       <div className="text-sm text-gray-600">{session.duration}</div>
@@ -123,7 +134,9 @@ const ScribePage: React.FC = () => {
             <div>
               {/* Patient Header */}
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedSession.patientName}</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {selectedSession.patientName || 'Unnamed Patient'}
+                </h1>
                 <div className="flex space-x-6 text-gray-600">
                   <span>ID: {selectedSession.patientId}</span>
                   <span>{selectedSession.date}</span>

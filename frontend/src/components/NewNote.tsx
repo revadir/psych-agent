@@ -72,6 +72,10 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
   const processRecording = async (blob: Blob) => {
     setIsProcessing(true);
     
+    // Store patient name to ensure it's not lost during async operations
+    const currentPatientName = patientName.trim();
+    console.log('Processing recording for patient:', currentPatientName);
+    
     try {
       // Transcribe audio
       const formData = new FormData();
@@ -96,7 +100,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
         },
         body: JSON.stringify({
           transcript: transcribeResult.transcript,
-          patient_name: patientName,
+          patient_name: currentPatientName, // Use stored name
           note_template: noteTemplate
         }),
       });
@@ -108,7 +112,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
         const newNote = {
           id: Date.now().toString(),
           patientId: `PT-${Date.now().toString().slice(-3)}`,
-          patientName: patientName.trim(), // Ensure no whitespace issues
+          patientName: currentPatientName, // Use stored name
           date: new Date().toLocaleString(),
           duration: '~5 min', // Estimate based on recording
           content: {
@@ -120,7 +124,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
           }
         };
         
-        console.log('Patient name from form:', patientName);
+        console.log('Patient name from form:', currentPatientName);
         console.log('Created new note:', newNote);
         console.log('Patient name in note:', newNote.patientName);
         onNoteCreated(newNote);
