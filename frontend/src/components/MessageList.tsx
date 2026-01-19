@@ -21,25 +21,30 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const responseStartRef = useRef<HTMLDivElement>(null)
 
-  // Scroll to response start when response is complete
+  // Only scroll to response start when response is complete AND it's a new response
   useEffect(() => {
     const completedResponse = messages.find(msg => msg.role === 'assistant' && !msg.streaming && !msg.thinking)
-    if (completedResponse && responseStartRef.current) {
-      setTimeout(() => {
-        responseStartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 100)
+    if (completedResponse && responseStartRef.current && messages.length > 0) {
+      // Only scroll if this is a new response (not when loading existing session)
+      const isNewResponse = messages[messages.length - 1]?.role === 'assistant'
+      if (isNewResponse) {
+        setTimeout(() => {
+          responseStartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 100)
+      }
     }
   }, [messages.find(msg => msg.role === 'assistant' && !msg.streaming && !msg.thinking)])
 
-  // Scroll to show new messages and progress indicator
+  // Only scroll to show new messages and progress indicator for active streaming
   useEffect(() => {
     const hasThinkingOrStreaming = messages.some(msg => msg.thinking || msg.streaming)
-    if (hasThinkingOrStreaming) {
+    if (hasThinkingOrStreaming && messages.length > 0) {
+      // Only scroll if there's active streaming/thinking
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     }
-  }, [messages.length, messages.some(msg => msg.thinking || msg.streaming)])
+  }, [messages.some(msg => msg.thinking || msg.streaming)])
 
   // Expose scroll to bottom function for external use
   useEffect(() => {
