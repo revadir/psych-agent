@@ -68,25 +68,30 @@ const ScribePage: React.FC = () => {
     
     // Save to database
     try {
+      const requestData = {
+        patient_name: newNote.patientName,
+        patient_id: newNote.patientId,
+        note_template: 'psychotherapy', // Default template
+        duration: newNote.duration,
+        content: {
+          chief_complaint: newNote.content.chiefComplaint,
+          history_present_illness: newNote.content.historyOfPresentIllness,
+          review_systems: newNote.content.reviewOfSystems,
+          assessment_plan: newNote.content.assessmentAndPlan,
+          followup_disposition: newNote.content.followUpDisposition
+        }
+      };
+      
+      console.log('🔍 Sending request to database:', requestData);
+      console.log('🔍 Patient name in request:', requestData.patient_name);
+      
       const response = await fetch('/api/asr/scribe-sessions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({
-          patient_name: newNote.patientName,
-          patient_id: newNote.patientId,
-          note_template: 'psychotherapy', // Default template
-          duration: newNote.duration,
-          content: {
-            chief_complaint: newNote.content.chiefComplaint,
-            history_present_illness: newNote.content.historyOfPresentIllness,
-            review_systems: newNote.content.reviewOfSystems,
-            assessment_plan: newNote.content.assessmentAndPlan,
-            followup_disposition: newNote.content.followUpDisposition
-          }
-        })
+        body: JSON.stringify(requestData)
       });
       
       const data = await response.json();

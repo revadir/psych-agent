@@ -133,6 +133,12 @@ async def create_scribe_session(
 ):
     """Create a new scribe session in database"""
     try:
+        print(f"🔍 Creating scribe session for user {current_user.id}")
+        print(f"🔍 Patient name received: '{request.patient_name}'")
+        print(f"🔍 Patient name type: {type(request.patient_name)}")
+        print(f"🔍 Patient name length: {len(request.patient_name) if request.patient_name else 'None'}")
+        print(f"🔍 Full request: {request}")
+        
         session = ScribeSessionService.create_session(
             db=db,
             user_id=current_user.id,
@@ -142,6 +148,8 @@ async def create_scribe_session(
             duration=request.duration,
             content=request.content
         )
+        
+        print(f"🔍 Created session with patient name: '{session.patient_name}'")
         
         return JSONResponse(content={
             "success": True,
@@ -162,6 +170,9 @@ async def create_scribe_session(
         })
         
     except Exception as e:
+        import traceback
+        print(f"🔍 Error creating session: {str(e)}")
+        print(f"🔍 Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Failed to create session: {str(e)}"}
