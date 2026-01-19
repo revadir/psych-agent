@@ -32,13 +32,22 @@ class CreateScribeSessionRequest(BaseModel):
     duration: str
     content: dict
 
+@router.options("/transcribe-file")
+async def transcribe_file_options():
+    """Handle CORS preflight for transcribe-file"""
+    return {"status": "ok"}
+
 @router.post("/transcribe-file")
 async def transcribe_file(file: UploadFile = File(...)):
     """Transcribe an uploaded audio file"""
     print(f"🔍 ASR transcribe endpoint called with file: {file.filename}")
+    print(f"🔍 File content type: {file.content_type}")
+    print(f"🔍 File size: {file.size if hasattr(file, 'size') else 'unknown'}")
+    
     asr_service = get_asr_service()
     try:
         if not asr_service.api_key:
+            print("🔍 No AssemblyAI API key configured")
             return JSONResponse(
                 status_code=400,
                 content={"success": False, "error": "AssemblyAI API key not configured"}
