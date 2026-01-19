@@ -103,7 +103,9 @@ const ScribePage: React.FC = () => {
                 onClick={handleNewNote}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium mb-6 flex items-center justify-center space-x-2"
               >
-                <span>🎤</span>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                </svg>
                 <span>🤖</span>
                 <span>Take a new note</span>
               </button>
@@ -171,23 +173,6 @@ const ScribePage: React.FC = () => {
                   content={selectedSession.content.followUpDisposition}
                 />
               </div>
-
-              {/* Feedback Section */}
-              <div className="mt-8 bg-white border border-gray-200 rounded-lg p-4">
-                <h3 className="text-gray-900 font-medium mb-3">Suggest Changes</h3>
-                <textarea
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                  placeholder="Enter your feedback or suggestions for improvements..."
-                  className="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-3 h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <button
-                  onClick={handleFeedbackSubmit}
-                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-                >
-                  Submit Feedback
-                </button>
-              </div>
             </div>
           ) : (
             <div className="flex items-center justify-center h-full">
@@ -228,6 +213,25 @@ const ScribePage: React.FC = () => {
             >
               Send Patient Visit Summary
             </button>
+
+            {/* Feedback Section */}
+            {selectedSession && (
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h3 className="text-gray-900 font-medium mb-3">Suggest Changes</h3>
+                <textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  placeholder="Enter your feedback or suggestions for improvements..."
+                  className="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-3 h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+                <button
+                  onClick={handleFeedbackSubmit}
+                  className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
+                >
+                  Submit Feedback
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
