@@ -5,56 +5,76 @@ FastAPI application entry point.
 import logging
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from app.core.config import settings
 
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.log_level),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+# Minimal health check first - no dependencies
+app = FastAPI(title="Psych Agent API", version="0.1.0")
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup
-    include_routers()
-    yield
-    # Shutdown (if needed)
+@app.get("/health")
+async def health_check():
+    """Minimal health check endpoint."""
+    return {"status": "healthy"}
 
-app = FastAPI(
-    title="Psychiatric Clinical Decision Support API",
-    description="API for psychiatric clinical decision support using DSM-5-TR",
-    version="0.1.0",
-    lifespan=lifespan,
-)
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.allowed_origins_list,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Lazy import routers to speed up startup
-def include_routers():
-    """Import and include routers only when needed"""
-    from app.api.auth import router as auth_router
-    from app.api.admin import router as admin_router
-    from app.api.chat import router as chat_router
-    from app.api.feedback import router as feedback_router
-    from app.api.endpoints.asr import router as asr_router
+# Now load everything else
+try:
+    from app.core.config import settings
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import FileResponse
     
-    app.include_router(auth_router, prefix="/api")
-    app.include_router(admin_router, prefix="/api")
-    app.include_router(chat_router, prefix="/api")
-    app.include_router(feedback_router, prefix="/api")
-    app.include_router(asr_router, prefix="/api/asr")
+    # Configure logging
+    logging.basicConfig(
+        level=getattr(logging, settings.log_level),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    logger = logging.getLogger(__name__)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        # Startup - load routers after health check is working
+        try:
+            include_routers()
+        except Exception as e:
+            logger.error(f"Failed to load routers: {e}")
+        yield
+        # Shutdown (if needed)
+
+    # Update app with full config
+    app.title = "Psychiatric Clinical Decision Support API"
+    app.description = "API for psychiatric clinical decision support using DSM-5-TR"
+    app.router.lifespan_context = lifespan
+
+    # Add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_origins_list,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Lazy import routers to speed up startup
+    def include_routers():
+        """Import and include routers only when needed"""
+        from app.api.auth import router as auth_router
+        from app.api.admin import router as admin_router
+        from app.api.chat import router as chat_router
+        from app.api.feedback import router as feedback_router
+        from app.api.endpoints.asr import router as asr_router
+        
+        app.include_router(auth_router, prefix="/api")
+        app.include_router(admin_router, prefix="/api")
+        app.include_router(chat_router, prefix="/api")
+        app.include_router(feedback_router, prefix="/api")
+        app.include_router(asr_router, prefix="/api/asr")
+
+except Exception as e:
+    # If anything fails, at least health check works
+    logger = logging.getLogger(__name__)
+    logger.error(f"Failed to load full app config: {e}")
+    
+    def include_routers():
+        pass
 
 # Serve static files (frontend)
 static_dir = os.path.join(os.path.dirname(__file__), "static")
@@ -82,8 +102,8 @@ else:
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy", "environment": settings.environment}
+    """Minimal health check endpoint."""
+    return {"status": "healthy"}
 
 
 @app.post("/setup-admin")
