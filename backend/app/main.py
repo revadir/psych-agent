@@ -83,6 +83,7 @@ try:
         try:
             from app.api.endpoints.asr import router as asr_router
             app.include_router(asr_router, prefix="/api/asr")
+            logger.info("ASR router loaded successfully")
         except Exception as e:
             logger.error(f"Failed to load ASR router: {e}")
 

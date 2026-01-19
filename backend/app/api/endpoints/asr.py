@@ -12,6 +12,11 @@ from app.models import User
 
 router = APIRouter()
 
+@router.get("/test")
+async def test_asr():
+    """Test ASR router is working"""
+    return {"status": "ASR router working"}
+
 def get_asr_service():
     return ASRService()
 
@@ -30,6 +35,7 @@ class CreateScribeSessionRequest(BaseModel):
 @router.post("/transcribe-file")
 async def transcribe_file(file: UploadFile = File(...)):
     """Transcribe an uploaded audio file"""
+    print(f"🔍 ASR transcribe endpoint called with file: {file.filename}")
     asr_service = get_asr_service()
     try:
         if not asr_service.api_key:
