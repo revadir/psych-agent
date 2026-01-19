@@ -25,6 +25,11 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
   ];
 
   const startRecording = useCallback(async () => {
+    console.log('🔍 Start recording clicked');
+    console.log('🔍 Current patientName state:', patientName);
+    console.log('🔍 PatientName length:', patientName.length);
+    console.log('🔍 PatientName trimmed:', patientName.trim());
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
@@ -177,7 +182,10 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
             <input
               type="text"
               value={patientName}
-              onChange={(e) => setPatientName(e.target.value)}
+              onChange={(e) => {
+                console.log('🔍 Patient name input changed:', e.target.value);
+                setPatientName(e.target.value);
+              }}
               placeholder="Enter patient name"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
