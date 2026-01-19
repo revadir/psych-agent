@@ -120,6 +120,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
           }
         };
         
+        console.log('Created new note:', newNote); // Debug log
         onNoteCreated(newNote);
       } else {
         throw new Error(noteResult.error);

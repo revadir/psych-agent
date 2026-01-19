@@ -22,36 +22,7 @@ const ScribePage: React.FC = () => {
   const [noteType, setNoteType] = useState('initial');
   const [feedback, setFeedback] = useState('');
   const [showNewNote, setShowNewNote] = useState(false);
-  const [scribeSessions, setScribeSessions] = useState<ScribeSession[]>([
-    {
-      id: '1',
-      patientId: 'PT-001',
-      patientName: 'John Doe',
-      date: '2026-01-19 09:30',
-      duration: '45 min',
-      content: {
-        chiefComplaint: 'Patient reports feeling anxious and having difficulty sleeping for the past 2 weeks.',
-        historyOfPresentIllness: 'Patient describes onset of anxiety symptoms following job loss. Reports racing thoughts, restlessness, and insomnia. No previous psychiatric history.',
-        reviewOfSystems: 'Denies chest pain, palpitations, or shortness of breath. Reports decreased appetite and fatigue.',
-        assessmentAndPlan: 'Generalized Anxiety Disorder (F41.1). Recommend CBT therapy and consider short-term anxiolytic if symptoms persist.',
-        followUpDisposition: 'Follow-up in 2 weeks. Patient education on anxiety management techniques provided.'
-      }
-    },
-    {
-      id: '2',
-      patientId: 'PT-002',
-      patientName: 'Jane Smith',
-      date: '2026-01-18 14:15',
-      duration: '30 min',
-      content: {
-        chiefComplaint: 'Follow-up for depression treatment.',
-        historyOfPresentIllness: 'Patient on sertraline 50mg for 6 weeks. Reports improved mood and energy levels.',
-        reviewOfSystems: 'Sleep improved, appetite returning to normal. No side effects from medication.',
-        assessmentAndPlan: 'Major Depressive Disorder (F32.1) - responding well to treatment. Continue current medication.',
-        followUpDisposition: 'Continue sertraline. Follow-up in 4 weeks or sooner if symptoms worsen.'
-      }
-    }
-  ]);
+  const [scribeSessions, setScribeSessions] = useState<ScribeSession[]>([]);
 
   const handleNewNote = () => {
     setShowNewNote(true);
@@ -113,22 +84,30 @@ const ScribePage: React.FC = () => {
               {/* History List */}
               <div className="space-y-2">
                 <h3 className="text-gray-600 text-sm font-medium mb-3">Recent Sessions</h3>
-                {scribeSessions.map((session) => (
-                  <div
-                    key={session.id}
-                    onClick={() => setSelectedSession(session)}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                      selectedSession?.id === session.id
-                        ? 'bg-blue-100 border border-blue-300'
-                        : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
-                    }`}
-                  >
-                    <div className="font-medium text-gray-900">{session.patientName}</div>
-                    <div className="text-sm text-gray-600">ID: {session.patientId}</div>
-                    <div className="text-sm text-gray-600">{session.date}</div>
-                    <div className="text-sm text-gray-600">{session.duration}</div>
+                {scribeSessions.length === 0 ? (
+                  <div className="text-center text-gray-500 py-8">
+                    <div className="text-4xl mb-2">📝</div>
+                    <p className="text-sm">No sessions yet</p>
+                    <p className="text-xs">Create your first note above</p>
                   </div>
-                ))}
+                ) : (
+                  scribeSessions.map((session) => (
+                    <div
+                      key={session.id}
+                      onClick={() => setSelectedSession(session)}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                        selectedSession?.id === session.id
+                          ? 'bg-blue-100 border border-blue-300'
+                          : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      <div className="font-medium text-gray-900">{session.patientName}</div>
+                      <div className="text-sm text-gray-600">ID: {session.patientId}</div>
+                      <div className="text-sm text-gray-600">{session.date}</div>
+                      <div className="text-sm text-gray-600">{session.duration}</div>
+                    </div>
+                  ))
+                )}
               </div>
             </>
           )}
