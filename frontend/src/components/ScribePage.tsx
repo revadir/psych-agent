@@ -40,7 +40,12 @@ const ScribePage: React.FC = () => {
       
       const data = await response.json();
       
+      console.log('🔍 API response:', data);
       if (data.success) {
+        console.log('🔍 Sessions from API:', data.sessions);
+        data.sessions.forEach((session, index) => {
+          console.log(`🔍 Session ${index}: patient_name='${session.patient_name}'`);
+        });
         setScribeSessions(data.sessions);
       }
     } catch (error) {
