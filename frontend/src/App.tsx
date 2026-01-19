@@ -17,9 +17,10 @@ function AppContent() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {user && <Navigation user={user} />}
-      <Routes>
+      <div className="flex-1">
+        <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={
           <ProtectedRoute>
@@ -47,6 +48,7 @@ function AppContent() {
           </ProtectedRoute>
         } />
       </Routes>
+      </div>
     </div>
   );
 }

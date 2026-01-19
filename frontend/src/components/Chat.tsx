@@ -15,7 +15,7 @@ export default function Chat() {
   }, [currentSession])
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-full flex flex-col">
       <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       <div className="flex-1 flex overflow-hidden relative">
