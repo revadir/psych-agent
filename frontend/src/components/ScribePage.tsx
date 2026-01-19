@@ -46,7 +46,22 @@ const ScribePage: React.FC = () => {
         data.sessions.forEach((session, index) => {
           console.log(`🔍 Session ${index}: patient_name='${session.patient_name}'`);
         });
-        setScribeSessions(data.sessions);
+        // map data.sessions to ScribeSessions
+        const mappedSessions = data.sessions.map((session: any) => ({
+          id: session.id,
+          patientId: session.patient_id,
+          patientName: session.patient_name || 'Unnamed Patient',
+          date: session.date,
+          duration: session.duration || '0 min',
+          content: {
+            chiefComplaint: session.content?.chiefComplaint || '',
+            historyOfPresentIllness: session.content?.historyOfPresentIllness || '',
+            reviewOfSystems: session.content?.reviewOfSystems || '',
+            assessmentAndPlan: session.content?.assessmentAndPlan || '',
+            followUpDisposition: session.content?.followupUpDisposition || ''
+          }
+        }));
+        setScribeSessions(mappedSessions);
       }
     } catch (error) {
       console.error('Failed to load sessions:', error);
