@@ -22,6 +22,8 @@ from app.api.chat import router as chat_router
 print("🟡 DEBUG: Chat router imported...")
 from app.api.feedback import router as feedback_router
 print("🟡 DEBUG: Feedback router imported...")
+from app.api.endpoints.asr import router as asr_router
+print("🟡 DEBUG: ASR router imported...")
 from app.api.admin import router as admin_router_new
 print("🟡 DEBUG: New admin router imported...")
 
@@ -53,6 +55,7 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
 app.include_router(feedback_router, prefix="/api")
+app.include_router(asr_router, prefix="/api/asr")
 app.include_router(admin_router_new, prefix="/api")
 
 # Serve static files (frontend)

@@ -17,7 +17,7 @@ function AppContent() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       {user && <Navigation user={user} />}
       <Routes>
         <Route path="/login" element={<Login />} />
