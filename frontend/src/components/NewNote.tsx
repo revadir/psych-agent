@@ -65,7 +65,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
     } catch (error) {
       console.error('Failed to start recording:', error);
     }
-  }, []);
+  }, [patientName]); // Add patientName to dependency array
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
