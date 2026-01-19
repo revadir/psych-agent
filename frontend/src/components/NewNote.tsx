@@ -108,7 +108,7 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
         const newNote = {
           id: Date.now().toString(),
           patientId: `PT-${Date.now().toString().slice(-3)}`,
-          patientName: patientName,
+          patientName: patientName.trim(), // Ensure no whitespace issues
           date: new Date().toLocaleString(),
           duration: '~5 min', // Estimate based on recording
           content: {
@@ -120,7 +120,9 @@ const NewNote: React.FC<NewNoteProps> = ({ onCancel, onNoteCreated }) => {
           }
         };
         
-        console.log('Created new note:', newNote); // Debug log
+        console.log('Patient name from form:', patientName);
+        console.log('Created new note:', newNote);
+        console.log('Patient name in note:', newNote.patientName);
         onNoteCreated(newNote);
       } else {
         throw new Error(noteResult.error);

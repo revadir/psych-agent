@@ -29,6 +29,8 @@ const ScribePage: React.FC = () => {
   };
 
   const handleNoteCreated = (newNote: ScribeSession) => {
+    console.log('ScribePage received new note:', newNote);
+    console.log('Patient name in received note:', newNote.patientName);
     setScribeSessions([newNote, ...scribeSessions]);
     setSelectedSession(newNote);
     setShowNewNote(false);

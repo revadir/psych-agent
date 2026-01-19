@@ -55,13 +55,48 @@ async def transcribe_file(file: UploadFile = File(...)):
 async def generate_clinical_note(request: GenerateNoteRequest):
     """Generate a clinical note from transcript"""
     try:
-        # Mock note generation - replace with actual AI service
+        # Use AI service to generate actual clinical content
+        from app.services.cloud_agent_service import CloudAgentService
+        agent_service = CloudAgentService()
+        
+        # Generate each section using AI
+        base_prompt = f"""
+        You are a clinical psychologist generating a structured clinical note from this session transcript.
+        Patient Name: {request.patient_name}
+        Note Type: {request.note_template}
+        
+        TRANSCRIPT:
+        {request.transcript}
+        
+        Generate the following section in 2-3 sentences, be concise and clinical:
+        """
+        
+        # Generate Chief Complaint
+        cc_response = agent_service.process_query(base_prompt + "CHIEF COMPLAINT: What is the patient's main concern or reason for visit?")
+        chief_complaint = cc_response.get('response', 'Patient presents for clinical evaluation.')
+        
+        # Generate History of Present Illness
+        hpi_response = agent_service.process_query(base_prompt + "HISTORY OF PRESENT ILLNESS: Describe the onset, duration, and characteristics of current symptoms.")
+        history_present_illness = hpi_response.get('response', 'Patient describes current symptoms and their progression.')
+        
+        # Generate Review of Systems
+        ros_response = agent_service.process_query(base_prompt + "REVIEW OF SYSTEMS: Summarize relevant positive and negative findings from systems review.")
+        review_systems = ros_response.get('response', 'Review of systems notable for reported symptoms.')
+        
+        # Generate Assessment and Plan
+        ap_response = agent_service.process_query(base_prompt + "ASSESSMENT AND PLAN: Provide clinical assessment with potential diagnoses and treatment recommendations.")
+        assessment_plan = ap_response.get('response', 'Clinical assessment and treatment plan to be determined.')
+        
+        # Generate Follow-up
+        fu_response = agent_service.process_query(base_prompt + "FOLLOW-UP/DISPOSITION: Recommend next steps, follow-up timeline, and any immediate actions needed.")
+        followup_disposition = fu_response.get('response', 'Follow-up recommendations to be provided.')
+        
         note_content = {
-            "chief_complaint": f"Patient {request.patient_name} presents for {request.note_template.lower()}.",
-            "history_present_illness": "Based on session transcript analysis...",
-            "review_systems": "Patient reports relevant symptoms as discussed.",
-            "assessment_plan": "Clinical assessment based on session content.",
-            "followup_disposition": "Follow-up recommendations provided."
+            "chief_complaint": chief_complaint,
+            "history_present_illness": history_present_illness,
+            "review_systems": review_systems,
+            "assessment_plan": assessment_plan,
+            "followup_disposition": followup_disposition
         }
         
         return JSONResponse(content={
@@ -70,6 +105,9 @@ async def generate_clinical_note(request: GenerateNoteRequest):
         })
         
     except Exception as e:
+        import traceback
+        print(f"Note generation error: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Note generation failed: {str(e)}"}
