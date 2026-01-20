@@ -112,24 +112,54 @@ async def generate_clinical_note(request: GenerateNoteRequest):
         """
         
         # Generate Chief Complaint
-        cc_response = agent_service.process_query(base_prompt + "Generate the chief complaint: What is the patient's main concern or reason for visit?")
-        chief_complaint = cc_response.get('response', 'Patient presents for clinical evaluation.')
+        try:
+            cc_response = agent_service.process_query(base_prompt + "Generate the chief complaint: What is the patient's main concern or reason for visit?")
+            chief_complaint = cc_response.get('response', 'Patient presents for clinical evaluation.')
+        except Exception as e:
+            print(f"🔍 Error generating chief complaint: {e}")
+            chief_complaint = 'Patient presents for clinical evaluation.'
+        
+        # Add delay to avoid rate limiting
+        import time
+        time.sleep(1)
         
         # Generate History of Present Illness
-        hpi_response = agent_service.process_query(base_prompt + "Generate the history of present illness: Describe the onset, duration, and characteristics of current symptoms.")
-        history_present_illness = hpi_response.get('response', 'Patient describes current symptoms and their progression.')
+        try:
+            hpi_response = agent_service.process_query(base_prompt + "Generate the history of present illness: Describe the onset, duration, and characteristics of current symptoms.")
+            history_present_illness = hpi_response.get('response', 'Patient describes current symptoms and their progression.')
+        except Exception as e:
+            print(f"🔍 Error generating HPI: {e}")
+            history_present_illness = 'Patient describes current symptoms and their progression.'
+        
+        time.sleep(1)
         
         # Generate Review of Systems
-        ros_response = agent_service.process_query(base_prompt + "Generate the review of systems: Summarize relevant positive and negative findings from systems review.")
-        review_systems = ros_response.get('response', 'Review of systems notable for reported symptoms.')
+        try:
+            ros_response = agent_service.process_query(base_prompt + "Generate the review of systems: Summarize relevant positive and negative findings from systems review.")
+            review_systems = ros_response.get('response', 'Review of systems notable for reported symptoms.')
+        except Exception as e:
+            print(f"🔍 Error generating ROS: {e}")
+            review_systems = 'Review of systems notable for reported symptoms.'
+        
+        time.sleep(1)
         
         # Generate Assessment and Plan
-        ap_response = agent_service.process_query(base_prompt + "Generate the assessment and plan: Provide clinical assessment with potential diagnoses and treatment recommendations.")
-        assessment_plan = ap_response.get('response', 'Clinical assessment and treatment plan to be determined.')
+        try:
+            ap_response = agent_service.process_query(base_prompt + "Generate the assessment and plan: Provide clinical assessment with potential diagnoses and treatment recommendations.")
+            assessment_plan = ap_response.get('response', 'Clinical assessment and treatment plan to be determined.')
+        except Exception as e:
+            print(f"🔍 Error generating A&P: {e}")
+            assessment_plan = 'Clinical assessment and treatment plan to be determined.'
+        
+        time.sleep(1)
         
         # Generate Follow-up
-        fu_response = agent_service.process_query(base_prompt + "Generate the follow-up/disposition: Recommend next steps, follow-up timeline, and any immediate actions needed.")
-        followup_disposition = fu_response.get('response', 'Follow-up recommendations to be provided.')
+        try:
+            fu_response = agent_service.process_query(base_prompt + "Generate the follow-up/disposition: Recommend next steps, follow-up timeline, and any immediate actions needed.")
+            followup_disposition = fu_response.get('response', 'Follow-up recommendations to be provided.')
+        except Exception as e:
+            print(f"🔍 Error generating follow-up: {e}")
+            followup_disposition = 'Follow-up recommendations to be provided.'
         
         note_content = {
             "chief_complaint": chief_complaint,
