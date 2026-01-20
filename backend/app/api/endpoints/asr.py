@@ -107,27 +107,28 @@ async def generate_clinical_note(request: GenerateNoteRequest):
         TRANSCRIPT:
         {request.transcript}
         
-        Generate the following section in 2-3 sentences, be concise and clinical:
+        Generate ONLY the requested section content in 2-3 sentences. Be concise and clinical. 
+        Do NOT include the section header or label in your response.
         """
         
         # Generate Chief Complaint
-        cc_response = agent_service.process_query(base_prompt + "CHIEF COMPLAINT: What is the patient's main concern or reason for visit?")
+        cc_response = agent_service.process_query(base_prompt + "Generate the chief complaint: What is the patient's main concern or reason for visit?")
         chief_complaint = cc_response.get('response', 'Patient presents for clinical evaluation.')
         
         # Generate History of Present Illness
-        hpi_response = agent_service.process_query(base_prompt + "HISTORY OF PRESENT ILLNESS: Describe the onset, duration, and characteristics of current symptoms.")
+        hpi_response = agent_service.process_query(base_prompt + "Generate the history of present illness: Describe the onset, duration, and characteristics of current symptoms.")
         history_present_illness = hpi_response.get('response', 'Patient describes current symptoms and their progression.')
         
         # Generate Review of Systems
-        ros_response = agent_service.process_query(base_prompt + "REVIEW OF SYSTEMS: Summarize relevant positive and negative findings from systems review.")
+        ros_response = agent_service.process_query(base_prompt + "Generate the review of systems: Summarize relevant positive and negative findings from systems review.")
         review_systems = ros_response.get('response', 'Review of systems notable for reported symptoms.')
         
         # Generate Assessment and Plan
-        ap_response = agent_service.process_query(base_prompt + "ASSESSMENT AND PLAN: Provide clinical assessment with potential diagnoses and treatment recommendations.")
+        ap_response = agent_service.process_query(base_prompt + "Generate the assessment and plan: Provide clinical assessment with potential diagnoses and treatment recommendations.")
         assessment_plan = ap_response.get('response', 'Clinical assessment and treatment plan to be determined.')
         
         # Generate Follow-up
-        fu_response = agent_service.process_query(base_prompt + "FOLLOW-UP/DISPOSITION: Recommend next steps, follow-up timeline, and any immediate actions needed.")
+        fu_response = agent_service.process_query(base_prompt + "Generate the follow-up/disposition: Recommend next steps, follow-up timeline, and any immediate actions needed.")
         followup_disposition = fu_response.get('response', 'Follow-up recommendations to be provided.')
         
         note_content = {
