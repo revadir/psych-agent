@@ -17,6 +17,21 @@ async def test_asr():
     """Test ASR router is working"""
     return {"status": "ASR router working"}
 
+@router.get("/init-db")
+async def init_scribe_db():
+    """Initialize scribe session database table"""
+    try:
+        from app.models.database import Base
+        from app.db.session import engine
+        from app.models.scribe_session import ScribeSession
+        
+        # Create the scribe_session table
+        Base.metadata.create_all(bind=engine)
+        
+        return {"status": "Database initialized", "tables": "ScribeSession table created"}
+    except Exception as e:
+        return {"error": str(e)}
+
 def get_asr_service():
     return ASRService()
 
