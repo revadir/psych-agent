@@ -290,28 +290,34 @@ const ScribePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Content Sections */}
-              <div className="space-y-6">
-                <ContentSection
-                  title="Chief Complaint"
-                  content={selectedSession.content.chiefComplaint}
-                />
-                <ContentSection
-                  title="History of Present Illness"
-                  content={selectedSession.content.historyOfPresentIllness}
-                />
-                <ContentSection
-                  title="Review of Systems"
-                  content={selectedSession.content.reviewOfSystems}
-                />
-                <ContentSection
-                  title="Assessment and Plan"
-                  content={selectedSession.content.assessmentAndPlan}
-                />
-                <ContentSection
-                  title="Follow-up/Disposition"
-                  content={selectedSession.content.followUpDisposition}
-                />
+              {/* Single Note Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-600 mb-3">Chief Complaint</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedSession.content.chiefComplaint}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-600 mb-3">History of Present Illness</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedSession.content.historyOfPresentIllness}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-600 mb-3">Review of Systems</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedSession.content.reviewOfSystems}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-600 mb-3">Assessment and Plan</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedSession.content.assessmentAndPlan}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-600 mb-3">Follow-up/Disposition</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedSession.content.followUpDisposition}</p>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
@@ -398,20 +404,6 @@ const ScribePage: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
-  );
-};
-
-interface ContentSectionProps {
-  title: string;
-  content: string;
-}
-
-const ContentSection: React.FC<ContentSectionProps> = ({ title, content }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
-      <h3 className="text-blue-600 font-medium mb-3">{title}</h3>
-      <p className="text-gray-800 leading-relaxed">{content}</p>
     </div>
   );
 };
