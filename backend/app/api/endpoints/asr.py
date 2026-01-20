@@ -134,6 +134,11 @@ async def generate_clinical_note(request: GenerateNoteRequest):
             content={"success": False, "error": f"Note generation failed: {str(e)}"}
         )
 
+@router.options("/scribe-sessions")
+async def scribe_sessions_options():
+    """Handle CORS preflight for scribe-sessions"""
+    return {"status": "ok"}
+
 @router.post("/scribe-sessions")
 async def create_scribe_session(
     request: CreateScribeSessionRequest,
@@ -211,6 +216,11 @@ async def get_scribe_sessions(
             status_code=500,
             content={"success": False, "error": f"Failed to get sessions: {str(e)}"}
         )
+
+@router.options("/scribe-sessions/{session_id}")
+async def scribe_sessions_delete_options(session_id: int):
+    """Handle CORS preflight for scribe-sessions DELETE"""
+    return {"status": "ok"}
 
 @router.delete("/scribe-sessions/{session_id}")
 async def delete_scribe_session(

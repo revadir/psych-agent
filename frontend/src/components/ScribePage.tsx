@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import NewNote from './NewNote';
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
+
 interface ScribeSession {
   id: string;
   patientId: string;
@@ -33,7 +35,7 @@ const ScribePage: React.FC = () => {
 
   const loadSessions = async () => {
     try {
-      const response = await fetch('/api/asr/scribe-sessions', {
+      const response = await fetch(`${API_BASE_URL}/api/asr/scribe-sessions`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -106,7 +108,7 @@ const ScribePage: React.FC = () => {
       console.log('🔍 Sending request to database:', requestData);
       console.log('🔍 Patient name in request:', requestData.patient_name);
       
-      const response = await fetch('/api/asr/scribe-sessions', {
+      const response = await fetch(`${API_BASE_URL}/api/asr/scribe-sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +144,7 @@ const ScribePage: React.FC = () => {
     }
     
     try {
-      const response = await fetch(`/api/asr/scribe-sessions/${sessionId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/asr/scribe-sessions/${sessionId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
