@@ -188,7 +188,13 @@ async def get_scribe_sessions(
 ):
     """Get all scribe sessions for current user"""
     try:
+        print(f"🔍 Getting sessions for user {current_user.id}")
+        from app.services.scribe_session_service import ScribeSessionService
         sessions = ScribeSessionService.get_user_sessions(db, current_user.id)
+        
+        print(f"🔍 Found {len(sessions)} sessions for user {current_user.id}")
+        for session in sessions:
+            print(f"🔍 Session {session.id}: patient_name='{session.patient_name}'")
         
         return JSONResponse(content={
             "success": True,
@@ -212,6 +218,9 @@ async def get_scribe_sessions(
         })
         
     except Exception as e:
+        import traceback
+        print(f"🔍 Error getting sessions: {str(e)}")
+        print(f"🔍 Traceback: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": f"Failed to get sessions: {str(e)}"}

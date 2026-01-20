@@ -45,7 +45,8 @@ const ScribePage: React.FC = () => {
       console.log('🔍 Response status:', response.status, response.statusText);
       
       if (!response.ok) {
-        console.error('🔍 Failed to load sessions:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('🔍 Failed to load sessions:', response.status, response.statusText, errorText);
         return;
       }
       
