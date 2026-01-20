@@ -35,11 +35,19 @@ const ScribePage: React.FC = () => {
 
   const loadSessions = async () => {
     try {
+      console.log('🔍 Loading sessions from:', `${API_BASE_URL}/api/asr/scribe-sessions`);
       const response = await fetch(`${API_BASE_URL}/api/asr/scribe-sessions`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
+      
+      console.log('🔍 Response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        console.error('🔍 Failed to load sessions:', response.status, response.statusText);
+        return;
+      }
       
       const data = await response.json();
       
